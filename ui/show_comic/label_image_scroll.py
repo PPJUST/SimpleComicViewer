@@ -21,6 +21,7 @@ class LabelImage(QLabel):
         self._image_pixmap = None  # 需显示图像的pixmap对象
         self._scroll_type = scroll_type  # 预览控件的滚动类型，"v"/"h"
         self._max_size = None  # label的最大大小（父控件的大小）
+        self._is_show_image = False  # 是否已经显示已图像
 
         if parent:
             self._max_size = QSize(parent.width() - 15, parent.height() - 15)  # 预留滚动条的空间
@@ -48,12 +49,15 @@ class LabelImage(QLabel):
         self._change_size()
 
     def show_image(self):
-        """预加载图片"""
+        """显示图片"""
+        if self._is_show_image:
+            return
         if not self._image_pixmap:
             self.load_pixmap()
         scaled_pixmap = self._image_pixmap.scaled(
             self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.setPixmap(scaled_pixmap)
+        self._is_show_image = True
 
     def load_pixmap(self):
         """读取pixmap"""
@@ -67,7 +71,9 @@ class LabelImage(QLabel):
 
     def hide_image(self):
         """隐藏图片"""
-        self.clear()
+        if self._is_show_image:
+            self.clear()
+            self._is_show_image = False
 
     def hide_label(self):
         """隐藏label控件"""
