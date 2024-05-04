@@ -112,6 +112,8 @@ class ScrollAreaComicPreview(QScrollArea):
                 self._update_index_list(label.height())
         # 刷新显示
         self.refresh_images()
+        # 刷新索引
+        self._slider_scrolled()
 
     def is_scroll_end(self):
         """是否已经滚动到底部"""
