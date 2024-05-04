@@ -4,6 +4,7 @@ from PySide6.QtCore import QSize, Qt, QThread, Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel
 
+from constant import _MARGIN
 from module import function_comic, function_image
 
 
@@ -24,7 +25,7 @@ class LabelImage(QLabel):
         self._is_show_image = False  # 是否已经显示已图像
 
         if parent:
-            self._max_size = QSize(parent.width() - 15, parent.height() - 15)  # 预留滚动条的空间
+            self._max_size = QSize(parent.width() - _MARGIN, parent.height() - _MARGIN)  # 预留滚动条的空间
             self.setFixedSize(self._max_size)
 
     def reset_comic(self, comic_path: str, comic_filetype: str):
@@ -44,7 +45,7 @@ class LabelImage(QLabel):
     def reset_max_size(self, parent):
         """重设大小参数
         :param parent: 父控件"""
-        self._max_size = QSize(parent.width() - 15, parent.height() - 15)
+        self._max_size = QSize(parent.width() - _MARGIN, parent.height() - _MARGIN)
         self._get_image_size()
         self._change_size()
 
@@ -52,6 +53,17 @@ class LabelImage(QLabel):
         """显示图片"""
         if self._is_show_image:
             return
+        self.clear()
+        if not self._image_pixmap:
+            self.load_pixmap()
+        scaled_pixmap = self._image_pixmap.scaled(
+            self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.setPixmap(scaled_pixmap)
+        self._is_show_image = True
+
+    def refresh_image(self):
+        """刷新图片（仅用于更新大小）"""
+        self.clear()
         if not self._image_pixmap:
             self.load_pixmap()
         scaled_pixmap = self._image_pixmap.scaled(

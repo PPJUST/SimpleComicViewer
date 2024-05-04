@@ -5,6 +5,7 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel
 
 from module import function_comic, function_image
+from constant import _MARGIN
 
 
 class LabelImageList(QLabel):
@@ -21,7 +22,7 @@ class LabelImageList(QLabel):
         self._max_size = None  # label的最大大小（父控件的大小）
 
         if parent:
-            self._max_size = QSize(parent.width() - 15, parent.height() - 15)
+            self._max_size = QSize(parent.width() - _MARGIN, parent.height() - _MARGIN)
             self.setFixedSize(self._max_size)
 
     def reset_comic(self, comic_path: str, comic_filetype: str):
@@ -41,7 +42,7 @@ class LabelImageList(QLabel):
     def reset_max_size(self, parent):
         """重设大小参数
         :param parent: 父控件"""
-        self._max_size = QSize(parent.width() - 15, parent.height() - 15)
+        self._max_size = QSize(parent.width() - _MARGIN, parent.height() - _MARGIN)
         self._get_image_size()
         self._change_size()
 

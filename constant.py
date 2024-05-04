@@ -1,5 +1,6 @@
 # 常量
 import os
+import sys
 
 # 程序所在路径
 _PROGRAM_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/'  # 源码运行使用
@@ -30,3 +31,6 @@ _ICON_OPTION = _PROGRAM_FOLDER + 'icon/option.png'
 _ICON_PLAY = _PROGRAM_FOLDER + 'icon/play.png'
 _ICON_STOP = _PROGRAM_FOLDER + 'icon/stop.png'
 _ICON_ZOOM_IN = _PROGRAM_FOLDER + 'icon/zoom_in.png'
+
+# 其他常量
+_MARGIN = 16  # 与边框的边距，用于预留滚动条的距离

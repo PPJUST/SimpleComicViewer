@@ -70,6 +70,15 @@ class ScrollAreaComicPreview(QScrollArea):
             else:
                 label.show_image()
 
+    def refresh_images(self):
+        """刷新预览图像（仅用于更新大小）"""
+        for index in range(self.layout.count()):
+            label = self.layout.itemAt(index).widget()
+            if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
+                label.hide_image()
+            else:
+                label.refresh_image()
+
     def next_page(self):
         """显示下一页图像"""
         current_index = self._calc_current_index()
@@ -90,10 +99,19 @@ class ScrollAreaComicPreview(QScrollArea):
 
     def reset_preview_size(self):
         """重设预览控件大小"""
+        # 重置滚动条值与索引号的对应列表
+        self._scroll_to_index_list.clear()
+        # 修改子控件大小并更新索引列表
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
             label.reset_max_size(self)
-            label.show_image()
+            # 更新索引列表
+            if self._scroll_type == 'h':
+                self._update_index_list(label.width())
+            elif self._scroll_type == 'v':
+                self._update_index_list(label.height())
+        # 刷新显示
+        self.refresh_images()
 
     def is_scroll_end(self):
         """是否已经滚动到底部"""
