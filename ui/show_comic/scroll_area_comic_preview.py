@@ -6,10 +6,11 @@ from PySide6.QtWidgets import *
 
 from module import function_config
 from module.class_comic_info import ComicInfo
+from ui.scroll_area_smooth import ScrollAreaSmooth
 from ui.show_comic.label_image_scroll import LabelImage
 
 
-class ScrollAreaComicPreview(QScrollArea):
+class ScrollAreaComicPreview(ScrollAreaSmooth):
     """预览控件，滚动显示漫画图像"""
     signal_scrolled = Signal()
 
