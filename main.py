@@ -2,8 +2,9 @@ import sys
 
 from PySide6.QtGui import *
 
+from module.function_config_get import GetSetting
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_MAIN
-from module import function_config
+from module import function_config_normal
 from ui.dialog_option import DialogOption
 from ui.ui_src.ui_main import Ui_MainWindow
 from ui.widget_below_control import WidgetBelowControl
@@ -105,7 +106,7 @@ class SCV(QMainWindow):
 
     def change_preview_mode(self):
         """切换浏览模式"""
-        view_mode = function_config.GetSetting.current_view_mode_eng()
+        view_mode = GetSetting.current_view_mode_eng()
         self.preview_control_widget.stop_auto_play()
         self.preview_control_widget.load_child_preview_widget(view_mode)
         self.preview_control_widget.load_comic()

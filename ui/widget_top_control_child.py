@@ -8,7 +8,9 @@ from constant import (_ICON_DOUBLE_PAGE, _ICON_DOUBLE_PAGE_RED,
                       _ICON_SCROLL_HORIZONTAL, _ICON_SCROLL_HORIZONTAL_RED,
                       _ICON_SCROLL_VERTICAL, _ICON_SCROLL_VERTICAL_RED,
                       _ICON_SINGLE_PAGE, _ICON_SINGLE_PAGE_RED)
-from module import function_config, function_normal
+from module import function_normal
+from module.function_config_get import GetSetting
+from module.function_config_reset import ResetSetting
 from ui.thread_wait_time import ThreadWaitTime
 from ui.ui_src.ui_widget_top_control_child import Ui_Form
 
@@ -50,7 +52,7 @@ class WidgetTopControlChild(QWidget):
 
     def _load_setting(self):
         """加载设置"""
-        self._mode_preview = function_config.GetSetting.current_view_mode_eng()
+        self._mode_preview = GetSetting.current_view_mode_eng()
         self._change_preview_mode()
 
     def _click_preview_button(self, mode: str):
@@ -78,7 +80,7 @@ class WidgetTopControlChild(QWidget):
             self.ui.toolButton_preview_h.setIcon(
                 QIcon(_ICON_SCROLL_HORIZONTAL_RED))
         # 修改设置
-        function_config.ResetSetting.current_view_mode(self._mode_preview)
+        ResetSetting.current_view_mode(self._mode_preview)
         # 发送信号
         self.signal_preview_mode_changed.emit()
 

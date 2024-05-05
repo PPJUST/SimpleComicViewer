@@ -3,8 +3,9 @@
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 
-from module import function_config, function_normal
+from module import function_normal
 from module.class_comic_info import ComicInfo
+from module.function_config_get import GetSetting
 from ui.label_hover_info import LabelHover
 from ui.show_comic.scroll_area_comic_preview import ScrollAreaComicPreview
 from ui.show_comic.widget_comic_preview_double import WidgetComicPreviewDouble
@@ -42,7 +43,7 @@ class WidgetPreviewControl(QWidget):
     def load_child_preview_widget(self, view_mode=None):
         """加载设置"""
         if not view_mode:
-            view_mode = function_config.GetSetting.current_view_mode_eng()
+            view_mode = GetSetting.current_view_mode_eng()
         self.set_auto_play_type(view_mode)
         if view_mode == 'mode_1':
             self._load_preview_widget_single()

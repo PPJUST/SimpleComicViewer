@@ -3,7 +3,7 @@ import time
 
 from PySide6.QtCore import QThread, Signal
 
-from module import function_config
+from module.function_config_get import GetSetting
 
 
 class ThreadWaitTime(QThread):
@@ -21,7 +21,7 @@ class ThreadWaitTime(QThread):
 
     def load_setting(self):
         """加载设置"""
-        self._WAIT_TIME = function_config.GetSetting.hide_wait_time()
+        self._WAIT_TIME = GetSetting.hide_wait_time()
 
     def run(self):
         self.signal_start.emit()

@@ -4,8 +4,8 @@
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 
-from module import function_config
 from module.class_comic_info import ComicInfo
+from module.function_config_get import GetSetting
 from ui.scroll_area_smooth import ScrollAreaSmooth
 from ui.show_comic.label_image_scroll import LabelImage
 
@@ -52,7 +52,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def load_setting(self):
         """加载设置"""
-        self._PRELOAD_PAGES = function_config.GetSetting.preload_pages()
+        self._PRELOAD_PAGES = GetSetting.preload_pages()
 
     def load_comic(self, comic_info: ComicInfo):
         """加载漫画数据"""
