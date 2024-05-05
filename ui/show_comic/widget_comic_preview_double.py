@@ -7,17 +7,24 @@ from module.class_comic_info import ComicInfo
 from ui.show_comic.label_image_page import LabelImageList
 
 
-class WidgetComicPreviewDouble(QWidget):
+class WidgetComicPreviewDouble(QScrollArea):
     """预览控件，双页显示漫画图像"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         # ui设置
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.sizeAdjustPolicy()
+        self.setWidgetResizable(True)
         self.resize(parent.size())
+
+        self.widget = QWidget(None)
         self.layout = QHBoxLayout()
+        self.widget.setLayout(self.layout)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
-        self.setLayout(self.layout)
+        self.setWidget(self.widget)
+
         # 左页
         self.label_left = LabelImageList(self)
         self.layout.addWidget(self.label_left)

@@ -47,7 +47,6 @@ class WidgetBelowControlChild(QWidget):
         self.ui.toolButton_play.clicked.connect(self._change_auto_play_state)
 
         # 临时禁用按钮，暂时未做该功能 备忘录
-        self.ui.toolButton_option.setEnabled(False)
         self.ui.toolButton_list.setEnabled(False)
 
     def set_wait_thread(self, thread: ThreadWaitTime):
