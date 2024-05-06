@@ -26,6 +26,14 @@ class ScrollAreaSmooth(QScrollArea):
         scrollbar = self.scrollbar_h if direction == Qt.Horizontal else self.scrollbar_v
         scrollbar.animal.setDuration(duration)
 
+    def set_animal_type_linear(self):
+        self.scrollbar_h.set_animal_type_linear()
+        self.scrollbar_v.set_animal_type_linear()
+
+    def set_animal_type_outquad(self):
+        self.scrollbar_h.set_animal_type_outquad()
+        self.scrollbar_v.set_animal_type_outquad()
+
     def wheelEvent(self, e):
         if e.modifiers() == Qt.NoModifier:
             self.scrollbar_v.scroll_value(-e.angleDelta().y())
