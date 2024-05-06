@@ -1,13 +1,14 @@
 import sys
 
-from PySide6.QtGui import QAction, QResizeEvent, QKeySequence, QPalette, QColor, QIcon
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QAction, QResizeEvent, QKeySequence, QPalette, QColor, QIcon
 
-from module.function_config_get import GetSetting
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_MAIN
 from module import function_config_normal
+from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
 from ui.dialog_option import DialogOption
+from ui.label_hover_other_info import LabelHoverOtherInfo
 from ui.ui_src.ui_main import Ui_MainWindow
 from ui.widget_below_control import WidgetBelowControl
 from ui.widget_hidden_button import *
@@ -75,6 +76,11 @@ class SCV(QMainWindow):
         self.widget_preview_control = WidgetPreviewControl(self)
         self.ui.horizontalLayout.addWidget(self.widget_preview_control)
         self.widget_preview_control.signal_stop_auto_play.connect(self.change_icon_stop_auto_play)
+        self.widget_preview_control.signal_show_info.connect(self.show_info)
+
+        # 设置左下角的其他信息悬浮label
+        self.label_hover_other_info = LabelHoverOtherInfo(self)
+        self.label_hover_other_info.raise_()  # 使该label显示在widget之上
 
         # 如果启动时带参数，则直接预览
         if self._current_comic:
@@ -213,9 +219,12 @@ class SCV(QMainWindow):
         """更新预览控件的大小"""
         self.widget_preview_control.reset_preview_size()
 
+    def show_info(self, text: str):
+        self.label_hover_other_info.show_information(text)
+
     def resizeEvent(self, event: QResizeEvent) -> None:
+        """重设悬浮组件的位置"""
         super().resizeEvent(event)
-        # 设置悬浮组件的位置
         # 左边的切页按钮，x轴离边框20，y轴居中
         self.button_left.reset_xy(20, self.height() // 2 - self.button_left.height() // 2)
         # 右边的切页按钮，x轴离边框20，y轴居中
@@ -226,6 +235,8 @@ class SCV(QMainWindow):
                                            self.height() - self.widget_below_control.height() - 40)
         # 左上的控制条组件，x轴离边框20，y轴离边框20
         self.widget_top_control.reset_xy(20, 20)
+        # 左下角的信息组件
+        self.label_hover_other_info.reset_xy(1, self.height() - 20)
 
         # 启动延迟缩放计时器
         self.timer_resize.start(500)  # 延迟500毫秒

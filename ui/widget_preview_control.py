@@ -16,6 +16,7 @@ from ui.thread_auto_play import ThreadAutoPlay
 class WidgetPreviewControl(QWidget):
     """漫画预览控件控制中心"""
     signal_stop_auto_play = Signal()
+    signal_show_info = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,11 +29,12 @@ class WidgetPreviewControl(QWidget):
         # 设置自动播放线程
         self.thread_auto_play = ThreadAutoPlay()
         self.thread_auto_play.signal_next.connect(self.auto_play)
+        self.thread_auto_play.signal_speed_info.connect(self.signal_show_info.emit)
 
-        # 设置悬浮label
-        self.hover_label = LabelHoverComicInfo(self)
-        self.installEventFilter(self.hover_label)
-        self.hover_label.raise_()  # 使该label显示在widget之上
+        # 设置左上角的漫画信息悬浮label
+        self.label_hover_comic_info = LabelHoverComicInfo(self)
+        self.installEventFilter(self.label_hover_comic_info)
+        self.label_hover_comic_info.raise_()  # 使该label显示在widget之上
 
         # 初始化
         self.child_preview_widget = None  # 预览子控件
@@ -62,8 +64,8 @@ class WidgetPreviewControl(QWidget):
 
         if self.comic_info:
             self.child_preview_widget.load_comic(self.comic_info)
-            self.hover_label.update_info_by_comic(self.comic_info)
-            self.hover_label.raise_()
+            self.label_hover_comic_info.update_info_by_comic(self.comic_info)
+            self.label_hover_comic_info.raise_()
 
     def to_previous_page(self):
         """切换下一页"""
@@ -103,7 +105,6 @@ class WidgetPreviewControl(QWidget):
     def set_auto_play_type(self, view_mode):
         """设置自动播放类型"""
         self.thread_auto_play.set_preview_type(view_mode)
-
 
     def autoplay_speed_up(self):
         """自动播放加速"""
@@ -159,5 +160,5 @@ class WidgetPreviewControl(QWidget):
 
     def _update_label_info(self):
         """更新悬浮信息框的内容"""
-        self.hover_label.update_current_page(self.child_preview_widget.index)
-        self.hover_label.raise_()
+        self.label_hover_comic_info.update_current_page(self.child_preview_widget.index)
+        self.label_hover_comic_info.raise_()

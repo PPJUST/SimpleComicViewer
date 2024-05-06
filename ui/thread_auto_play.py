@@ -10,6 +10,7 @@ class ThreadAutoPlay(QThread):
     """发送自动播放信号的子线程"""
     signal_next = Signal(int)
     signal_stop = Signal()
+    signal_speed_info = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -63,8 +64,22 @@ class ThreadAutoPlay(QThread):
         else:
             self._active_interval = self._INTERVAL_SCROLL
 
+
+    def _reset_active_interval(self):
+        """更新启用的刷新时间"""
+        if self._PREVIEW_TYPE  == 'mode_1':
+            self._active_interval = self._INTERVAL_SINGLE_PAGE
+        elif self._PREVIEW_TYPE  == 'mode_2':
+            self._active_interval = self._INTERVAL_DOUBLE_PAGE
+        else:
+            self._active_interval = self._INTERVAL_SCROLL
+
+        self._emit_speed_info()
+
+
     def speed_up(self):
         """加速"""
+        print('加速')
         self._INTERVAL_SCROLL -= self._SPEED_RATE_SCROLL
         if self._INTERVAL_SCROLL < self._INTERVAL_SCROLL_MIN:
             self._INTERVAL_SCROLL = self._INTERVAL_SCROLL_MIN
@@ -76,19 +91,25 @@ class ThreadAutoPlay(QThread):
         self._INTERVAL_DOUBLE_PAGE -= self._SPEED_RATE_DOUBLE_PAGE
         if self._INTERVAL_DOUBLE_PAGE < self._INTERVAL_DOUBLE_PAGE_MIN:
             self._INTERVAL_DOUBLE_PAGE = self._INTERVAL_DOUBLE_PAGE_MIN
-        self.set_preview_type(self._PREVIEW_TYPE)
+        self._reset_active_interval()
 
     def speed_down(self):
         """减速"""
         self._INTERVAL_SCROLL += self._SPEED_RATE_SCROLL
         self._INTERVAL_SINGLE_PAGE += self._SPEED_RATE_SINGLE_PAGE
         self._INTERVAL_DOUBLE_PAGE += self._SPEED_RATE_DOUBLE_PAGE
-        self.set_preview_type(self._PREVIEW_TYPE)
+        self._reset_active_interval()
 
     def reset_speed(self):
         """重置速度"""
         self._load_setting()
-        self.set_preview_type(self._PREVIEW_TYPE)
+        self._reset_active_interval()
 
     def stop_play(self):
         self._is_stop = True
+
+    def _emit_speed_info(self):
+        """发送速度信息"""
+        text = f'当前滚动速度:{round(self._active_interval,1)}秒'
+        print(text)
+        self.signal_speed_info.emit(text)

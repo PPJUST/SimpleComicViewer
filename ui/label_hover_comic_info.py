@@ -14,7 +14,7 @@ class LabelHoverComicInfo(QLabel):
         super().__init__(parent)
         # ui设置
         self.setMouseTracking(True)
-        self.setGeometry(1, 1, 200, 100)
+        self.setGeometry(10, 10, 200, 100)
         self.setStyleSheet("color: red;")
         self.setWordWrap(True)
         self.hide()
