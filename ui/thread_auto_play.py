@@ -13,6 +13,7 @@ class ThreadAutoPlay(QThread):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._PREVIEW_TYPE = None  # 预览类型
         self._is_stop = False  # 是否停止
         self._active_interval = None  # 当前的刷新间隔时间类型
         self._INTERVAL_SCROLL = None  # 滚动视图的刷新间隔时间（秒）
@@ -53,6 +54,8 @@ class ThreadAutoPlay(QThread):
 
     def set_preview_type(self, preview_type):
         """根据视图选择对应的刷新时间"""
+        self._PREVIEW_TYPE = preview_type
+        self._load_setting()  # 重置速度变量
         if preview_type == 'mode_1':
             self._active_interval = self._INTERVAL_SINGLE_PAGE
         elif preview_type == 'mode_2':
@@ -73,16 +76,19 @@ class ThreadAutoPlay(QThread):
         self._INTERVAL_DOUBLE_PAGE -= self._SPEED_RATE_DOUBLE_PAGE
         if self._INTERVAL_DOUBLE_PAGE < self._INTERVAL_DOUBLE_PAGE_MIN:
             self._INTERVAL_DOUBLE_PAGE = self._INTERVAL_DOUBLE_PAGE_MIN
+        self.set_preview_type(self._PREVIEW_TYPE)
 
     def speed_down(self):
         """减速"""
         self._INTERVAL_SCROLL += self._SPEED_RATE_SCROLL
         self._INTERVAL_SINGLE_PAGE += self._SPEED_RATE_SINGLE_PAGE
         self._INTERVAL_DOUBLE_PAGE += self._SPEED_RATE_DOUBLE_PAGE
+        self.set_preview_type(self._PREVIEW_TYPE)
 
     def reset_speed(self):
         """重置速度"""
         self._load_setting()
+        self.set_preview_type(self._PREVIEW_TYPE)
 
     def stop_play(self):
         self._is_stop = True

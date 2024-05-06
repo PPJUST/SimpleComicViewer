@@ -170,7 +170,6 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def _slider_scrolled(self):
         """响应滚动条移动事件"""
-        self.is_scroll_end()
         current_index = self._calc_current_index()
         if self.index != current_index:
             self.index = current_index

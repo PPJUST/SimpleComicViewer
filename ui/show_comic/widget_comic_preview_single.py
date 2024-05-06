@@ -1,5 +1,5 @@
 # 预览控件，单页显示漫画图像
-
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import *
 
 from module.class_comic_info import ComicInfo
@@ -9,6 +9,7 @@ from ui.show_comic.label_image_page import LabelImageList
 
 class WidgetComicPreviewSingle(QScrollArea):
     """预览控件，单页显示漫画图像"""
+    signal_page_changed = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -61,6 +62,7 @@ class WidgetComicPreviewSingle(QScrollArea):
             return
         self.index += 1
         self.show_images()
+        self.signal_page_changed.emit()
 
     def previous_page(self):
         """显示上一页图像"""
@@ -68,8 +70,19 @@ class WidgetComicPreviewSingle(QScrollArea):
             return
         self.index -= 1
         self.show_images()
+        self.signal_page_changed.emit()
 
     def reset_preview_size(self):
         """重设预览控件大小"""
         self.preview_label.reset_max_size(self)
         self.preview_label.show_image()
+
+    def wheelEvent(self, event):
+        """设置鼠标滚轮切页"""
+        # 获取鼠标滚轮滚动的角度
+        angle = event.angleDelta().y()
+        # 根据角度的正负区分滚轮向上向下操作
+        if angle > 0:  # 向上
+            self.previous_page()
+        else:  # 向下
+            self.next_page()

@@ -1,10 +1,12 @@
 import sys
 
-from PySide6.QtGui import *
+from PySide6.QtGui import QAction, QResizeEvent, QKeySequence, QPalette, QColor, QIcon
+from PySide6.QtCore import Qt
 
 from module.function_config_get import GetSetting
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_MAIN
 from module import function_config_normal
+from module.function_config_reset import ResetSetting
 from ui.dialog_option import DialogOption
 from ui.ui_src.ui_main import Ui_MainWindow
 from ui.widget_below_control import WidgetBelowControl
@@ -32,7 +34,7 @@ class SCV(QMainWindow):
         self.timer_resize.setSingleShot(True)  # 设置单次触发
         self.timer_resize.timeout.connect(self.update_preview_size)
 
-        # 延时线程
+        # 延时线程，用于延迟隐藏按钮
         self.thread_wait_time = ThreadWaitTime()
 
         # 左边的切页按钮
@@ -65,26 +67,102 @@ class SCV(QMainWindow):
 
         # 左上的控制条组件
         self.widget_top_control = WidgetTopControl(self)
-        self.widget_top_control.signal_preview_mode_changed.connect(self.change_preview_mode)
+        self.widget_top_control.signal_preview_mode_changed.connect(self.reload_preview_widget)
         self.widget_top_control.set_wait_thread(self.thread_wait_time)
         self.widget_top_control.reset_xy(20, 20)
 
         # 预览控件
-        self.preview_control_widget = WidgetPreviewControl(self)
-        self.ui.horizontalLayout.addWidget(self.preview_control_widget)
-        self.preview_control_widget.signal_stop_auto_play.connect(self.change_icon_stop_auto_play)
+        self.widget_preview_control = WidgetPreviewControl(self)
+        self.ui.horizontalLayout.addWidget(self.widget_preview_control)
+        self.widget_preview_control.signal_stop_auto_play.connect(self.change_icon_stop_auto_play)
 
         # 如果启动时带参数，则直接预览
         if self._current_comic:
-            self.preview_control_widget.load_comic(self._current_comic)  # 备忘录，先只做单个路径
+            self.widget_preview_control.load_comic(self._current_comic)  # 备忘录，先只做单个路径
+
+        self.bind_hotkey()
+
+    def bind_hotkey(self):
+        """绑定快捷键"""
+        # 上一页
+        action_pre_1 = QAction('PageUp', self)
+        action_pre_1.setShortcut(QKeySequence(Qt.Key_PageUp))
+        action_pre_1.triggered.connect(self.to_previous_page)
+        self.addAction(action_pre_1)
+        action_pre_2 = QAction('左箭头', self)
+        action_pre_2.setShortcut(QKeySequence(Qt.Key_Left))
+        action_pre_2.triggered.connect(self.to_previous_page)
+        self.addAction(action_pre_2)
+        action_pre_3 = QAction('上箭头', self)
+        action_pre_3.setShortcut(QKeySequence(Qt.Key_Up))
+        action_pre_3.triggered.connect(self.to_previous_page)
+        self.addAction(action_pre_3)
+
+        # 下一页
+        action_next_1 = QAction('PageDown', self)
+        action_next_1.setShortcut(QKeySequence(Qt.Key_PageDown))
+        action_next_1.triggered.connect(self.to_next_page)
+        self.addAction(action_next_1)
+        action_next_2 = QAction('右箭头', self)
+        action_next_2.setShortcut(QKeySequence(Qt.Key_Right))
+        action_next_2.triggered.connect(self.to_next_page)
+        self.addAction(action_next_2)
+        action_next_3 = QAction('下箭头', self)
+        action_next_3.setShortcut(QKeySequence(Qt.Key_Down))
+        action_next_3.triggered.connect(self.to_next_page)
+        self.addAction(action_next_3)
+
+        # 自动翻页
+        action_autoplay_1 = QAction('Z', self)
+        action_autoplay_1.setShortcut(QKeySequence(Qt.Key_Z))
+        action_autoplay_1.triggered.connect(self.change_autoplay_speed_down)
+        self.addAction(action_autoplay_1)
+        action_autoplay_2 = QAction('X', self)
+        action_autoplay_2.setShortcut(QKeySequence(Qt.Key_X))
+        action_autoplay_2.triggered.connect(self.change_autoplay_speed_reset)
+        self.addAction(action_autoplay_2)
+        action_autoplay_3 = QAction('C', self)
+        action_autoplay_3.setShortcut(QKeySequence(Qt.Key_C))
+        action_autoplay_3.triggered.connect(self.change_autoplay_speed_up)
+        self.addAction(action_autoplay_3)
+
+        # 模式切换
+        action_view_1 = QAction('ctrl+1', self)
+        action_view_1.setShortcut(QKeySequence.fromString('ctrl+1'))
+        action_view_1.triggered.connect(lambda: self.change_preview_mode('mode_1'))
+        self.addAction(action_view_1)
+        action_view_2 = QAction('ctrl+2', self)
+        action_view_2.setShortcut(QKeySequence.fromString('ctrl+2'))
+        action_view_2.triggered.connect(lambda: self.change_preview_mode('mode_2'))
+        self.addAction(action_view_2)
+        action_view_3 = QAction('ctrl+3', self)
+        action_view_3.setShortcut(QKeySequence.fromString('ctrl+3'))
+        action_view_3.triggered.connect(lambda: self.change_preview_mode('mode_3'))
+        self.addAction(action_view_3)
+        action_view_4 = QAction('ctrl+4', self)
+        action_view_4.setShortcut(QKeySequence.fromString('ctrl+4'))
+        action_view_4.triggered.connect(lambda: self.change_preview_mode('mode_4'))
+        self.addAction(action_view_4)
+
+    def change_autoplay_speed_up(self):
+        """自动播放加速"""
+        self.widget_preview_control.autoplay_speed_up()
+
+    def change_autoplay_speed_down(self):
+        """自动播放加减速"""
+        self.widget_preview_control.autoplay_speed_down()
+
+    def change_autoplay_speed_reset(self):
+        """重置自动播放速度"""
+        self.widget_preview_control.autoplay_speed_reset()
 
     def to_previous_page(self):
         """切换上一页"""
-        self.preview_control_widget.to_previous_page()
+        self.widget_preview_control.to_previous_page()
 
     def to_next_page(self):
         """切换下一页"""
-        self.preview_control_widget.to_next_page()
+        self.widget_preview_control.to_next_page()
 
     def open_comic_list(self):
         """打开漫画列表"""
@@ -104,31 +182,36 @@ class SCV(QMainWindow):
         option_dialog.signal_option_changed.connect(self.option_changed)
         option_dialog.exec()
 
-    def change_preview_mode(self):
+    def change_preview_mode(self, view_mode: str):
         """切换浏览模式"""
+        ResetSetting.current_view_mode(view_mode)
+        self.reload_preview_widget()
+
+    def reload_preview_widget(self):
+        """切换浏览模式后重新加载预览控件"""
         view_mode = GetSetting.current_view_mode_eng()
-        self.preview_control_widget.stop_auto_play()
-        self.preview_control_widget.load_child_preview_widget(view_mode)
-        self.preview_control_widget.load_comic()
-        self.preview_control_widget.set_auto_play_type(view_mode)
+        self.widget_preview_control.stop_auto_play()
+        self.widget_preview_control.load_child_preview_widget(view_mode)
+        self.widget_preview_control.load_comic()
+        self.widget_preview_control.set_auto_play_type(view_mode)
 
     def auto_play(self, is_start: bool):
         """自动播放状态"""
         if is_start:
-            self.preview_control_widget.start_auto_play()
+            self.widget_preview_control.start_auto_play()
         else:
-            self.preview_control_widget.stop_auto_play()
+            self.widget_preview_control.stop_auto_play()
 
     def option_changed(self):
         """修改了设置选项，重新加载预览视图"""
-        self.change_preview_mode()
+        self.reload_preview_widget()
 
     def change_icon_stop_auto_play(self):
         self.widget_below_control.reset_auto_play_state()
 
     def update_preview_size(self):
         """更新预览控件的大小"""
-        self.preview_control_widget.reset_preview_size()
+        self.widget_preview_control.reset_preview_size()
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
@@ -159,11 +242,11 @@ class SCV(QMainWindow):
             urls = event.mimeData().urls()
             drop_paths = [url.toLocalFile() for url in urls]
             self._current_comic = drop_paths[0]  # 备忘录，先只做单个路径
-            self.preview_control_widget.load_comic(self._current_comic)
+            self.widget_preview_control.load_comic(self._current_comic)
 
 
 def main(arg):
-    function_config.create_default_config()
+    function_config_normal.create_default_config()
 
     app = QApplication()
     app.setStyle('Fusion')

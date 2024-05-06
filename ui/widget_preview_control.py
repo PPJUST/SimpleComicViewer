@@ -6,7 +6,7 @@ from PySide6.QtWidgets import *
 from module import function_normal
 from module.class_comic_info import ComicInfo
 from module.function_config_get import GetSetting
-from ui.label_hover_info import LabelHover
+from ui.label_hover_comic_info import LabelHoverComicInfo
 from ui.show_comic.scroll_area_comic_preview import ScrollAreaComicPreview
 from ui.show_comic.widget_comic_preview_double import WidgetComicPreviewDouble
 from ui.show_comic.widget_comic_preview_single import WidgetComicPreviewSingle
@@ -30,7 +30,7 @@ class WidgetPreviewControl(QWidget):
         self.thread_auto_play.signal_next.connect(self.auto_play)
 
         # 设置悬浮label
-        self.hover_label = LabelHover(self)
+        self.hover_label = LabelHoverComicInfo(self)
         self.installEventFilter(self.hover_label)
         self.hover_label.raise_()  # 使该label显示在widget之上
 
@@ -68,17 +68,14 @@ class WidgetPreviewControl(QWidget):
     def to_previous_page(self):
         """切换下一页"""
         self.child_preview_widget.previous_page()
-        self._update_label_info()
 
     def to_next_page(self):
         """切换下一页"""
         self.child_preview_widget.next_page()
-        self._update_label_info()
 
     def move_scroll_slider(self, value: int):
         """滚动条移动指定距离"""
         self.child_preview_widget.move_slider_relative(value)
-        self._update_label_info()
 
     def auto_play(self, value=None):
         """自动播放"""
@@ -107,6 +104,19 @@ class WidgetPreviewControl(QWidget):
         """设置自动播放类型"""
         self.thread_auto_play.set_preview_type(view_mode)
 
+
+    def autoplay_speed_up(self):
+        """自动播放加速"""
+        self.thread_auto_play.speed_up()
+
+    def autoplay_speed_down(self):
+        """自动播放减速"""
+        self.thread_auto_play.speed_down()
+
+    def autoplay_speed_reset(self):
+        """重置自动播放速度"""
+        self.thread_auto_play.reset_speed()
+
     def reset_preview_size(self):
         """重设预览控件大小"""
         self.child_preview_widget.reset_preview_size()
@@ -116,6 +126,8 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = WidgetComicPreviewSingle(self)
+        self.child_preview_widget.signal_page_changed.connect(
+            self._update_label_info)
         self.layout.addWidget(self.child_preview_widget)
 
     def _load_preview_widget_double(self):
@@ -123,6 +135,8 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = WidgetComicPreviewDouble(self)
+        self.child_preview_widget.signal_page_changed.connect(
+            self._update_label_info)
         self.layout.addWidget(self.child_preview_widget)
 
     def _load_preview_widget_scroll(self, scroll_type: str):

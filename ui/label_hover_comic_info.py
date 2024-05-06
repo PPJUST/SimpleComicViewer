@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QLabel
 from module.class_comic_info import ComicInfo
 
 
-class LabelHover(QLabel):
+class LabelHoverComicInfo(QLabel):
     """自动隐藏的悬浮在其他控件左上角的文字信息label，用于显示漫画信息
     隐藏事件用法说明：
     hover_label = LabelHover(widget)
