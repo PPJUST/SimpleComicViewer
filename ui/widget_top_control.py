@@ -30,6 +30,9 @@ class WidgetTopControl(QWidget):
         self.widget.signal_preview_mode_changed.connect(
             self.signal_preview_mode_changed.emit)
 
+    def update_icon(self, preview_mode):
+        self.widget.update_icon(preview_mode)
+
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""
         self.setGeometry(x, y, self._size.width(), self._size.height())

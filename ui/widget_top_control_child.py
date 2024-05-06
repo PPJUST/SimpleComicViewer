@@ -30,9 +30,9 @@ class WidgetTopControlChild(QWidget):
         self._reset_button_size()
 
         # 初始化
-        self._load_setting()
         self._mode_preview = None
         self.thread_wait = None
+        self._load_setting()
 
         # 点击按钮后发送信号
         self.ui.toolButton_preview_single.clicked.connect(
@@ -66,23 +66,28 @@ class WidgetTopControlChild(QWidget):
         """改变预览模式"""
         function_normal.print_function_info()
         # 修改图标
-        self._reset_icon_preview_button()
-        if self._mode_preview == 'mode_1':
-            self.ui.toolButton_preview_single.setIcon(
-                QIcon(_ICON_SINGLE_PAGE_RED))
-        elif self._mode_preview == 'mode_2':
-            self.ui.toolButton_preview_double.setIcon(
-                QIcon(_ICON_DOUBLE_PAGE_RED))
-        elif self._mode_preview == 'mode_3':
-            self.ui.toolButton_preview_v.setIcon(
-                QIcon(_ICON_SCROLL_VERTICAL_RED))
-        elif self._mode_preview == 'mode_4':
-            self.ui.toolButton_preview_h.setIcon(
-                QIcon(_ICON_SCROLL_HORIZONTAL_RED))
+        self.update_icon()
         # 修改设置
         ResetSetting.current_view_mode(self._mode_preview)
         # 发送信号
         self.signal_preview_mode_changed.emit()
+
+    def update_icon(self, preview_mode=None):
+        self._reset_icon_preview_button()
+        if not preview_mode:
+            preview_mode = self._mode_preview
+        if preview_mode == 'mode_1':
+            self.ui.toolButton_preview_single.setIcon(
+                QIcon(_ICON_SINGLE_PAGE_RED))
+        elif preview_mode == 'mode_2':
+            self.ui.toolButton_preview_double.setIcon(
+                QIcon(_ICON_DOUBLE_PAGE_RED))
+        elif preview_mode == 'mode_3':
+            self.ui.toolButton_preview_v.setIcon(
+                QIcon(_ICON_SCROLL_VERTICAL_RED))
+        elif preview_mode == 'mode_4':
+            self.ui.toolButton_preview_h.setIcon(
+                QIcon(_ICON_SCROLL_HORIZONTAL_RED))
 
     def _reset_icon_preview_button(self):
         """设置按钮图标"""

@@ -192,6 +192,7 @@ class SCV(QMainWindow):
         """切换浏览模式"""
         ResetSetting.current_view_mode(view_mode)
         self.reload_preview_widget()
+        self.widget_top_control.update_icon(view_mode)
 
     def reload_preview_widget(self):
         """切换浏览模式后重新加载预览控件"""
@@ -266,6 +267,7 @@ def main(arg):
     palette.setColor(QPalette.Window, QColor(255, 255, 255))
     app.setPalette(palette)
     show_ui = SCV(arg)
+    show_ui.resize(600, 840)
     show_ui.show()
     show_ui.setWindowIcon(QIcon(_ICON_MAIN))
 
