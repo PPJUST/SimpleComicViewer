@@ -76,6 +76,12 @@ class ResetSetting:
         """修改自动播放选项"""
         _reset_setting('auto_play', 'scroll_distance', value)
 
+    @staticmethod
+    def app_size(width, height):
+        """修改程序界面大小选项"""
+        _reset_setting('other', 'app_width', width)
+        _reset_setting('other', 'app_height', height)
+
 
 def _reset_setting(section: str, option: str, value):
     """重设配置文件中的选项"""

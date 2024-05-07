@@ -4,6 +4,7 @@
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 
+from module import function_normal
 from module.class_comic_info import ComicInfo
 from module.function_config_get import GetSetting
 from ui.scroll_area_smooth import ScrollAreaSmooth
@@ -56,6 +57,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def load_comic(self, comic_info: ComicInfo):
         """加载漫画数据"""
+        function_normal.print_function_info()
         self._comic_info = comic_info
         self.index = 1
         self._MAX_INDEX = self._comic_info.page_count
@@ -64,6 +66,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def show_images(self):
         """显示预览图像"""
+        function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
             if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
@@ -73,6 +76,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def refresh_images(self):
         """刷新预览图像（仅用于更新大小）"""
+        function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
             if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
@@ -82,6 +86,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def next_page(self):
         """显示下一页图像"""
+        function_normal.print_function_info()
         current_index = self._calc_current_index()
         next_index = current_index + 1
         if next_index > len(self._scroll_to_index_list):
@@ -91,6 +96,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def previous_page(self):
         """显示上一页图像"""
+        function_normal.print_function_info()
         current_index = self._calc_current_index()
         next_index = current_index - 1
         if next_index < 1:
@@ -100,6 +106,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def reset_preview_size(self):
         """重设预览控件大小"""
+        function_normal.print_function_info()
         # 重置滚动条值与索引号的对应列表
         self._scroll_to_index_list.clear()
         # 修改子控件大小并更新索引列表
@@ -129,6 +136,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
     def move_slider_relative(self, value: int):
         """移动滚动条（相对位置）"""
+        function_normal.print_function_info()
         new_value = self._get_slider_value() + value
         self._move_slider_absolute(new_value)
 

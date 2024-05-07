@@ -3,6 +3,7 @@ import time
 
 from PySide6.QtCore import QThread, Signal
 
+from module import function_normal
 from module.function_config_get import GetSetting
 
 
@@ -37,6 +38,7 @@ class ThreadWaitTime(QThread):
 
     def reset_end_time(self):
         """重置结束时间"""
+        function_normal.print_function_info()
         self._end_time = time.time() + self._WAIT_TIME
 
     def enable_loop(self):

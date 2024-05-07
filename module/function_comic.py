@@ -5,9 +5,12 @@ import zipfile
 import natsort
 import rarfile
 
+from module import function_normal
+
 
 def read_image_in_archive(archive, image_path):
     """读取压缩包中的图片对象"""
+    function_normal.print_function_info()
     try:
         archive_file = zipfile.ZipFile(archive)
     except zipfile.BadZipFile:
@@ -24,6 +27,7 @@ def read_image_in_archive(archive, image_path):
 
 def extract_archive_images(archive: str) -> list:
     """提取压缩包内图片路径"""
+    function_normal.print_function_info()
     try:
         archive_file = zipfile.ZipFile(archive)
     except zipfile.BadZipFile:
@@ -43,6 +47,7 @@ def extract_archive_images(archive: str) -> list:
 
 def extract_folder_images(folder) -> list:
     """提取文件夹内图片路径"""
+    function_normal.print_function_info()
     images = []
     for i in os.listdir(folder):
         filepath = os.path.normpath(os.path.join(folder, i))

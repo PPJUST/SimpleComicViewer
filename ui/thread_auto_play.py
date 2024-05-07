@@ -3,6 +3,7 @@ import time
 
 from PySide6.QtCore import QThread, Signal
 
+from module import function_normal
 from module.function_config_get import GetSetting
 
 
@@ -11,6 +12,7 @@ class ThreadAutoPlay(QThread):
     signal_next = Signal(int)
     signal_stop = Signal()
     signal_speed_info = Signal(str)
+    signal_scroll_speed_reset = Signal(float)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -55,6 +57,7 @@ class ThreadAutoPlay(QThread):
 
     def set_preview_type(self, preview_type):
         """根据视图选择对应的刷新时间"""
+        function_normal.print_function_info()
         self._PREVIEW_TYPE = preview_type
         self._load_setting()  # 重置速度变量
         if preview_type == 'mode_1':
@@ -66,17 +69,22 @@ class ThreadAutoPlay(QThread):
 
     def _reset_active_interval(self):
         """更新启用的刷新时间"""
+        function_normal.print_function_info()
         if self._PREVIEW_TYPE == 'mode_1':
             self._active_interval = self._INTERVAL_SINGLE_PAGE
         elif self._PREVIEW_TYPE == 'mode_2':
             self._active_interval = self._INTERVAL_DOUBLE_PAGE
         else:
             self._active_interval = self._INTERVAL_SCROLL
+            print('self._INTERVAL_SCROLL', self._INTERVAL_SCROLL)
+            self.signal_scroll_speed_reset.emit(round(self._INTERVAL_SCROLL, 2))
 
         self._emit_speed_info()
 
+
     def speed_up(self):
         """加速"""
+        function_normal.print_function_info()
         self._INTERVAL_SCROLL -= self._SPEED_RATE_SCROLL
         if self._INTERVAL_SCROLL < self._INTERVAL_SCROLL_MIN:
             self._INTERVAL_SCROLL = self._INTERVAL_SCROLL_MIN
@@ -92,6 +100,7 @@ class ThreadAutoPlay(QThread):
 
     def speed_down(self):
         """减速"""
+        function_normal.print_function_info()
         self._INTERVAL_SCROLL += self._SPEED_RATE_SCROLL
         self._INTERVAL_SINGLE_PAGE += self._SPEED_RATE_SINGLE_PAGE
         self._INTERVAL_DOUBLE_PAGE += self._SPEED_RATE_DOUBLE_PAGE
@@ -99,6 +108,7 @@ class ThreadAutoPlay(QThread):
 
     def reset_speed(self):
         """重置速度"""
+        function_normal.print_function_info()
         self._load_setting()
         self._reset_active_interval()
 
@@ -107,5 +117,5 @@ class ThreadAutoPlay(QThread):
 
     def _emit_speed_info(self):
         """发送速度信息"""
-        text = f'当前滚动速度:{round(self._active_interval, 1)}秒'
+        text = f'当前滚动速度:{round(self._active_interval, 2)}秒'
         self.signal_speed_info.emit(text)

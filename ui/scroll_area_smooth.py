@@ -34,6 +34,14 @@ class ScrollAreaSmooth(QScrollArea):
         self.scrollbar_h.set_animal_type_outquad()
         self.scrollbar_v.set_animal_type_outquad()
 
+    def set_animal_duration(self, duration: float):
+        self.scrollbar_h.set_animal_duration(duration)
+        self.scrollbar_v.set_animal_duration(duration)
+
+    def reset_animal_duration(self):
+        self.scrollbar_h.reset_animal_duration()
+        self.scrollbar_v.reset_animal_duration()
+
     def wheelEvent(self, e):
         if e.modifiers() == Qt.NoModifier:
             self.scrollbar_v.scroll_value(-e.angleDelta().y())
@@ -62,6 +70,15 @@ class ScrollBarSmooth(QScrollBar):
     def set_animal_type_outquad(self):
         """设置动画为二次缓出"""
         self.animal.setEasingCurve(QEasingCurve.OutQuad)
+
+    def set_animal_duration(self, duration: float):
+        """设置动画时间"""
+        self.animal.setDuration(int(duration*1000))  # 接收的单位是秒，*1000转为毫秒；+10是为了防止定时器的延迟问题导致动画启动时点延迟导致的不流畅
+        print('self.animal.duration()', self.animal.duration())
+
+    def reset_animal_duration(self):
+        """重置动画时间"""
+        self.animal.setDuration(400)
 
     def setValue(self, value: int):
         if value == self.value():

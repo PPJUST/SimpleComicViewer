@@ -127,6 +127,14 @@ class GetSetting:
         value = _get_setting_normal('auto_play', 'scroll_distance')
         return value
 
+    @staticmethod
+    def app_size():
+        """获取程序界面大小选项"""
+        width = _get_setting_normal('other', 'app_width')
+        height = _get_setting_normal('other', 'app_height')
+
+        return width, height
+
 
 def _get_setting_str(section: str, option: str):
     """获取配置文件中的文本项"""

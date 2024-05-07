@@ -28,14 +28,14 @@ def create_default_config():
             config.set('fit_mode', 'mode_3', '其他')
             # 自动播放选项
             config.add_section('auto_play')
-            config.set('auto_play', 'interval_scroll', '0.2')
+            config.set('auto_play', 'interval_scroll', '0.4')
             config.set('auto_play', 'interval_single_page', '1')
             config.set('auto_play', 'interval_double_page', '2')
-            config.set('auto_play', 'interval_scroll_min', '0.1')
-            config.set('auto_play', 'interval_single_page_min', '0.5')
-            config.set('auto_play', 'interval_double_page_min', '0.5')
-            config.set('auto_play', 'speed_rate_scroll', '0.1')
-            config.set('auto_play', 'speed_rate_single_page', '0.5')
+            config.set('auto_play', 'interval_scroll_min', '0.05')
+            config.set('auto_play', 'interval_single_page_min', '0.25')
+            config.set('auto_play', 'interval_double_page_min', '0.25')
+            config.set('auto_play', 'speed_rate_scroll', '0.05')
+            config.set('auto_play', 'speed_rate_single_page', '0.25')
             config.set('auto_play', 'speed_rate_double_page', '0.5')
             config.set('auto_play', 'scroll_distance', '100')
             # 设置项
@@ -47,6 +47,10 @@ def create_default_config():
             config.set('option', 'sharpen_image', 'False')
             config.set('option', 'preload_pages', '5')
             config.set('option', 'hide_wait_time', '1')
+            # 其他选项
+            config.add_section('other')
+            config.set('other', 'app_width', '600')
+            config.set('other', 'app_height', '600')
 
             config.write(open(_CONFIG_FILE, 'w', encoding='utf-8'))
             cw.close()

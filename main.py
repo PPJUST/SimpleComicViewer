@@ -238,6 +238,8 @@ class SCV(QMainWindow):
         self.widget_top_control.reset_xy(20, 20)
         # 左下角的信息组件
         self.label_hover_other_info.reset_xy(1, self.height() - 20)
+        # 保存界面大小到配置文件
+        ResetSetting.app_size(self.width(), self.height())
 
         # 启动延迟缩放计时器
         self.timer_resize.start(500)  # 延迟500毫秒
@@ -267,7 +269,8 @@ def main(arg):
     palette.setColor(QPalette.Window, QColor(255, 255, 255))
     app.setPalette(palette)
     show_ui = SCV(arg)
-    show_ui.resize(600, 840)
+    app_width, app_height = GetSetting.app_size()
+    show_ui.resize(app_width, app_height)
     show_ui.show()
     show_ui.setWindowIcon(QIcon(_ICON_MAIN))
 

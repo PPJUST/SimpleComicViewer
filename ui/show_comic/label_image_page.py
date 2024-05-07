@@ -4,7 +4,7 @@ from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel
 
-from module import function_comic, function_image
+from module import function_comic, function_image, function_normal
 from constant import _MARGIN
 
 
@@ -29,11 +29,13 @@ class LabelImageList(QLabel):
         """重设漫画参数
         :param comic_path: 漫画文件的路径
         :param comic_filetype: 漫画文件的类型，archive/folder"""
+        function_normal.print_function_info()
         self._comic_path = comic_path
         self._comic_filetype = comic_filetype
 
     def reset_image(self, image_path: str):
         """重设图片参数，并重设label大小"""
+        function_normal.print_function_info()
         self._image_path = image_path
         self._image_pixmap = None
         self._get_image_size()
@@ -42,12 +44,14 @@ class LabelImageList(QLabel):
     def reset_max_size(self, parent):
         """重设大小参数
         :param parent: 父控件"""
+        function_normal.print_function_info()
         self._max_size = QSize(parent.width() - _MARGIN, parent.height() - _MARGIN)
         self._get_image_size()
         self._change_size()
 
     def show_image(self):
         """预加载图片"""
+        function_normal.print_function_info()
         if not self._image_pixmap:
             self.load_pixmap()
         scaled_pixmap = self._image_pixmap.scaled(
@@ -56,6 +60,7 @@ class LabelImageList(QLabel):
 
     def load_pixmap(self):
         """读取pixmap"""
+        function_normal.print_function_info()
         if self._comic_filetype == 'folder':
             self._image_pixmap = QPixmap(self._image_path)
         elif self._comic_filetype == 'archive':
@@ -66,10 +71,12 @@ class LabelImageList(QLabel):
 
     def hide_image(self):
         """隐藏图片"""
+        function_normal.print_function_info()
         self.clear()
 
     def hide_label(self):
         """隐藏label控件"""
+        function_normal.print_function_info()
         self.hide_image()
         self.setFixedSize(0, 0)
 
