@@ -1,4 +1,4 @@
-# 实现平滑滚动的scrollarea
+# 实现平滑滚动的scrollArea
 
 from PySide6.QtCore import *
 from PySide6.QtGui import *
@@ -6,7 +6,8 @@ from PySide6.QtWidgets import *
 
 
 class ScrollAreaSmooth(QScrollArea):
-    """平滑滚动的scrollarea"""
+    """实现平滑滚动的scrollArea"""
+    signal_stop_autoplay = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -18,31 +19,19 @@ class ScrollAreaSmooth(QScrollArea):
         self.setVerticalScrollBar(self.scrollbar_v)
         self.setHorizontalScrollBar(self.scrollbar_h)
 
-    def set_scroll_animation(self, direction, duration: int):
-        """设置滚动动画持续时间
-        :param direction: 滚动方向，Qt.Horizontal 或 Qt.Vertical
-        :param duration: 滚动时间（动画时间）
-        """
-        scrollbar = self.scrollbar_h if direction == Qt.Horizontal else self.scrollbar_v
-        scrollbar.animal.setDuration(duration)
+    def start_autoplay(self, speed):
+        if self.scrollbar_h.isVisible():
+            self.scrollbar_h.start_autoplay(speed)
+        elif self.scrollbar_v.isVisible():
+            self.scrollbar_v.start_autoplay(speed)
 
-    def set_animal_type_linear(self):
-        self.scrollbar_h.set_animal_type_linear()
-        self.scrollbar_v.set_animal_type_linear()
-
-    def set_animal_type_outquad(self):
-        self.scrollbar_h.set_animal_type_outquad()
-        self.scrollbar_v.set_animal_type_outquad()
-
-    def set_animal_duration(self, duration: float):
-        self.scrollbar_h.set_animal_duration(duration)
-        self.scrollbar_v.set_animal_duration(duration)
-
-    def reset_animal_duration(self):
-        self.scrollbar_h.reset_animal_duration()
-        self.scrollbar_v.reset_animal_duration()
+    def stop_autoplay(self):
+        self.scrollbar_h.quit_autoplay()
+        self.scrollbar_v.quit_autoplay()
 
     def wheelEvent(self, e):
+        self.stop_autoplay()
+        self.signal_stop_autoplay.emit()
         if e.modifiers() == Qt.NoModifier:
             self.scrollbar_v.scroll_value(-e.angleDelta().y())
         else:
@@ -55,6 +44,8 @@ class ScrollBarSmooth(QScrollBar):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self._last_speed = None
+
         # 设置插值动画
         self.animal = QPropertyAnimation()
         self.animal.setTargetObject(self)
@@ -63,21 +54,23 @@ class ScrollBarSmooth(QScrollBar):
         self.animal.setDuration(400)  # 动画时间 毫秒
         self.animal.finished.connect(self.signal_scroll_end.emit)
 
-    def set_animal_type_linear(self):
-        """设置动画为线性变化"""
-        self.animal.setEasingCurve(QEasingCurve.Linear)
+    def start_autoplay(self, speed):
+        """开始自动播放"""
+        if self._last_speed == speed:
+            return
+        else:
+            self._last_speed = speed
+            self.animal.stop()
+            calc_duration = int((self.maximum() - self.value()) / (1 / speed * 100) * 1000)
+            self.animal.setEasingCurve(QEasingCurve.Linear)
+            self.animal.setDuration(calc_duration)
+            self.setValue(self.maximum())
 
-    def set_animal_type_outquad(self):
-        """设置动画为二次缓出"""
+    def quit_autoplay(self):
+        """退出自动播放"""
+        self._last_speed = None
+        self.animal.stop()
         self.animal.setEasingCurve(QEasingCurve.OutQuad)
-
-    def set_animal_duration(self, duration: float):
-        """设置动画时间"""
-        self.animal.setDuration(int(duration*1000))  # 接收的单位是秒，*1000转为毫秒；+10是为了防止定时器的延迟问题导致动画启动时点延迟导致的不流畅
-        print('self.animal.duration()', self.animal.duration())
-
-    def reset_animal_duration(self):
-        """重置动画时间"""
         self.animal.setDuration(400)
 
     def setValue(self, value: int):

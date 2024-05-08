@@ -28,7 +28,7 @@ def create_default_config():
             config.set('fit_mode', 'mode_3', '其他')
             # 自动播放选项
             config.add_section('auto_play')
-            config.set('auto_play', 'interval_scroll', '0.4')
+            config.set('auto_play', 'interval_scroll', '1')
             config.set('auto_play', 'interval_single_page', '1')
             config.set('auto_play', 'interval_double_page', '2')
             config.set('auto_play', 'interval_scroll_min', '0.05')

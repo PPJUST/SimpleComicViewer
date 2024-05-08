@@ -152,15 +152,15 @@ class SCV(QMainWindow):
 
     def change_autoplay_speed_up(self):
         """自动播放加速"""
-        self.widget_preview_control.autoplay_speed_up()
+        self.widget_preview_control.speed_up_autoplay()
 
     def change_autoplay_speed_down(self):
         """自动播放加减速"""
-        self.widget_preview_control.autoplay_speed_down()
+        self.widget_preview_control.speed_down_autoplay()
 
     def change_autoplay_speed_reset(self):
         """重置自动播放速度"""
-        self.widget_preview_control.autoplay_speed_reset()
+        self.widget_preview_control.reset_autoplay_speed()
 
     def to_previous_page(self):
         """切换上一页"""
@@ -197,17 +197,17 @@ class SCV(QMainWindow):
     def reload_preview_widget(self):
         """切换浏览模式后重新加载预览控件"""
         view_mode = GetSetting.current_view_mode_eng()
-        self.widget_preview_control.stop_auto_play()
+        self.widget_preview_control.stop_autoplay()
         self.widget_preview_control.load_child_preview_widget(view_mode)
         self.widget_preview_control.load_comic()
-        self.widget_preview_control.set_auto_play_type(view_mode)
+        self.widget_preview_control.reset_autoplay_setting()
 
     def auto_play(self, is_start: bool):
         """自动播放状态"""
         if is_start:
-            self.widget_preview_control.start_auto_play()
+            self.widget_preview_control.start_autoplay()
         else:
-            self.widget_preview_control.stop_auto_play()
+            self.widget_preview_control.stop_autoplay()
 
     def option_changed(self):
         """修改了设置选项，重新加载预览视图"""
@@ -280,6 +280,6 @@ def main(arg):
 if __name__ == "__main__":
     try:
         args = sys.argv[1:]  # 备忘录 先只做单个路径
-    except:
+    except IndexError:
         args = []
     main(args)
