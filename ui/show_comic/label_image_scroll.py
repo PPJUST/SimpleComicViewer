@@ -102,7 +102,10 @@ class LabelImage(QLabel):
 
     def _get_image_size(self):
         """获取图片宽高"""
-        self._image_size = function_image.get_image_size(self._image_path)
+        if self._comic_filetype == 'folder':
+            self._image_size = function_image.get_image_size(self._image_path)
+        elif self._comic_filetype == 'archive':
+            self._image_size = function_image.get_image_size_from_archive(self._comic_path, self._image_path)
 
     def _change_size(self):
         """修改label的大小，匹配图像大小"""
