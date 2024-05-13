@@ -34,3 +34,7 @@ _ICON_ZOOM_IN = _PROGRAM_FOLDER + 'icon/zoom_in.png'
 
 # 其他常量
 _MARGIN = 16  # 与边框的边距，用于预留滚动条的距离
+
+# 本地监听端口
+_HOST = '127.0.0.1'
+_PORT = 9527

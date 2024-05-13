@@ -63,6 +63,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
         self._MAX_INDEX = self._comic_info.page_count
         self._create_empty_labels()
         self.show_images()
+        self._move_slider_absolute(0)
 
     def show_images(self):
         """显示预览图像"""
