@@ -24,7 +24,7 @@ class LabelHoverOtherInfo(QLabel):
         """显示信息"""
         self.setText(text)
         self.show()
-        self.timer.start(1000)  # 延迟500毫秒
+        self.timer.start(500)  # 延迟500毫秒
 
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""

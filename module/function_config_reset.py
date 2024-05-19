@@ -42,39 +42,39 @@ class ResetSetting:
         _reset_setting('option', 'preload_pages', value)
 
     @staticmethod
-    def auto_play_interval_scroll(value):
+    def autoplay_interval_scroll(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'interval_scroll', value)
+        _reset_setting('autoplay', 'interval_scroll', value)
 
     @staticmethod
-    def auto_play_interval_single_page(value):
+    def autoplay_interval_single_page(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'interval_single_page', value)
+        _reset_setting('autoplay', 'interval_single_page', value)
 
     @staticmethod
-    def auto_play_interval_double_page(value):
+    def autoplay_interval_double_page(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'interval_double_page', value)
+        _reset_setting('autoplay', 'interval_double_page', value)
 
     @staticmethod
-    def auto_play_speed_rate_scroll(value):
+    def autoplay_speed_rate_scroll(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'speed_rate_scroll', value)
+        _reset_setting('autoplay', 'speed_rate_scroll', value)
 
     @staticmethod
-    def auto_play_speed_rate_single_page(value):
+    def autoplay_speed_rate_single_page(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'speed_rate_single_page', value)
+        _reset_setting('autoplay', 'speed_rate_single_page', value)
 
     @staticmethod
-    def auto_play_speed_rate_double_page(value):
+    def autoplay_speed_rate_double_page(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'speed_rate_double_page', value)
+        _reset_setting('autoplay', 'speed_rate_double_page', value)
 
     @staticmethod
-    def auto_play_scroll_distance(value):
+    def autoplay_scroll_distance(value):
         """修改自动播放选项"""
-        _reset_setting('auto_play', 'scroll_distance', value)
+        _reset_setting('autoplay', 'scroll_distance', value)
 
     @staticmethod
     def app_size(width, height):

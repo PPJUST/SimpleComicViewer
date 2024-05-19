@@ -1,16 +1,19 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QAction, QResizeEvent, QKeySequence
+from PySide6.QtWidgets import QMainWindow
 
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
+from thread.thread_listen_socket import ThreadListenSocket
+from thread.thread_wait_time import ThreadWaitTime
 from ui.dialog_option import DialogOption
 from ui.label_hover_other_info import LabelHoverOtherInfo
-from ui.thread_listen_socket import ThreadListenSocket
+from ui.preview_widget.widget_preview_control import WidgetPreviewControl
 from ui.ui_src.ui_main import Ui_MainWindow
 from ui.widget_below_control import WidgetBelowControl
 from ui.widget_hidden_button import *
-from ui.widget_preview_control import WidgetPreviewControl
+from ui.widget_playlist import WidgetPlaylist
 from ui.widget_top_control import WidgetTopControl
 
 
@@ -21,8 +24,6 @@ class SimpleComicViewer(QMainWindow):
         self.ui.setupUi(self)
         self.setAcceptDrops(True)
 
-
-
         # 延迟定时器，用于延迟改变预览控件大小
         self.timer_resize = QTimer()
         self.timer_resize.setSingleShot(True)  # 设置单次触发
@@ -32,18 +33,18 @@ class SimpleComicViewer(QMainWindow):
         self.thread_wait_time = ThreadWaitTime()
 
         # 左边的切页按钮
-        self.button_left = WidgetHiddenButton(_ICON_ARROW_LEFT, self)
+        self.button_left = WidgetHiddenButton(self)
+        self.button_left.set_icon(_ICON_ARROW_LEFT)
         self.button_left.clicked.connect(self.to_previous_page)
         self.button_left.rightClicked.connect(self.to_previous_comic)
-        self.button_left.set_wait_thread(self.thread_wait_time)
         self.button_left.reset_xy(
             20, self.height() // 2 - self.button_left.height() // 2)
 
         # 右边的切页按钮
-        self.button_right = WidgetHiddenButton(_ICON_ARROW_RIGHT, self)
+        self.button_right = WidgetHiddenButton(self)
+        self.button_right.set_icon(_ICON_ARROW_RIGHT)
         self.button_right.clicked.connect(self.to_next_page)
         self.button_right.rightClicked.connect(self.to_next_comic)
-        self.button_right.set_wait_thread(self.thread_wait_time)
         self.button_right.reset_xy(self.width() - self.button_right.width() - 20,
                                    self.height() // 2 - self.button_right.height() // 2)
 
@@ -55,11 +56,10 @@ class SimpleComicViewer(QMainWindow):
         self.widget_below_control.signal_previous_item.connect(
             self.to_previous_comic)
         self.widget_below_control.signal_next_item.connect(self.to_next_comic)
-        self.widget_below_control.signal_open_list.connect(
+        self.widget_below_control.signal_open_playlist.connect(
             self.open_comic_list)
         self.widget_below_control.signal_open_option.connect(self.open_option)
-        self.widget_below_control.signal_auto_play.connect(self.auto_play)
-        self.widget_below_control.set_wait_thread(self.thread_wait_time)
+        self.widget_below_control.signal_autoplay.connect(self.autoplay)
         self.widget_below_control.reset_xy(self.width() // 2 - self.widget_below_control.width() // 2,
                                            self.height() - self.widget_below_control.height() - 40)
 
@@ -67,15 +67,19 @@ class SimpleComicViewer(QMainWindow):
         self.widget_top_control = WidgetTopControl(self)
         self.widget_top_control.signal_preview_mode_changed.connect(
             self.reload_preview_widget)
-        self.widget_top_control.set_wait_thread(self.thread_wait_time)
         self.widget_top_control.reset_xy(20, 20)
 
         # 预览控件
         self.widget_preview_control = WidgetPreviewControl(self)
         self.ui.horizontalLayout.addWidget(self.widget_preview_control)
-        self.widget_preview_control.signal_stop_auto_play.connect(
-            self.change_icon_stop_auto_play)
+        self.widget_preview_control.signal_stop_autoplay.connect(
+            self.change_icon_stop_autoplay)
         self.widget_preview_control.signal_show_info.connect(self.show_info)
+
+        # 右下角的悬浮播放列表
+        self.widget_playlist = WidgetPlaylist(self)
+        self.widget_playlist.raise_()
+        self.widget_playlist.hide()
 
         # 设置左下角的其他信息悬浮label
         self.label_hover_other_info = LabelHoverOtherInfo(self)
@@ -164,16 +168,17 @@ class SimpleComicViewer(QMainWindow):
         self.addAction(action_view_4)
 
     def accept_args(self, args):
-        self._current_comic = args[0]
-        self.widget_preview_control.load_comic(self._current_comic)  # 备忘录，先只做单个路径
+        current_comic = args[0]
+        self.widget_preview_control.set_comic(current_comic)  # 备忘录，先只做单个路径
+        self.widget_playlist.add_item(current_comic)  # 备忘录，先只做单个路径
 
     def change_autoplay_speed_up(self):
         """自动播放加速"""
-        self.widget_preview_control.speed_up_autoplay()
+        self.widget_preview_control.autoplay_speed_up()
 
     def change_autoplay_speed_down(self):
         """自动播放加减速"""
-        self.widget_preview_control.speed_down_autoplay()
+        self.widget_preview_control.autoplay_speed_down()
 
     def change_autoplay_speed_reset(self):
         """重置自动播放速度"""
@@ -189,7 +194,10 @@ class SimpleComicViewer(QMainWindow):
 
     def open_comic_list(self):
         """打开漫画列表"""
-        pass
+        if self.widget_playlist.isHidden():
+            self.widget_playlist.show()
+        else:
+            self.widget_playlist.hide()
 
     def to_previous_comic(self):
         """切换上一本漫画"""
@@ -209,29 +217,29 @@ class SimpleComicViewer(QMainWindow):
         """切换浏览模式"""
         ResetSetting.current_view_mode(view_mode)
         self.reload_preview_widget()
-        self.widget_top_control.update_icon(view_mode)
+        self.widget_top_control.set_active_icon(view_mode)
 
     def reload_preview_widget(self):
         """切换浏览模式后重新加载预览控件"""
         view_mode = GetSetting.current_view_mode_eng()
-        self.widget_preview_control.stop_autoplay()
-        self.widget_preview_control.load_child_preview_widget(view_mode)
-        self.widget_preview_control.load_comic()
-        self.widget_preview_control.reset_autoplay_setting()
+        self.widget_preview_control.stop_thread_autoplay()
+        self.widget_preview_control.set_preview_mode(view_mode)
+        self.widget_preview_control.set_comic()
+        self.widget_preview_control.reset_autoplay()
 
-    def auto_play(self, is_start: bool):
+    def autoplay(self, is_start: bool):
         """自动播放状态"""
         if is_start:
-            self.widget_preview_control.start_autoplay()
+            self.widget_preview_control.start_thread_autoplay()
         else:
-            self.widget_preview_control.stop_autoplay()
+            self.widget_preview_control.stop_thread_autoplay()
 
     def option_changed(self):
         """修改了设置选项，重新加载预览视图"""
         self.reload_preview_widget()
 
-    def change_icon_stop_auto_play(self):
-        self.widget_below_control.reset_auto_play_state()
+    def change_icon_stop_autoplay(self):
+        self.widget_below_control.reset_autoplay_state()
 
     def update_preview_size(self):
         """更新预览控件的大小"""
@@ -254,6 +262,8 @@ class SimpleComicViewer(QMainWindow):
                                            self.height() - self.widget_below_control.height() - 40)
         # 左上的控制条组件，x轴离边框20，y轴离边框20
         self.widget_top_control.reset_xy(20, 20)
+        # 右下角的播放列表组件 备忘录
+        # self.widget_playlist.reset_xy(100, 100)
         # 左下角的信息组件
         self.label_hover_other_info.reset_xy(1, self.height() - 20)
         # 保存界面大小到配置文件

@@ -27,29 +27,28 @@ class LabelHoverComicInfo(QLabel):
     def update_filename(self, text):
         """更新信息"""
         self._filename = text
-        self._update_info()
+        self._show_info()
 
     def update_current_page(self, value):
         """更新信息"""
         self._current_page = value
-        self._update_info()
+        self._show_info()
 
     def update_total_page(self, value):
         """更新信息"""
         self._total_page = value
-        self._update_info()
+        self._show_info()
 
     def update_info_by_comic(self, comic_info: ComicInfo):
         """通过ComicInfo类更新信息"""
         self._filename = comic_info.filename
         self._total_page = comic_info.page_count
-        self._update_info()
+        self._show_info()
 
-    def _update_info(self):
+    def _show_info(self):
         """显示信息"""
         text = f'{self._filename}\n{self._current_page}/{self._total_page}'
         self.setText(text)
-        self.setGeometry(10, 10, 200, 100)
 
     def eventFilter(self, obj, event):
         if event.type() == event.Enter:

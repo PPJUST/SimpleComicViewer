@@ -29,18 +29,19 @@ class ThreadAutoPlay(QThread):
         self._SPEED_RATE_DOUBLE_PAGE = None  # 修改播放速度（双页）
 
         self._load_setting()
+        self.reset_setting()
 
     def _load_setting(self):
         """加载设置"""
-        self._INTERVAL_SCROLL = GetSetting.auto_play_interval_scroll()
-        self._INTERVAL_SINGLE_PAGE = GetSetting.auto_play_interval_single_page()
-        self._INTERVAL_DOUBLE_PAGE = GetSetting.auto_play_interval_double_page()
-        self._INTERVAL_SCROLL_MIN = GetSetting.auto_play_interval_scroll_min()
-        self._INTERVAL_SINGLE_PAGE_MIN = GetSetting.auto_play_interval_single_page_min()
-        self._INTERVAL_DOUBLE_PAGE_MIN = GetSetting.auto_play_interval_double_page_min()
-        self._SPEED_RATE_SCROLL = GetSetting.auto_play_speed_rate_scroll()
-        self._SPEED_RATE_SINGLE_PAGE = GetSetting.auto_play_speed_rate_single_page()
-        self._SPEED_RATE_DOUBLE_PAGE = GetSetting.auto_play_speed_rate_double_page()
+        self._INTERVAL_SCROLL = GetSetting.autoplay_interval_scroll()
+        self._INTERVAL_SINGLE_PAGE = GetSetting.autoplay_interval_single_page()
+        self._INTERVAL_DOUBLE_PAGE = GetSetting.autoplay_interval_double_page()
+        self._INTERVAL_SCROLL_MIN = GetSetting.autoplay_interval_scroll_min()
+        self._INTERVAL_SINGLE_PAGE_MIN = GetSetting.autoplay_interval_single_page_min()
+        self._INTERVAL_DOUBLE_PAGE_MIN = GetSetting.autoplay_interval_double_page_min()
+        self._SPEED_RATE_SCROLL = GetSetting.autoplay_speed_rate_scroll()
+        self._SPEED_RATE_SINGLE_PAGE = GetSetting.autoplay_speed_rate_single_page()
+        self._SPEED_RATE_DOUBLE_PAGE = GetSetting.autoplay_speed_rate_double_page()
 
     def run(self):
         self._is_stop = False

@@ -1,7 +1,7 @@
-# 更多选项dialog
+# 选项dialog
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QDialog
 
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
@@ -9,7 +9,7 @@ from ui.ui_src.ui_dialog_option import Ui_Dialog
 
 
 class DialogOption(QDialog):
-    """更多选项dialog"""
+    """选项dialog"""
     signal_option_changed = Signal()
 
     def __init__(self, parent=None):
@@ -23,6 +23,11 @@ class DialogOption(QDialog):
         # 设置槽函数
         self.ui.pushButton_confirm.clicked.connect(self._confirm)
         self.ui.pushButton_cancel.clicked.connect(self.close)
+
+        # 屏蔽未完成的选项
+        self.ui.checkBox_sharpen_image.setEnabled(False)
+        self.ui.checkBox_skip_solid_color_page.setEnabled(False)
+        self.ui.comboBox_switch_page_mode.setEnabled(False)
 
     def _load_setting(self):
         """加载设置"""

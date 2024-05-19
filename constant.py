@@ -31,6 +31,10 @@ _ICON_OPTION = _PROGRAM_FOLDER + 'icon/option.png'
 _ICON_PLAY = _PROGRAM_FOLDER + 'icon/play.png'
 _ICON_STOP = _PROGRAM_FOLDER + 'icon/stop.png'
 _ICON_ZOOM_IN = _PROGRAM_FOLDER + 'icon/zoom_in.png'
+_ICON_ARCHIVE = _PROGRAM_FOLDER + 'icon/archive.png'
+_ICON_FOLDER = _PROGRAM_FOLDER + 'icon/folder.png'
+_ICON_CHECKED_GRAY = _PROGRAM_FOLDER + 'icon/checked_gray.png'
+_ICON_CHECKED_GREEN = _PROGRAM_FOLDER + 'icon/checked_green.png'
 
 # 其他常量
 _MARGIN = 16  # 与边框的边距，用于预留滚动条的距离

@@ -1,4 +1,4 @@
-# 等待指定时间后发送信号的的子线程
+# 等待指定时间后发送信号的的子线程（单例）
 import time
 
 from PySide6.QtCore import QThread, Signal
@@ -8,12 +8,22 @@ from module.function_config_get import GetSetting
 
 
 class ThreadWaitTime(QThread):
-    """等待指定时间后发送信号的的子线程"""
+    """等待指定时间后发送信号的的子线程（单例）"""
     signal_start = Signal()
     signal_end = Signal()
 
+    _instance = None
+    _is_init = False
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, parent=None):
-        super().__init__(parent)
+        if not self._is_init:
+            super().__init__(parent)
+            self._is_init = True
 
         self._is_loop = False  # 是否循环
         self._WAIT_TIME = None  # 等待时间（秒）

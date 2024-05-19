@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_widget_below_control_childcarECG.ui'
+## Form generated from reading UI file 'ui_widget_below_control_childHsSjSW.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.1.3
 ##
@@ -12,7 +12,7 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
-from ui.toolButton_right_click_and_hidden import ToolButtonRightClickAndHidden as QToolButton
+from ui.toolButton_right_click import ToolButtonRightClick as QToolButton
 
 
 class Ui_Form(object):
@@ -34,20 +34,20 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.toolButton_previous)
 
-        self.toolButton_play = QToolButton(Form)
-        self.toolButton_play.setObjectName(u"toolButton_play")
+        self.toolButton_autoplay = QToolButton(Form)
+        self.toolButton_autoplay.setObjectName(u"toolButton_autoplay")
 
-        self.horizontalLayout.addWidget(self.toolButton_play)
+        self.horizontalLayout.addWidget(self.toolButton_autoplay)
 
         self.toolButton_next = QToolButton(Form)
         self.toolButton_next.setObjectName(u"toolButton_next")
 
         self.horizontalLayout.addWidget(self.toolButton_next)
 
-        self.toolButton_list = QToolButton(Form)
-        self.toolButton_list.setObjectName(u"toolButton_list")
+        self.toolButton_playlist = QToolButton(Form)
+        self.toolButton_playlist.setObjectName(u"toolButton_playlist")
 
-        self.horizontalLayout.addWidget(self.toolButton_list)
+        self.horizontalLayout.addWidget(self.toolButton_playlist)
 
 
         self.retranslateUi(Form)
@@ -59,8 +59,8 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.toolButton_option.setText(QCoreApplication.translate("Form", u"...", None))
         self.toolButton_previous.setText(QCoreApplication.translate("Form", u"<", None))
-        self.toolButton_play.setText(QCoreApplication.translate("Form", u"||>", None))
+        self.toolButton_autoplay.setText(QCoreApplication.translate("Form", u"||>", None))
         self.toolButton_next.setText(QCoreApplication.translate("Form", u">", None))
-        self.toolButton_list.setText(QCoreApplication.translate("Form", u"\u2261", None))
+        self.toolButton_playlist.setText(QCoreApplication.translate("Form", u"\u2261", None))
     # retranslateUi
 

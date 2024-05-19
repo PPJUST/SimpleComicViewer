@@ -1,28 +1,25 @@
-# 提取漫画内容的类
+# 提取和存储漫画信息的类
 import os
 
 from module import function_normal, function_comic
 
 
 class ComicInfo:
-    """提取漫画内容的类"""
+    """提取和存储漫画信息的类"""
 
     def __init__(self, path: str):
-        self.path = path  # 路径
-        self.filename = ''  # 文件名
+        self.path = path  # 文件路径
         self.filetype = ''  # 文件类型
+        self.filename = ''  # 文件名（含后缀）
+        self.filetitle = ''  # 文件标题（不含后缀）
         self.filesize = 0  # 文件大小，byte
         self.page_count = 0  # 漫画页数
         self.page_list = []  # 漫画内图片路径，如果是压缩包则为压缩包内部路径
 
-        self._extract_filename()
         self._guess_filetype()
+        self._extract_filename()
         self._count_filesize()
         self._count_page()
-
-    def _extract_filename(self):
-        """提取文件名"""
-        self.filename = os.path.basename(self.path)
 
     def _guess_filetype(self):
         """确认文件类型"""
@@ -33,6 +30,14 @@ class ComicInfo:
                 self.filetype = 'archive'
             else:
                 self.filetype = 'unsupported'
+
+    def _extract_filename(self):
+        """提取文件名"""
+        self.filename = os.path.basename(self.path)
+        if self.filetype == 'folder':
+            self.filetitle = self.filename
+        elif self.filetype == 'archive':
+            self.filetitle = os.path.basename(os.path.splitext(self.path)[0])
 
     def _count_filesize(self):
         """计算文件大小"""

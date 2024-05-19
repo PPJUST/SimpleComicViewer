@@ -68,63 +68,63 @@ class GetSetting:
         return value
 
     @staticmethod
-    def auto_play_interval_scroll():
+    def autoplay_interval_scroll():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_scroll')
+        value = _get_setting_normal('autoplay', 'interval_scroll')
         return value
 
     @staticmethod
-    def auto_play_interval_scroll_min():
+    def autoplay_interval_scroll_min():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_scroll_min')
+        value = _get_setting_normal('autoplay', 'interval_scroll_min')
         return value
 
     @staticmethod
-    def auto_play_interval_single_page():
+    def autoplay_interval_single_page():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_single_page')
+        value = _get_setting_normal('autoplay', 'interval_single_page')
         return value
 
     @staticmethod
-    def auto_play_interval_single_page_min():
+    def autoplay_interval_single_page_min():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_single_page_min')
+        value = _get_setting_normal('autoplay', 'interval_single_page_min')
         return value
 
     @staticmethod
-    def auto_play_interval_double_page():
+    def autoplay_interval_double_page():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_double_page')
+        value = _get_setting_normal('autoplay', 'interval_double_page')
         return value
 
     @staticmethod
-    def auto_play_interval_double_page_min():
+    def autoplay_interval_double_page_min():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'interval_double_page_min')
+        value = _get_setting_normal('autoplay', 'interval_double_page_min')
         return value
 
     @staticmethod
-    def auto_play_speed_rate_scroll():
+    def autoplay_speed_rate_scroll():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'speed_rate_scroll')
+        value = _get_setting_normal('autoplay', 'speed_rate_scroll')
         return value
 
     @staticmethod
-    def auto_play_speed_rate_single_page():
+    def autoplay_speed_rate_single_page():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'speed_rate_single_page')
+        value = _get_setting_normal('autoplay', 'speed_rate_single_page')
         return value
 
     @staticmethod
-    def auto_play_speed_rate_double_page():
+    def autoplay_speed_rate_double_page():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'speed_rate_double_page')
+        value = _get_setting_normal('autoplay', 'speed_rate_double_page')
         return value
 
     @staticmethod
-    def auto_play_scroll_distance():
+    def autoplay_scroll_distance():
         """获取自动播放选项"""
-        value = _get_setting_normal('auto_play', 'scroll_distance')
+        value = _get_setting_normal('autoplay', 'scroll_distance')
         return value
 
     @staticmethod

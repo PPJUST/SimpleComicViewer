@@ -1,6 +1,7 @@
 # 图片相关方法
 from io import BytesIO
 
+import imagehash
 from PIL import Image
 
 from module import function_comic
@@ -30,3 +31,42 @@ def is_horizontal_image(image_path):
         return True
     else:
         return False
+
+
+def is_pure_color(image_path):
+    """是否为纯色图片"""
+    # 考虑到软件大小，使用计算图片hash的方法来判断纯色图片，opencv库太大了
+    try:
+        image_pil = Image.open(image_path)
+        image_pil = image_pil.convert('L')  # 转灰度图
+    # 如果图片损坏，会抛出异常OSError: image file is truncated (4 bytes not processed)
+    except OSError:
+        return False
+
+    image_pil = image_pil.resize(size=(10, 10))
+    ahash = imagehash.average_hash(image_pil, hash_size=10)
+    hash_str = _hash_numpy2str(ahash)
+
+    if hash_str.count('0') == len(hash_str):
+        return True
+    else:
+        return False
+
+
+def _hash_numpy2str(hash_numpy):
+    """将哈希值的numpy数组(imagehash.hash)转换为二进制字符串"""
+    if not hash_numpy:
+        return None
+
+    if type(hash_numpy) is imagehash.ImageHash:
+        hash_numpy = hash_numpy.hash
+
+    hash_str = ''
+    for row in hash_numpy:
+        for col in row:
+            if col:
+                hash_str += '1'
+            else:
+                hash_str += '0'
+
+    return hash_str

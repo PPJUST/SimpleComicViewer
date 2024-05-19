@@ -1,17 +1,17 @@
 # 预览控件，滚动显示漫画图像
 # 显示方案：提前创建全部图像对应大小的空Label，按进度预载图像显示在Label上，超限的图像丢弃
 
-from PySide6.QtCore import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QSizePolicy, QHBoxLayout, QWidget, QVBoxLayout
 
 from module import function_normal
 from module.class_comic_info import ComicInfo
 from module.function_config_get import GetSetting
-from ui.scroll_area_smooth import ScrollAreaSmooth
-from ui.show_comic.label_image_scroll import LabelImage
+from ui.preview_widget.label_image_scroll import LabelImage
+from ui.preview_widget.scroll_area_smooth import ScrollAreaSmooth
 
 
-class ScrollAreaComicPreview(ScrollAreaSmooth):
+class ScrollAreaPreview(ScrollAreaSmooth):
     """预览控件，滚动显示漫画图像"""
     signal_scrolled = Signal()
 
@@ -41,22 +41,22 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
             self.verticalScrollBar().valueChanged.connect(self._slider_scrolled)
 
         # 初始化
-        self.index = 1  # 当前显示的索引号，从1开始，与页数对应
+        self.index = 1  # 当前显示的索引，从1开始，与页数对应
         self._comic_info = None  # 漫画信息类
-        self._scroll_type = scroll_type  # 滚动类型，横向/纵向，用于计算索引号
-        self._scroll_to_index_list = []  # 滚动条值与索引号的对应列表，[(0,150),(151,200)...]
-        self._MIN_INDEX = 1  # 最小索引号
-        self._MAX_INDEX = None  # 最大索引号
+        self._scroll_type = scroll_type  # 滚动类型，横向h/纵向v，用于计算索引号
+        self._value_group_list = []  # 滚动条值与索引的对应列表，[(0,150),(151,200)...]
+        self._MIN_INDEX = 1  # 最小索引
+        self._MAX_INDEX = None  # 最大索引
         self._PRELOAD_PAGES = None  # 预载图片数
 
-        self.load_setting()
+        self._load_setting()
 
-    def load_setting(self):
+    def _load_setting(self):
         """加载设置"""
         self._PRELOAD_PAGES = GetSetting.preload_pages()
 
-    def load_comic(self, comic_info: ComicInfo):
-        """加载漫画数据"""
+    def set_comic(self, comic_info: ComicInfo):
+        """设置漫画数据"""
         function_normal.print_function_info()
         self._comic_info = comic_info
         self.index = 1
@@ -66,7 +66,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
         self._move_slider_absolute(0)
 
     def show_images(self):
-        """显示预览图像"""
+        """显示图像"""
         function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
@@ -76,7 +76,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
                 label.show_image()
 
     def refresh_images(self):
-        """刷新预览图像（仅用于更新大小）"""
+        """刷新图像（更新大小）"""
         function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
@@ -85,35 +85,35 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
             else:
                 label.refresh_image()
 
-    def next_page(self):
-        """显示下一页图像"""
+    def to_next_page(self):
+        """切换到下一页"""
         function_normal.print_function_info()
         current_index = self._calc_current_index()
         next_index = current_index + 1
-        if next_index > len(self._scroll_to_index_list):
+        if next_index > len(self._value_group_list):
             return
-        slider_start_value = self._scroll_to_index_list[next_index - 1][0]
-        self._move_slider_absolute(slider_start_value)
+        next_page_slider_value = self._value_group_list[next_index - 1][0]
+        self._move_slider_absolute(next_page_slider_value)
 
-    def previous_page(self):
-        """显示上一页图像"""
+    def to_previous_page(self):
+        """切换到上一页"""
         function_normal.print_function_info()
         current_index = self._calc_current_index()
         next_index = current_index - 1
         if next_index < 1:
             return
-        slider_start_value = self._scroll_to_index_list[next_index - 1][0]
-        self._move_slider_absolute(slider_start_value)
+        previous_page_slider_value = self._value_group_list[next_index - 1][0]
+        self._move_slider_absolute(previous_page_slider_value)
 
     def reset_preview_size(self):
         """重设预览控件大小"""
         function_normal.print_function_info()
         # 重置滚动条值与索引号的对应列表
-        self._scroll_to_index_list.clear()
-        # 修改子控件大小并更新索引列表
+        self._value_group_list.clear()
+        # 更新子控件大小，并更新索引列表
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
-            label.reset_max_size(self)
+            label.set_parent(self)
             # 更新索引列表
             if self._scroll_type == 'h':
                 self._update_index_list(label.width())
@@ -135,20 +135,14 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
 
         return scroll_bar_position == max_position
 
-    def move_slider_relative(self, value: int):
-        """移动滚动条（相对位置）"""
-        function_normal.print_function_info()
-        new_value = self._get_slider_value() + value
-        self._move_slider_absolute(new_value)
-
     def _create_empty_labels(self):
         """按照图像大小预先创建空的label"""
         self._clear_labels()
         for image_path in self._comic_info.page_list:
             label = LabelImage(self._scroll_type, self.widget)
-            label.reset_comic(comic_path=self._comic_info.path, comic_filetype=self._comic_info.filetype)
-            label.reset_image(image_path)
-            label.load_pixmap()
+            label.set_comic(self._comic_info.path, self._comic_info.filetype)
+            label.set_image(image_path)
+            label._load_pixmap()  # 备忘录，暂时先读取全部图像，之后做在子线程中读取
             self.layout.addWidget(label)
             # 更新索引列表
             if self._scroll_type == 'h':
@@ -165,17 +159,17 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
                 item_widget.deleteLater()
 
     def _update_index_list(self, label_side: int):
-        """更新索引号对应列表
+        """更新索引列表
         :param label_side: 图像label的边长度"""
-        if len(self._scroll_to_index_list) == 0:
+        if len(self._value_group_list) == 0:
             current_tuple = (0, label_side)
-            self._scroll_to_index_list.append(current_tuple)
+            self._value_group_list.append(current_tuple)
         else:
-            last_end = self._scroll_to_index_list[-1][1]
+            last_end = self._value_group_list[-1][1]
             current_start = last_end + 1
             current_end = current_start + label_side
             current_tuple = (current_start, current_end)
-            self._scroll_to_index_list.append(current_tuple)
+            self._value_group_list.append(current_tuple)
 
     def _slider_scrolled(self):
         """响应滚动条移动事件"""
@@ -186,9 +180,9 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
             self.signal_scrolled.emit()
 
     def _calc_current_index(self):
-        """根据滑动条的值估算当前索引号"""
+        """根据滑动条的值计算当前索引"""
         value = self._get_slider_value()
-        for index, scroll_tuple in enumerate(self._scroll_to_index_list, start=1):
+        for index, scroll_tuple in enumerate(self._value_group_list, start=1):
             start, end = scroll_tuple
             if start <= value <= end:
                 return index
@@ -199,6 +193,7 @@ class ScrollAreaComicPreview(ScrollAreaSmooth):
             value = self.horizontalScrollBar().value()
         elif self._scroll_type == 'v':
             value = self.verticalScrollBar().value()
+
         return value
 
     def _move_slider_absolute(self, value):

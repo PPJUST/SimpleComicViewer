@@ -1,11 +1,11 @@
 # 实现平滑滚动的scrollArea
-# 滚轮的平滑滚动：二次换出动画曲线。
+# 滚轮的平滑滚动：二次缓出动画曲线。
 # 自动播放的平滑滚动：滚动到滑动条底部，按预计滚动距离/预设滚动速度计算出动画总时长，动画曲线为线性。
 # 自动播放时，使用滚轮则中断自动播放，并切换动画曲线；切换自动播放速度时，暂停动画，重新计算预计动画时长后重新设置并启动动画。
 
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal, QEasingCurve, QPropertyAnimation
+from PySide6.QtGui import Qt
+from PySide6.QtWidgets import QScrollBar, QScrollArea
 
 
 class ScrollAreaSmooth(QScrollArea):
@@ -35,10 +35,10 @@ class ScrollAreaSmooth(QScrollArea):
     def wheelEvent(self, e):
         self.stop_autoplay()
         self.signal_stop_autoplay.emit()
-        if e.modifiers() == Qt.NoModifier:
+        if self.scrollbar_h.isVisible():
+            self.scrollbar_h.scroll_value(-e.angleDelta().y())
+        elif self.scrollbar_v.isVisible():
             self.scrollbar_v.scroll_value(-e.angleDelta().y())
-        else:
-            self.scrollbar_h.scroll_value(-e.angleDelta().x())
 
 
 class ScrollBarSmooth(QScrollBar):
@@ -64,7 +64,8 @@ class ScrollBarSmooth(QScrollBar):
         else:
             self._last_speed = speed
             self.animal.stop()
-            calc_duration = int((self.maximum() - self.value()) / (1 / speed * 100) * 1000)
+            calc_duration = int(
+                (self.maximum() - self.value()) / (1 / speed * 100) * 1000)
             self.animal.setEasingCurve(QEasingCurve.Linear)
             self.animal.setDuration(calc_duration)
             self.setValue(self.maximum())
