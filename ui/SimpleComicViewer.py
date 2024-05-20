@@ -77,9 +77,11 @@ class SimpleComicViewer(QMainWindow):
         self.widget_preview_control.signal_show_info.connect(self.show_info)
 
         # 右下角的悬浮播放列表
-        self.widget_playlist = WidgetPlaylist(self)
+        self.widget_playlist = WidgetPlaylist()
+        self.widget_playlist.signal_double_click.connect(self.accept_args)
         self.widget_playlist.raise_()
         self.widget_playlist.hide()
+        self.widget_playlist.reset_xy(100, 100)
 
         # 设置左下角的其他信息悬浮label
         self.label_hover_other_info = LabelHoverOtherInfo(self)
@@ -168,7 +170,10 @@ class SimpleComicViewer(QMainWindow):
         self.addAction(action_view_4)
 
     def accept_args(self, args):
-        current_comic = args[0]
+        if type(args) is str:
+            current_comic = args
+        else:
+            current_comic = args[0]
         self.widget_preview_control.set_comic(current_comic)  # 备忘录，先只做单个路径
         self.widget_playlist.add_item(current_comic)  # 备忘录，先只做单个路径
 
@@ -248,6 +253,13 @@ class SimpleComicViewer(QMainWindow):
     def show_info(self, text: str):
         self.label_hover_other_info.show_information(text)
 
+    def _move_playlist_xy(self):
+        geometry = self.geometry()
+        x_lr = geometry.x() + geometry.width()
+        y_lr = geometry.y() + geometry.height()
+
+        self.widget_playlist.reset_xy(x_lr + 10, y_lr - 200)
+
     def resizeEvent(self, event: QResizeEvent) -> None:
         """重设悬浮组件的位置"""
         super().resizeEvent(event)
@@ -262,8 +274,6 @@ class SimpleComicViewer(QMainWindow):
                                            self.height() - self.widget_below_control.height() - 40)
         # 左上的控制条组件，x轴离边框20，y轴离边框20
         self.widget_top_control.reset_xy(20, 20)
-        # 右下角的播放列表组件 备忘录
-        # self.widget_playlist.reset_xy(100, 100)
         # 左下角的信息组件
         self.label_hover_other_info.reset_xy(1, self.height() - 20)
         # 保存界面大小到配置文件
@@ -271,6 +281,11 @@ class SimpleComicViewer(QMainWindow):
 
         # 启动延迟缩放计时器
         self.timer_resize.start(500)  # 延迟500毫秒
+
+    def moveEvent(self, event):
+        """重写移动事件，用于保持外部播放列表窗口的相对位置"""
+        super().moveEvent(event)
+        self._move_playlist_xy()
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -284,3 +299,8 @@ class SimpleComicViewer(QMainWindow):
             urls = event.mimeData().urls()
             drop_paths = [url.toLocalFile() for url in urls]
             self.accept_args(drop_paths)
+
+    def closeEvent(self, event):
+        """重写关闭时间，同步关闭外部播放列表窗口"""
+        if self.widget_playlist:
+            self.widget_playlist.close()
