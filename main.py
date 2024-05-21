@@ -55,7 +55,7 @@ def send_data_to_host(data):
 
 if __name__ == "__main__":
     try:
-        args = sys.argv[1:]  # 备忘录 先只做单个路径
+        args = sys.argv[1:]
     except IndexError:
         args = []
 

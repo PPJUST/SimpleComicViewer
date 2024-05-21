@@ -50,7 +50,7 @@ class WidgetBelowControl(QWidget):
         self.setGeometry(x, y, self._size.width(), self._size.height())
 
     def reset_autoplay_state(self):
-        """重置自动播放状态"""
+        """重置自动播放状态（不修改设置参数）"""
         self.widget.reset_autoplay_state()
 
 
@@ -108,11 +108,12 @@ class WidgetBelowControlChild(QWidget):
 
     def _load_button_size(self):
         """重置按钮的大小"""
-        self.ui.toolButton_previous.setMinimumSize(24, 24)
-        self.ui.toolButton_autoplay.setMinimumSize(24, 24)
-        self.ui.toolButton_next.setMinimumSize(24, 24)
-        self.ui.toolButton_option.setMinimumSize(24, 24)
-        self.ui.toolButton_playlist.setMinimumSize(24, 24)
+        button_size = 30
+        self.ui.toolButton_previous.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_autoplay.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_next.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_option.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_playlist.setMinimumSize(button_size, button_size)
 
     def _load_icon(self):
         """设置图标"""

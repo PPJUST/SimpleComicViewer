@@ -1,8 +1,8 @@
 # 播放列表控件
-
-# 备忘录 右键菜单 1.打开 2.打开路径 3.删除队列
-# 备忘录 拖入后需要高亮拖入项
-# 双击路径行打开对应路径
+import os
+# 备忘录 右键菜单 1.显示 2.打开路径 3.删除队列（删除后打开下一个）
+# 备忘录 检测失效路径
+# 备忘录 优化列宽
 
 
 from typing import Union
@@ -46,6 +46,16 @@ class WidgetPlaylist(QTableWidget):
         else:
             self._add_item(comic)
 
+    def set_active_item(self, comic_path):
+        """高亮当前项目"""
+        for row in range(self.rowCount()):
+            item_path = self.item(row, 5)
+            path = item_path.text()
+            if path == comic_path:
+                self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
+                self._highlight_row(row)
+                break
+
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""
         self.setGeometry(x, y, self.sizeHint().width(), self.sizeHint().height())
@@ -80,7 +90,7 @@ class WidgetPlaylist(QTableWidget):
         self.setItem(index_row, 3, item_page)
         # 列5 文件大小
         size_mb = round(comic_info.filesize / 1024 / 1024, 2)
-        item_filesize = QTableWidgetItem(str(size_mb))
+        item_filesize = QTableWidgetItem(f'{size_mb}MB')
         item_filesize.setFlags(item_filesize.flags() & ~Qt.ItemIsEditable)
         self.setItem(index_row, 4, item_filesize)
         # 列6 文件路径
@@ -93,27 +103,43 @@ class WidgetPlaylist(QTableWidget):
         if item:
             # 提取行号
             row = item.row()
-            # 发送信号
             item_path = self.item(row, 5)
             filepath = item_path.text()
-            self.signal_double_click.emit(filepath)
-            # 修改图标
-            self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
-            # 修改文本颜色
-            self.item(self._last_active_row, 0).setForeground(Qt.black)
-            self.item(self._last_active_row, 1).setForeground(Qt.black)
-            self.item(self._last_active_row, 2).setForeground(Qt.black)
-            self.item(self._last_active_row, 3).setForeground(Qt.black)
-            self.item(self._last_active_row, 4).setForeground(Qt.black)
-            self.item(self._last_active_row, 5).setForeground(Qt.black)
-            self.item(row, 0).setForeground(Qt.blue)
-            self.item(row, 1).setForeground(Qt.blue)
-            self.item(row, 2).setForeground(Qt.blue)
-            self.item(row, 3).setForeground(Qt.blue)
-            self.item(row, 4).setForeground(Qt.blue)
-            self.item(row, 5).setForeground(Qt.blue)
-            # 更新选中行变量
-            self._last_active_row = row
+            if row != self._last_active_row:
+                # 发送信号
+                self.signal_double_click.emit(filepath)
+                # 修改图标
+                self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
+                # 高亮行
+                self._highlight_row(row)
+            # 提取列号
+            column = item.column()
+            if column == 5:  # 双击的是路径单元格，则打开对应路径文件
+                self._open_file(filepath)
+
+    def _highlight_row(self, row: int):
+        """高亮行的文本"""
+        if row == self._last_active_row:
+            return
+        # 修改文本颜色
+        self.item(row, 0).setForeground(Qt.blue)
+        self.item(row, 1).setForeground(Qt.blue)
+        self.item(row, 2).setForeground(Qt.blue)
+        self.item(row, 3).setForeground(Qt.blue)
+        self.item(row, 4).setForeground(Qt.blue)
+        self.item(row, 5).setForeground(Qt.blue)
+        self.item(self._last_active_row, 0).setForeground(Qt.black)
+        self.item(self._last_active_row, 1).setForeground(Qt.black)
+        self.item(self._last_active_row, 2).setForeground(Qt.black)
+        self.item(self._last_active_row, 3).setForeground(Qt.black)
+        self.item(self._last_active_row, 4).setForeground(Qt.black)
+        self.item(self._last_active_row, 5).setForeground(Qt.black)
+        # 更新选中行变量
+        self._last_active_row = row
+
+    def _open_file(self, path):
+        """打开指定路径文件"""
+        os.startfile(path)
 
     def _is_item_exists(self, path):
         """指定路径是否已经存在在视图中"""

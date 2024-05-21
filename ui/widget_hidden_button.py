@@ -20,6 +20,8 @@ class WidgetHiddenButton(QWidget):
         self.setLayout(self.layout)
 
         self.button = ToolButtonRightClickAndHidden()
+        button_size = 32
+        self.button.setMinimumSize(button_size, button_size)
         self.layout.addWidget(self.button)
         self.installEventFilter(self.button)
         self.button.raise_()  # 使该label显示在widget之上

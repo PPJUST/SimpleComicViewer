@@ -46,14 +46,6 @@ class WidgetPreviewControl(QWidget):
         # 加载预览子控件
         self._load_child_preview_widget()
 
-    def set_preview_mode(self, view_mode=None):
-        """设置预览模式"""
-        function_normal.print_function_info()
-        if not view_mode:
-            view_mode = GetSetting.current_view_mode_eng()
-        self.reset_autoplay()
-        self._load_child_preview_widget(view_mode)
-
     def set_comic(self, comic_path: str = None):
         """加载漫画数据"""
         function_normal.print_function_info()
@@ -81,6 +73,14 @@ class WidgetPreviewControl(QWidget):
             if isinstance(self.child_preview_widget, ScrollAreaPreview):
                 self.child_preview_widget.stop_autoplay()
 
+    def reload_child_preview_widget(self):
+        """重新加载预览控件"""
+        view_mode = GetSetting.current_view_mode_eng()
+        self.stop_thread_autoplay()
+        self._set_preview_mode(view_mode)
+        self.set_comic()
+        self._reset_autoplay_setting()
+
     def to_previous_page(self):
         """切换下一页（单页/双页视图）"""
         function_normal.print_function_info()
@@ -90,11 +90,6 @@ class WidgetPreviewControl(QWidget):
         """切换下一页（单页/双页视图）"""
         function_normal.print_function_info()
         self.child_preview_widget.to_next_page()
-
-    def reset_autoplay(self):
-        """初始化自动播放设置"""
-        function_normal.print_function_info()
-        self.thread_autoplay.reset_setting()
 
     def autoplay_speed_up(self):
         """自动播放加速"""
@@ -115,6 +110,19 @@ class WidgetPreviewControl(QWidget):
         """重设预览控件大小"""
         function_normal.print_function_info()
         self.child_preview_widget.reset_preview_size()
+
+    def _reset_autoplay_setting(self):
+        """重置自动播放的设置参数"""
+        function_normal.print_function_info()
+        self.thread_autoplay.reset_setting()
+
+    def _set_preview_mode(self, view_mode=None):
+        """设置预览模式"""
+        function_normal.print_function_info()
+        if not view_mode:
+            view_mode = GetSetting.current_view_mode_eng()
+        self._reset_autoplay_setting()
+        self._load_child_preview_widget(view_mode)
 
     def _get_thread_signal_autoplay(self, speed):
         """接收自动播放线程的信号，执行对应的方法"""

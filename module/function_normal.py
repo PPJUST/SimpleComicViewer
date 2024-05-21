@@ -21,6 +21,19 @@ def print_function_info(mode: str = 'current'):
               inspect.getframeinfo(inspect.currentframe().f_back.f_back).function)
 
 
+def check_filetype(file: str):
+    """获取一个文件的文件类型"""
+    # 为了速度，直接使用后缀名判断
+    image_suffix = ['.jpg', '.png', '.webp', '.jpeg']
+    archive_suffix = ['.zip', '.rar']
+
+    suffix = os.path.splitext(file)[1].lower()
+    if suffix in image_suffix:
+        return 'image'
+    elif suffix in archive_suffix:
+        return 'archive'
+
+
 def is_archive(path):
     """文件是否为压缩包"""
     kind = filetype.guess(path)

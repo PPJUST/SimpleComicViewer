@@ -1,5 +1,5 @@
 # 选项dialog
-
+# 备忘录 边框设置
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QDialog
 

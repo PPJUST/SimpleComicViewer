@@ -13,7 +13,6 @@ class ToolButtonRightClick(QToolButton):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.setMouseTracking(True)
-        self.setMinimumSize(24, 24)
         self.customContextMenuRequested.connect(self._send_right_clicked_signal)
 
     def set_icon(self, icon):

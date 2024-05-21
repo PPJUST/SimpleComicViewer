@@ -131,10 +131,11 @@ class WidgetTopControlChild(QWidget):
 
     def _load_button_size(self):
         """设置按钮的大小"""
-        self.ui.toolButton_preview_single.setMinimumSize(24, 24)
-        self.ui.toolButton_preview_double.setMinimumSize(24, 24)
-        self.ui.toolButton_preview_v.setMinimumSize(24, 24)
-        self.ui.toolButton_preview_h.setMinimumSize(24, 24)
+        button_size = 30
+        self.ui.toolButton_preview_single.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_preview_double.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_preview_v.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_preview_h.setMinimumSize(button_size, button_size)
 
     def eventFilter(self, obj, event):
         """隐藏事件"""
