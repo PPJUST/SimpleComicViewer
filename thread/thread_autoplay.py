@@ -5,13 +5,13 @@ from PySide6.QtCore import QThread, Signal
 
 from module import function_normal
 from module.function_config_get import GetSetting
+from ui.label_hover_run_info import LabelHoverRunInfo
 
 
 class ThreadAutoPlay(QThread):
     """发送自动播放信号的子线程"""
     signal_next = Signal(float)
     signal_stop = Signal()
-    signal_speed_info = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -30,6 +30,9 @@ class ThreadAutoPlay(QThread):
 
         self._load_setting()
         self.reset_setting()
+
+        # 加载信息显示控件（单例模式，实例在主程序中）
+        self.label_hover_run_info = LabelHoverRunInfo()
 
     def _load_setting(self):
         """加载设置"""
@@ -76,7 +79,7 @@ class ThreadAutoPlay(QThread):
             self._active_interval = self._INTERVAL_SCROLL
 
         self._active_interval = round(self._active_interval, 2)  # 统一小数位，加减速后可能会出现尾数
-        self._emit_speed_info()
+        self._show_speed_info()
 
     def speed_up(self):
         """加速"""
@@ -111,7 +114,7 @@ class ThreadAutoPlay(QThread):
     def stop_play(self):
         self._is_stop = True
 
-    def _emit_speed_info(self):
-        """发送速度信息"""
+    def _show_speed_info(self):
+        """显示新的速度信息"""
         text = f'当前滚动速度:{round(self._active_interval, 2)}秒'
-        self.signal_speed_info.emit(text)
+        self.label_hover_run_info.show_information(text)

@@ -1,23 +1,21 @@
 # 播放列表控件
 import os
-# 备忘录 右键菜单 1.显示 2.打开路径 3.删除队列（删除后打开下一个）
-# 备忘录 检测失效路径
-# 备忘录 优化列宽
-
-
 from typing import Union
 
+import send2trash
 from PySide6.QtCore import Signal, Qt
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QTableWidgetItem, QTableWidget, QHeaderView
+from PySide6.QtGui import QIcon, QAction
+from PySide6.QtWidgets import QMenu, QTableWidgetItem, QTableWidget, QHeaderView
 
-from constant import _ICON_CHECKED_GRAY, _ICON_ARCHIVE, _ICON_FOLDER, _ICON_CHECKED_GREEN
+from constant import _ICON_CHECKED_GRAY, _ICON_ARCHIVE, _ICON_FOLDER, _ICON_CHECKED_GREEN, _ICON_WARNING
 from module.class_comic_info import ComicInfo
+from ui.label_hover_run_info import LabelHoverRunInfo
 
 
 class WidgetPlaylist(QTableWidget):
     """播放列表控件"""
     signal_double_click = Signal(str)
+    signal_clear_preview = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -25,13 +23,26 @@ class WidgetPlaylist(QTableWidget):
         columns = ['已阅', '类型', '标题', '页数', '大小', '路径']
         self.setColumnCount(len(columns))
         self.setHorizontalHeaderLabels(columns)
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
         # 设置ui
+        self.setFixedSize(300, 300)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.resize(self.sizeHint())
+        self.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
+        self.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        # 设置列宽
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.horizontalHeader().setMaximumSectionSize(150)
 
         # 绑定双击信号
         self.itemDoubleClicked.connect(self._double_click_item)
+
+        # 设置右键菜单
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._show_context_menu)
+
+        # 加载信息显示控件（单例模式，实例在主程序中）
+        self.label_hover_run_info = LabelHoverRunInfo()
 
         # 初始化
         self._last_active_row = 0  # 上次选中的行
@@ -55,6 +66,18 @@ class WidgetPlaylist(QTableWidget):
                 self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
                 self._highlight_row(row)
                 break
+
+    def open_next_item(self):
+        """打开下一行项目"""
+        target_row = self._last_active_row + 1
+        if target_row < self.rowCount():
+            self._active_row_item(target_row)
+
+    def open_previous_item(self):
+        """打开上一行项目"""
+        target_row = self._last_active_row - 1
+        if target_row >= 0:
+            self._active_row_item(target_row)
 
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""
@@ -83,6 +106,7 @@ class WidgetPlaylist(QTableWidget):
         # 列3 标题
         item_filetitle = QTableWidgetItem(comic_info.filetitle)
         item_filetitle.setFlags(item_filetitle.flags() & ~Qt.ItemIsEditable)
+        item_filetitle.setToolTip(comic_info.filetitle)
         self.setItem(index_row, 2, item_filetitle)
         # 列4 页数
         item_page = QTableWidgetItem(str(comic_info.page_count))
@@ -96,6 +120,7 @@ class WidgetPlaylist(QTableWidget):
         # 列6 文件路径
         item_filepath = QTableWidgetItem(comic_info.path)
         item_filepath.setFlags(item_filepath.flags() & ~Qt.ItemIsEditable)
+        item_filepath.setToolTip(comic_info.path)
         self.setItem(index_row, 5, item_filepath)
 
     def _double_click_item(self, item):
@@ -103,43 +128,126 @@ class WidgetPlaylist(QTableWidget):
         if item:
             # 提取行号
             row = item.row()
-            item_path = self.item(row, 5)
-            filepath = item_path.text()
-            if row != self._last_active_row:
-                # 发送信号
-                self.signal_double_click.emit(filepath)
-                # 修改图标
-                self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
-                # 高亮行
-                self._highlight_row(row)
-            # 提取列号
-            column = item.column()
-            if column == 5:  # 双击的是路径单元格，则打开对应路径文件
-                self._open_file(filepath)
+            filepath = self._get_item_path(item)
+            # 检测行项目对应的路径是否存在
+            if not self._is_path_exists(filepath):
+                self._lowlight_row(row)
+            else:
+                if row != self._last_active_row:
+                    # 发送信号
+                    self.signal_double_click.emit(filepath)
+                    # 高亮行
+                    self._highlight_row(row)
+                # 提取列号
+                column = item.column()
+                if column == 5:  # 双击的是路径单元格，则打开对应路径文件
+                    self._open_file(filepath)
+
+    def _active_row_item(self, row: int):
+        """将指定行设为活动项"""
+        filepath = self._get_row_path(row)
+        # 检测行项目对应的路径是否存在
+        if not self._is_path_exists(filepath):
+            self._lowlight_row(row)
+
+        # 发送信号
+        self.signal_double_click.emit(filepath)
+        # 高亮行
+        self._highlight_row(row)
 
     def _highlight_row(self, row: int):
-        """高亮行的文本"""
+        """高亮行"""
         if row == self._last_active_row:
             return
+        # 修改图标
+        self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_CHECKED_GREEN))
         # 修改文本颜色
-        self.item(row, 0).setForeground(Qt.blue)
-        self.item(row, 1).setForeground(Qt.blue)
-        self.item(row, 2).setForeground(Qt.blue)
-        self.item(row, 3).setForeground(Qt.blue)
-        self.item(row, 4).setForeground(Qt.blue)
-        self.item(row, 5).setForeground(Qt.blue)
-        self.item(self._last_active_row, 0).setForeground(Qt.black)
-        self.item(self._last_active_row, 1).setForeground(Qt.black)
-        self.item(self._last_active_row, 2).setForeground(Qt.black)
-        self.item(self._last_active_row, 3).setForeground(Qt.black)
-        self.item(self._last_active_row, 4).setForeground(Qt.black)
-        self.item(self._last_active_row, 5).setForeground(Qt.black)
+        for col in range(self.columnCount()):
+            self.item(row, col).setForeground(Qt.blue)
+            self.item(self._last_active_row, col).setForeground(Qt.black)
         # 更新选中行变量
         self._last_active_row = row
 
-    def _open_file(self, path):
+    def _lowlight_row(self, row: int):
+        """低亮行"""
+        # 修改图标
+        self.item(row, 0).setData(Qt.DecorationRole, QIcon(_ICON_WARNING))
+        self.item(row, 1).setData(Qt.DecorationRole, QIcon(_ICON_WARNING))
+        # 修改文本颜色
+        for col in range(self.columnCount()):
+            self.item(row, col).setForeground(Qt.gray)
+        # 设置禁止选中该行
+        for col in range(self.columnCount()):
+            self.item(row, col).setFlags(self.item(row, col).flags() & ~Qt.ItemIsSelectable)
+
+    def _remove_queue_item(self, item: QTableWidgetItem, is_delete_file=False):
+        """移除队列项目"""
+        row = item.row()
+        filepath = self._get_row_path(row)
+        self.removeRow(row)
+        self.label_hover_run_info.show_information(f'移除队列项 - {filepath}')
+
+        # 如果当前预览的行就是被移除的行，则切换预览
+        if self._last_active_row == row:
+            if self.rowCount() == 0:  # 删除后队列为空，则清除主窗口预览
+                self.signal_clear_preview.emit()
+            elif self.rowCount() > row:  # 下方行数够，则切换下一项
+                self._active_row_item(row)
+            else:  # 否则切换上一项
+                self._active_row_item(row - 1)
+
+        if is_delete_file:
+            self._delete_file(filepath)
+
+    def _show_context_menu(self, pos):
+        """右键菜单"""
+        item = self.itemAt(pos)
+        if item is not None:  # 判断是否右键点击在单元格上
+            menu = QMenu()
+            menu.adjustSize()
+
+            action_preview = QAction('浏览', menu)
+            action_preview.triggered.connect(lambda: self._double_click_item(item))
+            menu.addAction(action_preview)
+
+            action_open_file = QAction('打开本地文件', menu)
+            action_open_file.triggered.connect(lambda: self._open_file(self._get_item_path(item)))
+            menu.addAction(action_open_file)
+
+            action_remove_queue = QAction('删除队列', menu)
+            action_remove_queue.triggered.connect(lambda: self._remove_queue_item(item))
+            menu.addAction(action_remove_queue)
+
+            action_delete_file = QAction('删除本地文件', menu)
+            action_delete_file.triggered.connect(lambda: self._remove_queue_item(item, is_delete_file=True))
+            menu.addAction(action_delete_file)
+
+            menu.exec_(self.mapToGlobal(pos))
+
+    @staticmethod
+    def _open_file(path):
         """打开指定路径文件"""
         os.startfile(path)
+
+    def _delete_file(self, path):
+        """删除本地文件"""
+        send2trash.send2trash(path)
+        self.label_hover_run_info.show_information(f'删除本地文件 - {path}')
+
+    def _get_item_path(self, item: QTableWidgetItem):
+        """提取item对应行项目的文件路径"""
+        row = item.row()
+        item_path = self.item(row, 5)
+        filepath = item_path.text()
+
+        return filepath
+
+    def _get_row_path(self, row: int):
+        """提取指定行项目的文件路径"""
+        item_path = self.item(row, 5)
+        filepath = item_path.text()
+
+        return filepath
 
     def _is_item_exists(self, path):
         """指定路径是否已经存在在视图中"""
@@ -147,3 +255,11 @@ class WidgetPlaylist(QTableWidget):
             item_path = self.item(row, 5)
             if item_path.text().upper() == path.upper():
                 return True
+
+    @staticmethod
+    def _is_path_exists(path):
+        """对应的路径文件是否存在"""
+        if os.path.exists(path):
+            return True
+        else:
+            return False

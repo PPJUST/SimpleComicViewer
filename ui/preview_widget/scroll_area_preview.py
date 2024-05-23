@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QSizePolicy, QHBoxLayout, QWidget, QVBoxLayout
 from module import function_normal
 from module.class_comic_info import ComicInfo
 from module.function_config_get import GetSetting
-from ui.preview_widget.label_image_scroll import LabelImage
+from ui.preview_widget.label_image_scroll import LabelImageScroll
 from ui.preview_widget.scroll_area_smooth import ScrollAreaSmooth
 
 
@@ -50,6 +50,7 @@ class ScrollAreaPreview(ScrollAreaSmooth):
         self._PRELOAD_PAGES = None  # 预载图片数
 
         self._load_setting()
+        self._show_default_image()
 
     def _load_setting(self):
         """加载设置"""
@@ -135,11 +136,18 @@ class ScrollAreaPreview(ScrollAreaSmooth):
 
         return scroll_bar_position == max_position
 
+    def _show_default_image(self):
+        """显示默认图像"""
+        self._clear_labels()
+        function_normal.print_function_info()
+        label = LabelImageScroll(self._scroll_type, self.widget)
+        self.layout.addWidget(label)
+
     def _create_empty_labels(self):
         """按照图像大小预先创建空的label"""
         self._clear_labels()
         for image_path in self._comic_info.page_list:
-            label = LabelImage(self._scroll_type, self.widget)
+            label = LabelImageScroll(self._scroll_type, self.widget)
             label.set_comic(self._comic_info.path, self._comic_info.filetype)
             label.set_image(image_path)
             label._load_pixmap()  # 备忘录，暂时先读取全部图像，之后做在子线程中读取

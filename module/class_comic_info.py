@@ -8,7 +8,7 @@ class ComicInfo:
     """提取和存储漫画信息的类"""
 
     def __init__(self, path: str):
-        self.path = path  # 文件路径
+        self.path = os.path.normpath(path)  # 文件路径
         self.filetype = ''  # 文件类型
         self.filename = ''  # 文件名（含后缀）
         self.filetitle = ''  # 文件标题（不含后缀）

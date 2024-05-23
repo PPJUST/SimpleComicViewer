@@ -35,6 +35,8 @@ _ICON_ARCHIVE = _PROGRAM_FOLDER + 'icon/archive.png'
 _ICON_FOLDER = _PROGRAM_FOLDER + 'icon/folder.png'
 _ICON_CHECKED_GRAY = _PROGRAM_FOLDER + 'icon/checked_gray.png'
 _ICON_CHECKED_GREEN = _PROGRAM_FOLDER + 'icon/checked_green.png'
+_ICON_WARNING = _PROGRAM_FOLDER + 'icon/warning.png'
+_ICON_NO_PIC = _PROGRAM_FOLDER + 'icon/no_pic.png'
 
 # 其他常量
 _MARGIN = 16  # 与边框的边距，用于预留滚动条的距离

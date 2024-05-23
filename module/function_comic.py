@@ -127,3 +127,20 @@ def filter_comic_folder_and_archive(check_dirpath):
             comic_folders.add(dirpath)
 
     return comic_folders, comic_archives
+
+
+def extract_comic(paths: list) -> list:
+    """从路径list中提取符合要求的漫画文件夹和漫画压缩包"""
+    comic_folders = set()
+    comic_archives = set()
+    for path in paths:
+        if os.path.isdir(path):
+            folders, archives = filter_comic_folder_and_archive(path)
+            comic_folders.update(folders)
+            comic_archives.update(archives)
+        elif os.path.isfile(path):
+            if is_comic_archive(path):
+                comic_archives.add(path)
+
+    both = comic_folders.union(comic_archives)
+    return list(both)

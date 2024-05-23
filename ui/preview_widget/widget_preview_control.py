@@ -8,6 +8,7 @@ from module.class_comic_info import ComicInfo
 from module.function_config_get import GetSetting
 from thread.thread_autoplay import ThreadAutoPlay
 from ui.label_hover_comic_info import LabelHoverComicInfo
+from ui.label_hover_run_info import LabelHoverRunInfo
 from ui.preview_widget.scroll_area_preview import ScrollAreaPreview
 from ui.preview_widget.widget_comic_preview_double import WidgetComicPreviewDouble
 from ui.preview_widget.widget_comic_preview_single import WidgetComicPreviewSingle
@@ -16,7 +17,6 @@ from ui.preview_widget.widget_comic_preview_single import WidgetComicPreviewSing
 class WidgetPreviewControl(QWidget):
     """漫画预览控件控制中心"""
     signal_stop_autoplay = Signal()
-    signal_show_info = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -30,8 +30,6 @@ class WidgetPreviewControl(QWidget):
         self.thread_autoplay = ThreadAutoPlay()
         self.thread_autoplay.signal_next.connect(
             self._get_thread_signal_autoplay)
-        self.thread_autoplay.signal_speed_info.connect(
-            self.signal_show_info.emit)
 
         # 设置左上角的漫画信息悬浮label
         self.label_hover_comic_info = LabelHoverComicInfo(self)
@@ -45,6 +43,9 @@ class WidgetPreviewControl(QWidget):
 
         # 加载预览子控件
         self._load_child_preview_widget()
+
+        # 加载信息显示控件（单例模式，实例在主程序中）
+        self.label_hover_run_info = LabelHoverRunInfo()
 
     def set_comic(self, comic_path: str = None):
         """加载漫画数据"""
@@ -60,12 +61,14 @@ class WidgetPreviewControl(QWidget):
     def start_thread_autoplay(self):
         """开始自动播放线程"""
         function_normal.print_function_info()
+        self.label_hover_run_info.show_information('开始自动播放')
         self.thread_autoplay.start()
 
     def stop_thread_autoplay(self):
         """停止自动播放线程"""
         function_normal.print_function_info()
         if self.thread_autoplay.isRunning():
+            self.label_hover_run_info.show_information('停止自动播放')
             self.thread_autoplay.stop_play()
             self.signal_stop_autoplay.emit()
 
@@ -75,11 +78,18 @@ class WidgetPreviewControl(QWidget):
 
     def reload_child_preview_widget(self):
         """重新加载预览控件"""
+        function_normal.print_function_info()
+        self.label_hover_run_info.show_information('加载预览控件')
         view_mode = GetSetting.current_view_mode_eng()
         self.stop_thread_autoplay()
         self._set_preview_mode(view_mode)
-        self.set_comic()
         self._reset_autoplay_setting()
+        if self.comic_info:
+            self.set_comic()
+
+    def clear_preview(self):
+        """清空预览控件"""
+        self._clear_preview_layout()
 
     def to_previous_page(self):
         """切换下一页（单页/双页视图）"""

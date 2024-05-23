@@ -1,4 +1,4 @@
-# 主界面下方的控制栏组件
+# 主界面中部下方的漫画控制组件
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
@@ -8,8 +8,8 @@ from thread.thread_wait_time import ThreadWaitTime
 from ui.ui_src.ui_widget_below_control_child import Ui_Form
 
 
-class WidgetBelowControl(QWidget):
-    """主界面下方的控制栏组件（主程序使用的控件，用于中转子控件的信号和继承隐藏事件）"""
+class WidgetComicControl(QWidget):
+    """主界面中部下方的漫画控制组件（主程序使用的控件，用于中转子控件的信号和继承隐藏事件）"""
     signal_previous_page = Signal()
     signal_next_page = Signal()
     signal_open_playlist = Signal()
@@ -55,7 +55,7 @@ class WidgetBelowControl(QWidget):
 
 
 class WidgetBelowControlChild(QWidget):
-    """主界面下方的控制栏组件（作为子控件，用于编写隐藏事件）"""
+    """主界面中部下方的漫画控制组件（作为子控件，用于编写隐藏事件）"""
     signal_previous_page = Signal()  # 切换上一页
     signal_next_page = Signal()  # 切换下一页
     signal_open_playlist = Signal()  # 打开列表

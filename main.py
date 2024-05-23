@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QApplication
 
 from constant import _HOST, _ICON_MAIN, _PORT
 from module import function_config_normal
+
 from module.function_config_get import GetSetting
 from ui.SimpleComicViewer import SimpleComicViewer
 

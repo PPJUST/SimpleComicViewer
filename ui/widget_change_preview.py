@@ -1,4 +1,4 @@
-# 主界面左上方的控制栏组件
+# 主界面左上方的切换预览视图类型的组件
 
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QIcon
@@ -15,8 +15,8 @@ from thread.thread_wait_time import ThreadWaitTime
 from ui.ui_src.ui_widget_top_control_child import Ui_Form
 
 
-class WidgetTopControl(QWidget):
-    """主界面左上方的控制栏组件（主程序使用的控件，用于中转子控件的信号和继承隐藏事件）"""
+class WidgetChangePreview(QWidget):
+    """主界面左上方的切换预览视图类型的组件（主程序使用的控件，用于中转子控件的信号和继承隐藏事件）"""
     signal_preview_mode_changed = Signal()
 
     def __init__(self, parent=None):
@@ -27,7 +27,7 @@ class WidgetTopControl(QWidget):
         self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        self.widget = WidgetTopControlChild()
+        self.widget = WidgetChangePreviewChild()
         self.layout.addWidget(self.widget)
         self.installEventFilter(self.widget)
         self.widget.raise_()  # 使该label显示在widget之上
@@ -48,8 +48,8 @@ class WidgetTopControl(QWidget):
         self.setGeometry(x, y, self._size.width(), self._size.height())
 
 
-class WidgetTopControlChild(QWidget):
-    """主界面左上方的控制栏组件（作为子控件，用于编写隐藏事件）"""
+class WidgetChangePreviewChild(QWidget):
+    """主界面左上方的切换预览视图类型的组件（作为子控件，用于编写隐藏事件）"""
     signal_preview_mode_changed = Signal()  # 改变预览模式
 
     def __init__(self, parent=None):
