@@ -5,6 +5,8 @@ import time
 
 import filetype
 
+from constant import _IMAGE_SUFFIX, _ARCHIVE_SUFFIX
+
 
 def print_function_info(mode: str = 'current'):
     """
@@ -24,13 +26,10 @@ def print_function_info(mode: str = 'current'):
 def check_filetype(file: str):
     """获取一个文件的文件类型"""
     # 为了速度，直接使用后缀名判断
-    image_suffix = ['.jpg', '.png', '.webp', '.jpeg']
-    archive_suffix = ['.zip', '.rar']
-
     suffix = os.path.splitext(file)[1].lower()
-    if suffix in image_suffix:
+    if suffix in _IMAGE_SUFFIX:
         return 'image'
-    elif suffix in archive_suffix:
+    elif suffix in _ARCHIVE_SUFFIX:
         return 'archive'
 
 
@@ -41,7 +40,8 @@ def is_archive(path):
         return False
 
     guess_type = kind.extension
-    if guess_type in ['rar', 'zip']:
+    archive_suffix_remove_point = [i[1:] for i in _ARCHIVE_SUFFIX]
+    if guess_type in archive_suffix_remove_point:
         return True
     else:
         return False

@@ -32,7 +32,7 @@ class ThreadWaitTime(QThread):
 
     def load_setting(self):
         """加载设置"""
-        self._WAIT_TIME = GetSetting.hide_wait_time()
+        self._WAIT_TIME = GetSetting.hide_wait_time_medium()
 
     def run(self):
         self.signal_start.emit()

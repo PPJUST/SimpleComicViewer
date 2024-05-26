@@ -3,7 +3,8 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 
-from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_LIST, _ICON_OPTION, _ICON_PLAY, _ICON_STOP
+from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_LIST, _ICON_OPTION, _ICON_PLAY, _ICON_STOP, \
+    _BUTTON_MEDIUM
 from thread.thread_wait_time import ThreadWaitTime
 from ui.ui_src.ui_widget_below_control_child import Ui_Form
 
@@ -34,14 +35,11 @@ class WidgetComicControl(QWidget):
         self._size = self.sizeHint()
 
         # 中转子控件信号
-        self.widget.signal_previous_page.connect(
-            self.signal_previous_page.emit)
+        self.widget.signal_previous_page.connect(self.signal_previous_page.emit)
         self.widget.signal_next_page.connect(self.signal_next_page.emit)
-        self.widget.signal_previous_item.connect(
-            self.signal_previous_item.emit)
+        self.widget.signal_previous_item.connect(self.signal_previous_item.emit)
         self.widget.signal_next_item.connect(self.signal_next_item.emit)
-        self.widget.signal_open_playlist.connect(
-            self.signal_open_playlist.emit)
+        self.widget.signal_open_playlist.connect(self.signal_open_playlist.emit)
         self.widget.signal_open_option.connect(self.signal_open_option.emit)
         self.widget.signal_autoplay.connect(self.signal_autoplay.emit)
 
@@ -82,18 +80,13 @@ class WidgetBelowControlChild(QWidget):
         self.thread_wait.signal_end.connect(self.hide)
 
         # 连接信号
-        self.ui.toolButton_previous.clicked.connect(
-            self.signal_previous_page.emit)
+        self.ui.toolButton_previous.clicked.connect(self.signal_previous_page.emit)
         self.ui.toolButton_next.clicked.connect(self.signal_next_page.emit)
-        self.ui.toolButton_previous.rightClicked.connect(
-            self.signal_previous_item.emit)
-        self.ui.toolButton_next.rightClicked.connect(
-            self.signal_next_item.emit)
-        self.ui.toolButton_playlist.clicked.connect(
-            self.signal_open_playlist.emit)
+        self.ui.toolButton_previous.rightClicked.connect(self.signal_previous_item.emit)
+        self.ui.toolButton_next.rightClicked.connect(self.signal_next_item.emit)
+        self.ui.toolButton_playlist.clicked.connect(self.signal_open_playlist.emit)
         self.ui.toolButton_option.clicked.connect(self.signal_open_option.emit)
-        self.ui.toolButton_autoplay.clicked.connect(
-            self._change_autoplay_state)
+        self.ui.toolButton_autoplay.clicked.connect(self._change_autoplay_state)
 
     def reset_autoplay_state(self):
         """重置自动播放开关状态"""
@@ -108,12 +101,11 @@ class WidgetBelowControlChild(QWidget):
 
     def _load_button_size(self):
         """重置按钮的大小"""
-        button_size = 30
-        self.ui.toolButton_previous.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_autoplay.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_next.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_option.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_playlist.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_previous.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_autoplay.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_next.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_option.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_playlist.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
 
     def _load_icon(self):
         """设置图标"""

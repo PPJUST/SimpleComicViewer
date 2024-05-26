@@ -1,5 +1,6 @@
 # 播放列表控件
 import os
+import random
 from typing import Union
 
 import send2trash
@@ -7,7 +8,8 @@ from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QIcon, QAction
 from PySide6.QtWidgets import QMenu, QTableWidgetItem, QTableWidget, QHeaderView
 
-from constant import _ICON_CHECKED_GRAY, _ICON_ARCHIVE, _ICON_FOLDER, _ICON_CHECKED_GREEN, _ICON_WARNING
+from constant import (_ICON_CHECKED_GRAY, _ICON_ARCHIVE, _ICON_FOLDER, _ICON_CHECKED_GREEN, _ICON_WARNING,
+                      _PLAYLIST_WIDTH, _PLAYLIST_HEIGHT, _PLAYLIST_COLUMN_MAX_HEIGHT)
 from module.class_comic_info import ComicInfo
 from ui.label_hover_run_info import LabelHoverRunInfo
 
@@ -25,14 +27,14 @@ class WidgetPlaylist(QTableWidget):
         self.setHorizontalHeaderLabels(columns)
 
         # 设置ui
-        self.setFixedSize(300, 300)
+        self.setFixedSize(_PLAYLIST_WIDTH, _PLAYLIST_HEIGHT)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
         self.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         # 设置列宽
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.horizontalHeader().setMaximumSectionSize(150)
+        self.horizontalHeader().setMaximumSectionSize(_PLAYLIST_COLUMN_MAX_HEIGHT)
 
         # 绑定双击信号
         self.itemDoubleClicked.connect(self._double_click_item)
@@ -78,6 +80,15 @@ class WidgetPlaylist(QTableWidget):
         target_row = self._last_active_row - 1
         if target_row >= 0:
             self._active_row_item(target_row)
+
+    def open_random_item(self):
+        """打开随机项目"""
+        if self.rowCount() > 1:
+            while True:
+                random_row = random.randint(0, self.rowCount() - 1)
+                if random_row != self._last_active_row:
+                    self._active_row_item(random_row)
+                    break
 
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""
@@ -149,7 +160,6 @@ class WidgetPlaylist(QTableWidget):
         # 检测行项目对应的路径是否存在
         if not self._is_path_exists(filepath):
             self._lowlight_row(row)
-
         # 发送信号
         self.signal_double_click.emit(filepath)
         # 高亮行

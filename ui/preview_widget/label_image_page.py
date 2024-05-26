@@ -4,7 +4,7 @@ from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel
 
-from constant import _MARGIN, _ICON_NO_PIC
+from constant import _MARGIN_PREVIEW, _ICON_NO_PIC
 from module import function_comic, function_image, function_normal
 
 
@@ -59,8 +59,7 @@ class LabelImagePage(QLabel):
         function_normal.print_function_info()
         if not self._image_pixmap:
             self._load_pixmap()
-        scaled_pixmap = self._image_pixmap.scaled(
-            self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        scaled_pixmap = self._image_pixmap.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.setPixmap(scaled_pixmap)
 
     def hide_label(self):
@@ -75,8 +74,7 @@ class LabelImagePage(QLabel):
         if self._filetype == 'folder':
             self._image_pixmap = QPixmap(self._image_path)
         elif self._filetype == 'archive':
-            img_bytes = function_comic.read_image_in_archive(
-                self._comic_path, self._image_path)
+            img_bytes = function_comic.read_image_in_archive(self._comic_path, self._image_path)
             self._image_pixmap = QPixmap()
             self._image_pixmap.loadFromData(img_bytes)
 
@@ -89,7 +87,7 @@ class LabelImagePage(QLabel):
         """更新label的最大尺寸"""
         function_normal.print_function_info()
         self._max_widget_size = QSize(
-            self.parent_widget.width() - _MARGIN, self.parent_widget.height() - _MARGIN)
+            self.parent_widget.width() - _MARGIN_PREVIEW, self.parent_widget.height() - _MARGIN_PREVIEW)
 
     def _get_image_size(self):
         """提取图片的宽高数据"""
@@ -97,8 +95,7 @@ class LabelImagePage(QLabel):
         if self._filetype == 'folder':
             self._image_size = function_image.get_image_size(self._image_path)
         elif self._filetype == 'archive':
-            self._image_size = function_image.get_image_size_from_archive(
-                self._comic_path, self._image_path)
+            self._image_size = function_image.get_image_size_from_archive(self._comic_path, self._image_path)
 
     def _change_label_size(self):
         """修改label的大小，以匹配图像的大小"""
@@ -117,8 +114,7 @@ class LabelImagePage(QLabel):
         """以label的宽为基准计算新的尺寸"""
         function_normal.print_function_info()
         image_width, image_height = self._image_size
-        new_height = int(
-            image_height * self._max_widget_size.width() / image_width)
+        new_height = int(image_height * self._max_widget_size.width() / image_width)
         new_size = QSize(self._max_widget_size.width(), new_height)
         return new_size
 

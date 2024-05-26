@@ -17,7 +17,7 @@ class ThreadListenSocket(QThread):
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind((_HOST, _PORT))
-        sock.listen(2)
+        sock.listen(2)  # 最多允许2个客户端同时连接
         while True:
             connection, client_address = sock.accept()
             try:

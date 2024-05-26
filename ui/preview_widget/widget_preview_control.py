@@ -28,8 +28,7 @@ class WidgetPreviewControl(QWidget):
 
         # 设置自动播放线程
         self.thread_autoplay = ThreadAutoPlay()
-        self.thread_autoplay.signal_next.connect(
-            self._get_thread_signal_autoplay)
+        self.thread_autoplay.signal_next.connect(self._get_thread_signal_autoplay)
 
         # 设置左上角的漫画信息悬浮label
         self.label_hover_comic_info = LabelHoverComicInfo(self)
@@ -175,8 +174,7 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = WidgetComicPreviewSingle(self)
-        self.child_preview_widget.signal_page_changed.connect(
-            self._update_hover_label_info)
+        self.child_preview_widget.signal_page_changed.connect(self._update_hover_label_info)
         self.layout.addWidget(self.child_preview_widget)
 
     def _load_preview_widget_double(self):
@@ -184,8 +182,7 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = WidgetComicPreviewDouble(self)
-        self.child_preview_widget.signal_page_changed.connect(
-            self._update_hover_label_info)
+        self.child_preview_widget.signal_page_changed.connect(self._update_hover_label_info)
         self.layout.addWidget(self.child_preview_widget)
 
     def _load_preview_widget_scroll(self, scroll_type: str):
@@ -194,10 +191,8 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = ScrollAreaPreview(scroll_type, self)
-        self.child_preview_widget.signal_scrolled.connect(
-            self._update_hover_label_info)
-        self.child_preview_widget.signal_stop_autoplay.connect(
-            self.stop_thread_autoplay)
+        self.child_preview_widget.signal_scrolled.connect(self._update_hover_label_info)
+        self.child_preview_widget.signal_stop_autoplay.connect(self.stop_thread_autoplay)
         self.layout.addWidget(self.child_preview_widget)
 
     def _clear_preview_layout(self):

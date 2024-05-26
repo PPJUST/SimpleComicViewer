@@ -75,8 +75,8 @@ class WidgetComicPreviewDouble(QScrollArea):
             self._index_right = self.index
         else:
             show_image_right = self._comic_info.page_list[self._index_right - 1]
-            if function_image.is_horizontal_image(show_image_left) or function_image.is_horizontal_image(
-                    show_image_right):
+            if function_image.is_horizontal_image(show_image_left) or \
+                    function_image.is_horizontal_image(show_image_right):
                 self.label_right.hide_label()
                 self._index_right = self.index
             else:
@@ -100,7 +100,8 @@ class WidgetComicPreviewDouble(QScrollArea):
             return
         show_image_left = self._comic_info.page_list[self.index - 2]
         show_image_right = self._comic_info.page_list[self.index - 1]
-        if function_image.is_horizontal_image(show_image_left) or function_image.is_horizontal_image(show_image_right):
+        if function_image.is_horizontal_image(show_image_left) or \
+                function_image.is_horizontal_image(show_image_right):
             self.index -= 1
             self._index_right = self.index + 1
         else:

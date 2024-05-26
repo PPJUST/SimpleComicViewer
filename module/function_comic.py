@@ -5,6 +5,7 @@ import zipfile
 import natsort
 import rarfile
 
+from constant import _IMAGE_SUFFIX, _COMIC_MIN_PAGE_COUNT
 from module import function_normal
 
 
@@ -60,18 +61,16 @@ def extract_folder_images(folder) -> list:
 def _is_image_suffix(file: str):
     """判断一个文件后缀是否是图片类型"""
     # 为了速度，直接使用后缀名判断
-    image_suffix = ['.jpg', '.png', '.webp', '.jpeg']
-
     file_suffix = os.path.splitext(file)[1].lower()
-    if file_suffix in image_suffix:
+    if file_suffix in _IMAGE_SUFFIX:
         return True
     else:
         return False
 
 
 def is_comic_archive(archive_path):
-    """是否为漫画压缩包（内部图片数>=4）"""
-    if function_normal.is_archive(archive_path) and len(extract_archive_images(archive_path)) >= 4:
+    """是否为漫画压缩包（内部图片数>=指定值）"""
+    if function_normal.is_archive(archive_path) and len(extract_archive_images(archive_path)) >= _COMIC_MIN_PAGE_COUNT:
         return True
     else:
         return False
@@ -108,7 +107,7 @@ def filter_comic_folder_and_archive(check_dirpath):
             elif filetype == 'archive':
                 folder_structure_dict[parent_dir]['archive'].add(filepath_join)
 
-    # 检查字典，筛选出符合条件的漫画文件夹（内部图片文件数>=4且无压缩包和子文件夹）和压缩包
+    # 检查字典，筛选出符合条件的漫画文件夹（内部图片文件数>=指定值且无压缩包和子文件夹）和压缩包
     comic_archives = set()  # 符合条件的漫画文件夹集合
     comic_folders = set()  # 符合条件的漫画文件夹集合
     for dirpath, inside_structure in folder_structure_dict.items():
@@ -119,11 +118,11 @@ def filter_comic_folder_and_archive(check_dirpath):
         if inside_archives:
             # 检查压缩包内图片数量
             for path in inside_archives:
-                if len(extract_archive_images(path)) >= 4:
+                if len(extract_archive_images(path)) >= _COMIC_MIN_PAGE_COUNT:
                     comic_archives.add(path)
         elif inside_dirs:
             continue
-        elif len(inside_images) >= 4:
+        elif len(inside_images) >= _COMIC_MIN_PAGE_COUNT:
             comic_folders.add(dirpath)
 
     return comic_folders, comic_archives

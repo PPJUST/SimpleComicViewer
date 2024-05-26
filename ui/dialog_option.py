@@ -31,26 +31,17 @@ class DialogOption(QDialog):
 
     def _load_setting(self):
         """加载设置"""
-        self.ui.checkBox_skip_solid_color_page.setChecked(
-            GetSetting.skip_solid_color_page())
-        self.ui.checkBox_sharpen_image.setChecked(
-            GetSetting.sharpen_image())
-        self.ui.spinBox_preload_pages.setValue(
-            GetSetting.preload_pages())
-        self.ui.comboBox_switch_page_mode.addItems(
-            GetSetting.switch_page_modes())
-        self.ui.comboBox_switch_page_mode.setCurrentText(
-            GetSetting.current_switch_page_mode())
+        self.ui.checkBox_skip_solid_color_page.setChecked(GetSetting.skip_solid_color_page())
+        self.ui.checkBox_sharpen_image.setChecked(GetSetting.sharpen_image())
+        self.ui.spinBox_preload_pages.setValue(GetSetting.preload_pages())
+        self.ui.comboBox_switch_page_mode.addItems(GetSetting.switch_page_modes())
+        self.ui.comboBox_switch_page_mode.setCurrentText(GetSetting.current_switch_page_mode())
 
     def _confirm(self):
         """确认"""
-        ResetSetting.skip_solid_color_page(
-            self.ui.checkBox_skip_solid_color_page.isChecked())
-        ResetSetting.sharpen_image(
-            self.ui.checkBox_sharpen_image.isChecked())
-        ResetSetting.current_switch_page_mode(
-            self.ui.comboBox_switch_page_mode.currentText())
-        ResetSetting.preload_pages(
-            self.ui.spinBox_preload_pages.value())
+        ResetSetting.skip_solid_color_page(self.ui.checkBox_skip_solid_color_page.isChecked())
+        ResetSetting.sharpen_image(self.ui.checkBox_sharpen_image.isChecked())
+        ResetSetting.current_switch_page_mode(self.ui.comboBox_switch_page_mode.currentText())
+        ResetSetting.preload_pages(self.ui.spinBox_preload_pages.value())
         self.signal_option_changed.emit()
         self.close()

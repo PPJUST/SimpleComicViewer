@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout
 from constant import (_ICON_DOUBLE_PAGE, _ICON_DOUBLE_PAGE_RED,
                       _ICON_SCROLL_HORIZONTAL, _ICON_SCROLL_HORIZONTAL_RED,
                       _ICON_SCROLL_VERTICAL, _ICON_SCROLL_VERTICAL_RED,
-                      _ICON_SINGLE_PAGE, _ICON_SINGLE_PAGE_RED)
+                      _ICON_SINGLE_PAGE, _ICON_SINGLE_PAGE_RED, _BUTTON_MEDIUM)
 from module import function_normal
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
@@ -72,14 +72,10 @@ class WidgetChangePreviewChild(QWidget):
         self.thread_wait.signal_end.connect(self.hide)
 
         # 连接信号
-        self.ui.toolButton_preview_single.clicked.connect(
-            lambda: self._click_preview_button('mode_1'))
-        self.ui.toolButton_preview_double.clicked.connect(
-            lambda: self._click_preview_button('mode_2'))
-        self.ui.toolButton_preview_v.clicked.connect(
-            lambda: self._click_preview_button('mode_3'))
-        self.ui.toolButton_preview_h.clicked.connect(
-            lambda: self._click_preview_button('mode_4'))
+        self.ui.toolButton_preview_single.clicked.connect(lambda: self._click_preview_button('mode_1'))
+        self.ui.toolButton_preview_double.clicked.connect(lambda: self._click_preview_button('mode_2'))
+        self.ui.toolButton_preview_v.clicked.connect(lambda: self._click_preview_button('mode_3'))
+        self.ui.toolButton_preview_h.clicked.connect(lambda: self._click_preview_button('mode_4'))
 
     def set_active_icon(self, preview_mode):
         """手动设置预览模式"""
@@ -131,11 +127,10 @@ class WidgetChangePreviewChild(QWidget):
 
     def _load_button_size(self):
         """设置按钮的大小"""
-        button_size = 30
-        self.ui.toolButton_preview_single.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_preview_double.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_preview_v.setMinimumSize(button_size, button_size)
-        self.ui.toolButton_preview_h.setMinimumSize(button_size, button_size)
+        self.ui.toolButton_preview_single.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_double.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_v.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_h.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
 
     def eventFilter(self, obj, event):
         """隐藏事件"""

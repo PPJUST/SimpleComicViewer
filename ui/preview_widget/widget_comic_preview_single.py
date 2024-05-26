@@ -49,8 +49,7 @@ class WidgetComicPreviewSingle(QScrollArea):
         self._comic_info = comic_info
         self.index = 1
         self._MAX_INDEX = self._comic_info.page_count
-        self.preview_label.set_comic(
-            self._comic_info.path, self._comic_info.filetype)
+        self.preview_label.set_comic(self._comic_info.path, self._comic_info.filetype)
         self._show_images()
 
     def _show_images(self):

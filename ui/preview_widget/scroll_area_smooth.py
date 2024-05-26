@@ -48,13 +48,14 @@ class ScrollBarSmooth(QScrollBar):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self._last_speed = None
+        self._default_animal_duration = 400
 
         # 设置插值动画
         self.animal = QPropertyAnimation()
         self.animal.setTargetObject(self)
         self.animal.setPropertyName(b"value")
         self.animal.setEasingCurve(QEasingCurve.OutQuad)  # 设置动画的缓动曲线为二次缓出
-        self.animal.setDuration(400)  # 动画时间 毫秒
+        self.animal.setDuration(self._default_animal_duration)  # 动画时间 毫秒
         self.animal.finished.connect(self.signal_scroll_end.emit)
 
     def start_autoplay(self, speed):
@@ -64,8 +65,7 @@ class ScrollBarSmooth(QScrollBar):
         else:
             self._last_speed = speed
             self.animal.stop()
-            calc_duration = int(
-                (self.maximum() - self.value()) / (1 / speed * 100) * 1000)
+            calc_duration = int((self.maximum() - self.value()) / (1 / speed * 100) * 1000)
             self.animal.setEasingCurve(QEasingCurve.Linear)
             self.animal.setDuration(calc_duration)
             self.setValue(self.maximum())
@@ -75,7 +75,7 @@ class ScrollBarSmooth(QScrollBar):
         self._last_speed = None
         self.animal.stop()
         self.animal.setEasingCurve(QEasingCurve.OutQuad)
-        self.animal.setDuration(400)
+        self.animal.setDuration(self._default_animal_duration)
 
     def setValue(self, value: int):
         if value == self.value():

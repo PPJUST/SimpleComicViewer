@@ -2,12 +2,17 @@
 import os
 import sys
 
+from module import function_config_normal
+
 # 程序所在路径
 _PROGRAM_FOLDER = os.path.dirname(os.path.realpath(__file__)) + '/'  # 源码运行使用
 # _PROGRAM_FOLDER = os.path.dirname(sys.executable) + '/'  # 打包运行使用
 
-# 文件路径
+# 配置文件路径
 _CONFIG_FILE = _PROGRAM_FOLDER + 'config.ini'
+function_config_normal.create_default_config(_CONFIG_FILE)
+
+from module.function_config_get import GetSetting
 
 # 图标
 _ICON_MAIN = _PROGRAM_FOLDER + 'icon/main.ico'
@@ -39,8 +44,24 @@ _ICON_WARNING = _PROGRAM_FOLDER + 'icon/warning.png'
 _ICON_NO_PIC = _PROGRAM_FOLDER + 'icon/no_pic.png'
 
 # 其他常量
-_MARGIN = 16  # 与边框的边距，用于预留滚动条的距离
+_IMAGE_SUFFIX = GetSetting.image_suffix().split(' ')
+_ARCHIVE_SUFFIX = GetSetting.archive_suffix().split(' ')
+_COMIC_MIN_PAGE_COUNT = GetSetting.comic_min_page_count()
+_RESIZE_IMAGE_HASH = GetSetting.resize_image_hash()
+_HORIZONTAL_IMAGE_ASPECT_RATIO = GetSetting.horizontal_image_aspect_ratio()
+_PLAYLIST_WIDTH = GetSetting.playlist_width()
+_PLAYLIST_HEIGHT = GetSetting.playlist_height()
+_PLAYLIST_COLUMN_MAX_HEIGHT = GetSetting.playlist_column_max_height()
+_BUTTON_SMALL = GetSetting.button_small()
+_BUTTON_MEDIUM = GetSetting.button_medium()
+_BUTTON_LARGE = GetSetting.button_large()
+_COMIC_INFO_WIDTH = GetSetting.comic_info_width()
+_COMIC_INFO_HEIGHT = GetSetting.comic_info_height()
+_MARGIN_SMALL = GetSetting.margin_small()
+_MARGIN_MEDIUM = GetSetting.margin_medium()
+_MARGIN_LARGE = GetSetting.margin_large()
+_MARGIN_PREVIEW = GetSetting.margin_preview()  # 与边框的边距，用于预留滚动条的距离
 
 # 本地监听端口
-_HOST = '127.0.0.1'
-_PORT = 9527
+_HOST = GetSetting.host()
+_PORT = GetSetting.port()

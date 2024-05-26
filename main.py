@@ -8,7 +8,6 @@ from PySide6.QtWidgets import QApplication
 
 from constant import _HOST, _ICON_MAIN, _PORT
 from module import function_config_normal
-
 from module.function_config_get import GetSetting
 from ui.SimpleComicViewer import SimpleComicViewer
 
@@ -64,5 +63,4 @@ if __name__ == "__main__":
         send_data_to_host(args)
         sys.exit(1)
     else:
-        function_config_normal.create_default_config()
         load_app(args)

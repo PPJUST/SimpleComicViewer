@@ -1,8 +1,8 @@
 # 配置文件相关方法-修改设置项的方法
 import configparser
 
-from constant import _CONFIG_FILE
 from module.function_config_get import _get_setting_list
+from module.function_config_normal import _CONFIG_FILE
 
 
 class ResetSetting:
@@ -22,11 +22,6 @@ class ResetSetting:
                        f'mode_{current_index + 1}')
 
     @staticmethod
-    def current_fit_mode(value):
-        """修改当前大小适应模式选项"""
-        _reset_setting('option', 'fit_mode', value)
-
-    @staticmethod
     def skip_solid_color_page(value):
         """修改是否跳过纯色页选项"""
         _reset_setting('option', 'skip_solid_color_page', value)
@@ -40,6 +35,11 @@ class ResetSetting:
     def preload_pages(value):
         """修改预载图像页数选项"""
         _reset_setting('option', 'preload_pages', value)
+
+    @staticmethod
+    def random_play(value):
+        """修改随机播放选项"""
+        _reset_setting('option', 'random_play', value)
 
     @staticmethod
     def autoplay_interval_scroll(value):
@@ -79,8 +79,8 @@ class ResetSetting:
     @staticmethod
     def app_size(width, height):
         """修改程序界面大小选项"""
-        _reset_setting('other', 'app_width', width)
-        _reset_setting('other', 'app_height', height)
+        _reset_setting('size', 'app_width', width)
+        _reset_setting('size', 'app_height', height)
 
 
 def _reset_setting(section: str, option: str, value):

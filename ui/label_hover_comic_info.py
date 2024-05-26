@@ -1,6 +1,7 @@
 # 自动隐藏的悬浮在其他控件左上角的文字信息label，用于显示漫画信息
 from PySide6.QtWidgets import QLabel
 
+from constant import _COMIC_INFO_WIDTH, _COMIC_INFO_HEIGHT, _MARGIN_SMALL
 from module.class_comic_info import ComicInfo
 
 
@@ -14,7 +15,7 @@ class LabelHoverComicInfo(QLabel):
         super().__init__(parent)
         # ui设置
         self.setMouseTracking(True)
-        self.setGeometry(10, 10, 200, 100)
+        self.setGeometry(_MARGIN_SMALL, _MARGIN_SMALL, _COMIC_INFO_WIDTH, _COMIC_INFO_HEIGHT)
         self.setStyleSheet("color: red;")
         self.setWordWrap(True)
         self.hide()
