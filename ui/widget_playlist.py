@@ -31,7 +31,6 @@ class WidgetPlaylist(QTableWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
         self.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
         # 设置列宽
         self.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.horizontalHeader().setMaximumSectionSize(_PLAYLIST_COLUMN_MAX_HEIGHT)
@@ -93,6 +92,28 @@ class WidgetPlaylist(QTableWidget):
     def reset_xy(self, x: int, y: int):
         """重设坐标轴位置"""
         self.setGeometry(x, y, self.sizeHint().width(), self.sizeHint().height())
+
+    def remove_active_item_queue(self, is_delete_file=False):
+        """移除当前活动项的队列"""
+        filepath = self._get_row_path(self._last_active_row)
+        self.removeRow(self._last_active_row)
+        self.label_hover_run_info.show_information(f'移除队列项 - {filepath}')
+
+        # 当前预览的行就是被移除的行，需要切换预览
+        if self.rowCount() == 0:  # 删除后队列为空，则清除主窗口预览
+            self.signal_clear_preview.emit()
+        elif self.rowCount() > self._last_active_row:  # 下方行数够，则切换下一项
+            self._active_row_item(self._last_active_row)
+        else:  # 否则切换上一项
+            self._active_row_item(self._last_active_row - 1)
+
+        if is_delete_file:
+            self._delete_file(filepath)
+
+    def open_active_item_file(self):
+        """打开当前活动项的本地文件"""
+        filepath = self._get_row_path(self._last_active_row)
+        os.startfile(filepath)
 
     def _add_item(self, comic_info: ComicInfo):
         """添加项目"""
@@ -209,6 +230,12 @@ class WidgetPlaylist(QTableWidget):
         if is_delete_file:
             self._delete_file(filepath)
 
+    def _clear_queue(self):
+        """清除所有队列项目"""
+        self.label_hover_run_info.show_information(f'移除所有队列项目')
+        self.clear()
+        self.signal_clear_preview.emit()
+
     def _show_context_menu(self, pos):
         """右键菜单"""
         item = self.itemAt(pos)
@@ -224,13 +251,17 @@ class WidgetPlaylist(QTableWidget):
             action_open_file.triggered.connect(lambda: self._open_file(self._get_item_path(item)))
             menu.addAction(action_open_file)
 
-            action_remove_queue = QAction('删除队列', menu)
+            action_remove_queue = QAction('删除该队列项', menu)
             action_remove_queue.triggered.connect(lambda: self._remove_queue_item(item))
             menu.addAction(action_remove_queue)
 
             action_delete_file = QAction('删除本地文件', menu)
             action_delete_file.triggered.connect(lambda: self._remove_queue_item(item, is_delete_file=True))
             menu.addAction(action_delete_file)
+
+            action_clear_queue = QAction('清除所有队列项目', menu)
+            action_clear_queue.triggered.connect(self._clear_queue)
+            menu.addAction(action_clear_queue)
 
             menu.exec_(self.mapToGlobal(pos))
 

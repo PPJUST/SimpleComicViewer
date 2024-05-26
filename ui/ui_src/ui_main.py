@@ -36,6 +36,6 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ComicViewer", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"SimpleComicViewer", None))
     # retranslateUi
 

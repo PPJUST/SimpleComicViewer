@@ -1,5 +1,6 @@
 # 主窗口
 # 备忘录 读取数据时加个dialog放进度条
+import sys
 from typing import Union
 
 from PySide6.QtCore import Qt, QTimer
@@ -14,6 +15,7 @@ from thread.thread_listen_socket import ThreadListenSocket
 from thread.thread_wait_time import ThreadWaitTime
 from ui.dialog_option import DialogOption
 from ui.label_hover_run_info import LabelHoverRunInfo
+from ui.menu_main import MenuMain
 from ui.preview_widget.widget_preview_control import WidgetPreviewControl
 from ui.ui_src.ui_main import Ui_MainWindow
 from ui.widget_change_preview import WidgetChangePreview
@@ -84,6 +86,22 @@ class SimpleComicViewer(QMainWindow):
         self.widget_playlist.signal_clear_preview.connect(self.clear_display)
         self.widget_playlist.raise_()
         self.widget_playlist.hide()
+
+        # 设置右键菜单
+        self.menu = MenuMain()
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.open_context_menu)
+        self.menu.signal_open_previous_comic.connect(lambda: self.to_previous_comic(dont_check_random=True))
+        self.menu.signal_open_next_comic.connect(lambda: self.to_next_comic(dont_check_random=True))
+        self.menu.signal_open_random_comic.connect(self.to_random_comic)
+        self.menu.signal_choose_comic_folder.connect(self.accept_arg)
+        self.menu.signal_choose_comic_archive.connect(self.accept_arg)
+        self.menu.signal_open_file.connect(self.widget_playlist.open_active_item_file)
+        self.menu.signal_remove_queue.connect(self.widget_playlist.remove_active_item_queue)
+        self.menu.signal_delete_file.connect(lambda: self.widget_playlist.remove_active_item_queue(True))
+        self.menu.signal_open_option.connect(self.open_option)
+        # self.menu.signal_open_about.connect()
+        self.menu.signal_quit.connect(sys.exit)
 
         # 初始传参处理
         self._comic_list = args
@@ -227,19 +245,29 @@ class SimpleComicViewer(QMainWindow):
         else:
             self.widget_playlist.hide()
 
-    def to_previous_comic(self):
+    def to_previous_comic(self, dont_check_random=False):
         """切换上一本漫画"""
-        if GetSetting.random_play():
-            self.widget_playlist.open_random_item()
-        else:
+        if dont_check_random:
             self.widget_playlist.open_previous_item()
-
-    def to_next_comic(self):
-        """切换下一本漫画"""
-        if GetSetting.random_play():
-            self.widget_playlist.open_random_item()
         else:
+            if GetSetting.random_play():
+                self.to_random_comic()
+            else:
+                self.widget_playlist.open_previous_item()
+
+    def to_next_comic(self, dont_check_random=False):
+        """切换下一本漫画"""
+        if dont_check_random:
             self.widget_playlist.open_next_item()
+        else:
+            if GetSetting.random_play():
+                self.to_random_comic()
+            else:
+                self.widget_playlist.open_next_item()
+
+    def to_random_comic(self):
+        """切换随机漫画"""
+        self.widget_playlist.open_random_item()
 
     def open_option(self):
         """打开设置页"""
@@ -283,6 +311,9 @@ class SimpleComicViewer(QMainWindow):
     def update_app_title(self, path=None):
         """更新程序标题，显示当前路径"""
         self.setWindowTitle(f'SimpleComicViewer - {path}')
+
+    def open_context_menu(self, pos):
+        self.menu.exec_(self.mapToGlobal(pos))
 
     def resizeEvent(self, event):
         """重写事件，更新各个悬浮组件的位置"""
