@@ -14,10 +14,21 @@ class ToolButtonRightClick(QToolButton):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.setMouseTracking(True)
         self.customContextMenuRequested.connect(self._send_right_clicked_signal)
+        self.setStyleSheet("border: none;")
 
     def set_icon(self, icon):
         """设置图标"""
         self.setIcon(QIcon(icon))
+        self.setIconSize(self.size())
 
     def _send_right_clicked_signal(self):
         self.rightClicked.emit()
+
+    # 重写进入事件
+    def enterEvent(self, event):
+        self.setStyleSheet("")
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.setStyleSheet("border: none;")
+        super().leaveEvent(event)

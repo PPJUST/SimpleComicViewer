@@ -12,7 +12,7 @@ from module import function_normal
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
 from thread.thread_wait_time import ThreadWaitTime
-from ui.ui_src.ui_widget_top_control_child import Ui_Form
+from ui.ui_src.ui_widget_change_preview import Ui_Form
 
 
 class WidgetChangePreview(QWidget):
@@ -127,10 +127,10 @@ class WidgetChangePreviewChild(QWidget):
 
     def _load_button_size(self):
         """设置按钮的大小"""
-        self.ui.toolButton_preview_single.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_double.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_v.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_h.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_single.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_double.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_v.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_preview_h.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
 
     def eventFilter(self, obj, event):
         """隐藏事件"""

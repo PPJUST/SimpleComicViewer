@@ -43,8 +43,8 @@ def create_default_config(config_path):
             config.set('size', 'playlist_height', '300')
             config.set('size', 'playlist_column_max_height', '300')
             config.set('size', 'button_small', '16')
-            config.set('size', 'button_medium', '24')
-            config.set('size', 'button_large', '32')
+            config.set('size', 'button_medium', '32')
+            config.set('size', 'button_large', '64')
             config.set('size', 'comic_info_width', '200')
             config.set('size', 'comic_info_height', '100')
             config.set('size', 'margin_small', '10')  # 边距（小）

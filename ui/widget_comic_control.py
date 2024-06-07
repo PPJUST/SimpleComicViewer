@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QVBoxLayout, QWidget
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _ICON_LIST, _ICON_OPTION, _ICON_PLAY, _ICON_STOP, \
     _BUTTON_MEDIUM
 from thread.thread_wait_time import ThreadWaitTime
-from ui.ui_src.ui_widget_below_control_child import Ui_Form
+from ui.ui_src.ui_widget_comic_control import Ui_Form
 
 
 class WidgetComicControl(QWidget):
@@ -26,7 +26,7 @@ class WidgetComicControl(QWidget):
         self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        self.widget = WidgetBelowControlChild()
+        self.widget = WidgetComicControlChild()
         self.layout.addWidget(self.widget)
         self.installEventFilter(self.widget)
         self.widget.raise_()  # 使该label显示在widget之上
@@ -52,7 +52,7 @@ class WidgetComicControl(QWidget):
         self.widget.reset_autoplay_state()
 
 
-class WidgetBelowControlChild(QWidget):
+class WidgetComicControlChild(QWidget):
     """主界面中部下方的漫画控制组件（作为子控件，用于编写隐藏事件）"""
     signal_previous_page = Signal()  # 切换上一页
     signal_next_page = Signal()  # 切换下一页
@@ -101,11 +101,11 @@ class WidgetBelowControlChild(QWidget):
 
     def _load_button_size(self):
         """重置按钮的大小"""
-        self.ui.toolButton_previous.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_autoplay.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_next.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_option.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_playlist.setMinimumSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_previous.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_autoplay.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_next.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_option.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        self.ui.toolButton_playlist.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
 
     def _load_icon(self):
         """设置图标"""
