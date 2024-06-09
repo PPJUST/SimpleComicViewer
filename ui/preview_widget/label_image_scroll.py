@@ -19,6 +19,7 @@ class LabelImageScroll(LabelImagePage):
         if self._is_show_image:
             return
         super().show_image()
+        print('label显示图片')
         self._is_show_image = True
 
     def hide_image(self):

@@ -7,7 +7,8 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout
 from constant import (_ICON_DOUBLE_PAGE, _ICON_DOUBLE_PAGE_RED,
                       _ICON_SCROLL_HORIZONTAL, _ICON_SCROLL_HORIZONTAL_RED,
                       _ICON_SCROLL_VERTICAL, _ICON_SCROLL_VERTICAL_RED,
-                      _ICON_SINGLE_PAGE, _ICON_SINGLE_PAGE_RED, _BUTTON_MEDIUM)
+                      _ICON_SINGLE_PAGE, _ICON_SINGLE_PAGE_RED, _BUTTON_MEDIUM, _ICON_SCROLL_HORIZONTAL_REVERSE,
+                      _ICON_DOUBLE_PAGE_REVERSE, _ICON_DOUBLE_PAGE_REVERSE_RED, _ICON_SCROLL_HORIZONTAL_REVERSE_RED)
 from module import function_normal
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
@@ -36,8 +37,7 @@ class WidgetChangePreview(QWidget):
         self._size = self.sizeHint()
 
         # 中转子控件信号
-        self.widget.signal_preview_mode_changed.connect(
-            self.signal_preview_mode_changed.emit)
+        self.widget.signal_preview_mode_changed.connect(self.signal_preview_mode_changed.emit)
 
     def set_active_icon(self, preview_mode):
         """手动设置预览模式"""
@@ -76,6 +76,8 @@ class WidgetChangePreviewChild(QWidget):
         self.ui.toolButton_preview_double.clicked.connect(lambda: self._click_preview_button('mode_2'))
         self.ui.toolButton_preview_v.clicked.connect(lambda: self._click_preview_button('mode_3'))
         self.ui.toolButton_preview_h.clicked.connect(lambda: self._click_preview_button('mode_4'))
+        self.ui.toolButton_preview_double_reverse.clicked.connect(lambda: self._click_preview_button('mode_5'))
+        self.ui.toolButton_preview_h_reverse.clicked.connect(lambda: self._click_preview_button('mode_6'))
 
     def set_active_icon(self, preview_mode):
         """手动设置预览模式"""
@@ -117,6 +119,10 @@ class WidgetChangePreviewChild(QWidget):
             self.ui.toolButton_preview_v.setIcon(QIcon(_ICON_SCROLL_VERTICAL_RED))
         elif self._preview_mode == 'mode_4':
             self.ui.toolButton_preview_h.setIcon(QIcon(_ICON_SCROLL_HORIZONTAL_RED))
+        elif self._preview_mode == 'mode_5':
+            self.ui.toolButton_preview_double_reverse.setIcon(QIcon(_ICON_DOUBLE_PAGE_REVERSE_RED))
+        elif self._preview_mode == 'mode_6':
+            self.ui.toolButton_preview_h_reverse.setIcon(QIcon(_ICON_SCROLL_HORIZONTAL_REVERSE_RED))
 
     def _reset_icon_preview_button(self):
         """重置按钮图标"""
@@ -124,13 +130,14 @@ class WidgetChangePreviewChild(QWidget):
         self.ui.toolButton_preview_double.setIcon(QIcon(_ICON_DOUBLE_PAGE))
         self.ui.toolButton_preview_v.setIcon(QIcon(_ICON_SCROLL_VERTICAL))
         self.ui.toolButton_preview_h.setIcon(QIcon(_ICON_SCROLL_HORIZONTAL))
+        self.ui.toolButton_preview_double_reverse.setIcon(QIcon(_ICON_DOUBLE_PAGE_REVERSE))
+        self.ui.toolButton_preview_h_reverse.setIcon(QIcon(_ICON_SCROLL_HORIZONTAL_REVERSE))
 
     def _load_button_size(self):
         """设置按钮的大小"""
-        self.ui.toolButton_preview_single.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_double.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_v.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
-        self.ui.toolButton_preview_h.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
+        for index in range(self.layout().count()):
+            button = self.layout().itemAt(index).widget()
+            button.setFixedSize(_BUTTON_MEDIUM, _BUTTON_MEDIUM)
 
     def eventFilter(self, obj, event):
         """隐藏事件"""

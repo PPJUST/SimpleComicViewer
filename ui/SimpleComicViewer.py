@@ -68,7 +68,7 @@ class SimpleComicViewer(QMainWindow):
         self.widget_below_control.signal_open_option.connect(self.open_option)
         self.widget_below_control.signal_autoplay.connect(self.set_autoplay_state)
         self.widget_below_control.reset_xy(self.width() // 2 - self.widget_below_control.width() // 2,
-                                           self.height() - self.widget_below_control.height() - _MARGIN_SMALL)
+                                           self.height() - self.widget_below_control.height() - _MARGIN_MEDIUM)
 
         # 左上角的切换预览视图的组件
         self.widget_change_preview = WidgetChangePreview(self)
@@ -111,6 +111,7 @@ class SimpleComicViewer(QMainWindow):
         # 绑定快捷键
         self.bind_hotkey()
         # 监听本地端口
+        self.thread_listen = None
         self.listen_socket()
 
     def listen_socket(self):
@@ -180,6 +181,14 @@ class SimpleComicViewer(QMainWindow):
         action_view_4.setShortcut(QKeySequence.fromString('ctrl+4'))
         action_view_4.triggered.connect(lambda: self.change_preview_mode('mode_4'))
         self.addAction(action_view_4)
+        action_view_5 = QAction('ctrl+5', self)
+        action_view_5.setShortcut(QKeySequence.fromString('ctrl+5'))
+        action_view_5.triggered.connect(lambda: self.change_preview_mode('mode_5'))
+        self.addAction(action_view_5)
+        action_view_6 = QAction('ctrl+6', self)
+        action_view_6.setShortcut(QKeySequence.fromString('ctrl+6'))
+        action_view_6.triggered.connect(lambda: self.change_preview_mode('mode_6'))
+        self.addAction(action_view_6)
 
     def accept_arg(self, arg: Union[str, list]):
         """接收传参"""
@@ -323,9 +332,9 @@ class SimpleComicViewer(QMainWindow):
         # 右边的切页按钮，x轴离边框m，y轴居中
         self.button_right.reset_xy(self.width() - self.button_right.width() - _MARGIN_MEDIUM,
                                    self.height() // 2 - self.button_right.height() // 2)
-        # 下方的控制条组件，x轴居中，y轴离边框s
+        # 下方的控制条组件，x轴居中，y轴离边框m
         self.widget_below_control.reset_xy(self.width() // 2 - self.widget_below_control.width() // 2,
-                                           self.height() - self.widget_below_control.height() - _MARGIN_SMALL)
+                                           self.height() - self.widget_below_control.height() - _MARGIN_MEDIUM)
         # 左上的控制条组件，x轴离边框m，y轴离边框s
         self.widget_change_preview.reset_xy(_MARGIN_MEDIUM, _MARGIN_SMALL)
         # 左下角的信息组件

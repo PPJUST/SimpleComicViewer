@@ -10,6 +10,7 @@ from thread.thread_autoplay import ThreadAutoPlay
 from ui.label_hover_comic_info import LabelHoverComicInfo
 from ui.label_hover_run_info import LabelHoverRunInfo
 from ui.preview_widget.scroll_area_preview import ScrollAreaPreview
+from ui.preview_widget.scroll_area_preview_reverse import ScrollAreaPreviewReverse
 from ui.preview_widget.widget_comic_preview_double import WidgetComicPreviewDouble
 from ui.preview_widget.widget_comic_preview_single import WidgetComicPreviewSingle
 
@@ -120,6 +121,17 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self.child_preview_widget.reset_preview_size()
 
+    def reverse_preview(self, reverse:bool):
+        mode = GetSetting.current_view_mode_eng()
+        if mode  == 'mode_4' :
+            if reverse:
+                print('显示反向视图')
+                self._load_preview_widget_scroll_reverse()
+            else:
+                print('还原正向视图')
+                self._load_preview_widget_scroll('h')
+
+
     def _reset_autoplay_setting(self):
         """重置自动播放的设置参数"""
         function_normal.print_function_info()
@@ -168,6 +180,10 @@ class WidgetPreviewControl(QWidget):
             self._load_preview_widget_scroll('v')
         elif mode == 'mode_4':
             self._load_preview_widget_scroll('h')
+        elif mode == 'mode_4':
+            self._load_preview_widget_double()  # 备忘录 反向视图
+        elif mode == 'mode_6':
+            self._load_preview_widget_scroll_reverse()
 
     def _load_preview_widget_single(self):
         """加载预览子控件-单页模式"""
@@ -191,6 +207,15 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self._clear_preview_layout()
         self.child_preview_widget = ScrollAreaPreview(scroll_type, self)
+        self.child_preview_widget.signal_scrolled.connect(self._update_hover_label_info)
+        self.child_preview_widget.signal_stop_autoplay.connect(self.stop_thread_autoplay)
+        self.layout.addWidget(self.child_preview_widget)
+
+    def _load_preview_widget_scroll_reverse(self):
+        """加载预览子控件-滚动模式"""
+        function_normal.print_function_info()
+        self._clear_preview_layout()
+        self.child_preview_widget = ScrollAreaPreviewReverse(parent=self)
         self.child_preview_widget.signal_scrolled.connect(self._update_hover_label_info)
         self.child_preview_widget.signal_stop_autoplay.connect(self.stop_thread_autoplay)
         self.layout.addWidget(self.child_preview_widget)

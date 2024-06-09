@@ -22,6 +22,10 @@ class ScrollAreaSmooth(QScrollArea):
         self.setVerticalScrollBar(self.scrollbar_v)
         self.setHorizontalScrollBar(self.scrollbar_h)
 
+    def set_direction(self, reverse:bool):
+        """设置方向"""
+        self.scrollbar_h.set_direction(reverse)
+        self.scrollbar_v.set_direction(reverse)
     def start_autoplay(self, speed):
         if self.scrollbar_h.isVisible():
             self.scrollbar_h.start_autoplay(speed)
@@ -58,6 +62,13 @@ class ScrollBarSmooth(QScrollBar):
         self.animal.setDuration(self._default_animal_duration)  # 动画时间 毫秒
         self.animal.finished.connect(self.signal_scroll_end.emit)
 
+        # 设置方向
+        self.reverse = False
+
+    def set_direction(self, reverse:bool):
+        """设置方向"""
+        self.reverse = reverse
+
     def start_autoplay(self, speed):
         """开始自动播放"""
         if self._last_speed == speed:
@@ -65,10 +76,15 @@ class ScrollBarSmooth(QScrollBar):
         else:
             self._last_speed = speed
             self.animal.stop()
-            calc_duration = int((self.maximum() - self.value()) / (1 / speed * 100) * 1000)
             self.animal.setEasingCurve(QEasingCurve.Linear)
-            self.animal.setDuration(calc_duration)
-            self.setValue(self.maximum())
+            if self.reverse:
+                calc_duration = int((self.value() - 0) / (1 / speed * 100) * 1000)
+                self.animal.setDuration(calc_duration)
+                self.setValue(0)
+            else:
+                calc_duration = int((self.maximum() - self.value()) / (1 / speed * 100) * 1000)
+                self.animal.setDuration(calc_duration)
+                self.setValue(self.maximum())
 
     def quit_autoplay(self):
         """退出自动播放"""

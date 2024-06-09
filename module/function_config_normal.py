@@ -29,6 +29,8 @@ def create_default_config(config_path):
             config.set('view_mode', 'mode_2', '双页视图')
             config.set('view_mode', 'mode_3', '纵向滚动视图')
             config.set('view_mode', 'mode_4', '横向滚动视图')
+            config.set('view_mode', 'mode_5', '双页视图(右->左)')
+            config.set('view_mode', 'mode_6', '横向滚动视图(右->左)')
 
             # 切页选项
             config.add_section('switch_page_mode')

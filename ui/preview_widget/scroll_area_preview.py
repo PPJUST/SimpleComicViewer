@@ -72,8 +72,10 @@ class ScrollAreaPreview(ScrollAreaSmooth):
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
             if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
+                print(f'隐藏第{index}页')
                 label.hide_image()
             else:
+                print(f'显示第{index}页')
                 label.show_image()
 
     def refresh_images(self):
@@ -109,17 +111,12 @@ class ScrollAreaPreview(ScrollAreaSmooth):
     def reset_preview_size(self):
         """重设预览控件大小"""
         function_normal.print_function_info()
-        # 重置滚动条值与索引号的对应列表
-        self._value_group_list.clear()
         # 更新子控件大小，并更新索引列表
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
             label.set_parent(self)
-            # 更新索引列表
-            if self._scroll_type == 'h':
-                self._update_index_list(label.width())
-            elif self._scroll_type == 'v':
-                self._update_index_list(label.height())
+        # 更新索引列表
+        self._update_index_list()
         # 刷新显示
         self.refresh_images()
         # 刷新索引
@@ -152,11 +149,9 @@ class ScrollAreaPreview(ScrollAreaSmooth):
             label.set_image(image_path)
             label._load_pixmap()  # 备忘录，暂时先读取全部图像，之后做在子线程中读取
             self.layout.addWidget(label)
-            # 更新索引列表
-            if self._scroll_type == 'h':
-                self._update_index_list(label.width())
-            elif self._scroll_type == 'v':
-                self._update_index_list(label.height())
+        # 更新索引列表
+        self._update_index_list()
+
 
     def _clear_labels(self):
         """清空所有预生成的label"""
@@ -166,8 +161,18 @@ class ScrollAreaPreview(ScrollAreaSmooth):
             if item_widget is not None:
                 item_widget.deleteLater()
 
-    def _update_index_list(self, label_side: int):
-        """更新索引列表
+    def _update_index_list(self):
+        """更新索引列表"""
+        self._value_group_list.clear()
+        for index in range(self.layout.count()):
+            label = self.layout.itemAt(index).widget()
+            if self._scroll_type == 'h':
+                self._insert_index_list(label.width())
+            elif self._scroll_type == 'v':
+                self._insert_index_list(label.height())
+
+    def _insert_index_list(self, label_side: int):
+        """插入索引
         :param label_side: 图像label的边长度"""
         if len(self._value_group_list) == 0:
             current_tuple = (0, label_side)

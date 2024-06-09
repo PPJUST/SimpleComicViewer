@@ -32,6 +32,10 @@ class MenuMain(QMenu):
         self.action_random_play.triggered.connect(self._set_random_play)
         self.addAction(self.action_random_play)
 
+
+
+
+
         self.action_choose_comic_folder = QAction('选择漫画文件夹')
         self.action_choose_comic_folder.triggered.connect(self._choose_comic_folder)
         self.addAction(self.action_choose_comic_folder)
@@ -95,6 +99,8 @@ class MenuMain(QMenu):
     def _set_random_play():
         """设置随机播放选项"""
         ResetSetting.random_play(not GetSetting.random_play())
+
+
 
     def _choose_comic_folder(self):
         """选择漫画文件夹"""
