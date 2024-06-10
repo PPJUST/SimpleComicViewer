@@ -1,5 +1,4 @@
 # 主窗口
-# 备忘录 读取数据时加个dialog放进度条
 import sys
 from typing import Union
 
@@ -8,12 +7,13 @@ from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import QMainWindow
 
 from constant import _ICON_ARROW_LEFT, _ICON_ARROW_RIGHT, _MARGIN_MEDIUM, _MARGIN_SMALL, _PLAYLIST_HEIGHT
-from module import function_comic
 from module.function_config_get import GetSetting
 from module.function_config_reset import ResetSetting
+from thread.thread_extract_comic import ThreadExtractComic
 from thread.thread_listen_socket import ThreadListenSocket
 from thread.thread_wait_time import ThreadWaitTime
 from ui.dialog_option import DialogOption
+from ui.dialog_wait_animation import DialogWaitAnimation
 from ui.label_hover_run_info import LabelHoverRunInfo
 from ui.menu_main import MenuMain
 from ui.preview_widget.widget_preview_control import WidgetPreviewControl
@@ -86,6 +86,9 @@ class SimpleComicViewer(QMainWindow):
         self.widget_playlist.signal_clear_preview.connect(self.clear_display)
         self.widget_playlist.raise_()
         self.widget_playlist.hide()
+
+        # 播放等待动画的dialog
+        self.dialog_wait_animation = DialogWaitAnimation(self)
 
         # 设置右键菜单
         self.menu = MenuMain()
@@ -199,14 +202,21 @@ class SimpleComicViewer(QMainWindow):
         else:
             arg_list = arg
         # 提取漫画文件夹/压缩包
-        comics = function_comic.extract_comic(arg_list)
-        if comics:
+        self.set_wait_animation()  # 显示等待动画
+        self.thread_extract_comic = ThreadExtractComic(arg_list)
+        self.thread_extract_comic.signal_comic_list.connect(self.accept_comic_list)
+        self.thread_extract_comic.start()
+
+    def accept_comic_list(self, comic_list: list):
+        """接收提取漫画子线程发送的list信号"""
+        if comic_list:
             # 添加到播放列表
-            self.add_playlist(comics)
+            self.add_playlist(comic_list)
             # 显示第一个漫画
-            self.show_comic(comics[0])
+            self.show_comic(comic_list[0])
         else:
             self.clear_display()
+        self.set_wait_animation(False)  # 关闭等待动画
 
     def show_comic(self, comic_path: str):
         """显示指定漫画"""
@@ -241,11 +251,17 @@ class SimpleComicViewer(QMainWindow):
 
     def to_previous_page(self):
         """切换上一页"""
-        self.widget_preview_control.to_previous_page()
+        if GetSetting.current_view_mode_eng() in ['mode_5', 'mode_6']:  # 反向视图时左按钮为下一页
+            self.widget_preview_control.to_next_page()
+        else:
+            self.widget_preview_control.to_previous_page()
 
     def to_next_page(self):
         """切换下一页"""
-        self.widget_preview_control.to_next_page()
+        if GetSetting.current_view_mode_eng() in ['mode_5', 'mode_6']:  # 反向视图时右按钮为上一页
+            self.widget_preview_control.to_previous_page()
+        else:
+            self.widget_preview_control.to_next_page()
 
     def open_playlist(self):
         """打开播放列表"""
@@ -283,6 +299,14 @@ class SimpleComicViewer(QMainWindow):
         option_dialog = DialogOption()
         option_dialog.signal_option_changed.connect(self.reload_preview_widget)
         option_dialog.exec()
+
+    def set_wait_animation(self, is_play: bool = True):
+        """设置等待动画"""
+        self.setEnabled(not is_play)
+        if is_play:
+            self.dialog_wait_animation.play()
+        else:
+            self.dialog_wait_animation.stop()
 
     def change_preview_mode(self, view_mode: str):
         """切换浏览模式"""

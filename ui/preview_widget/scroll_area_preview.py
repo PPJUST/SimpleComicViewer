@@ -71,11 +71,9 @@ class ScrollAreaPreview(ScrollAreaSmooth):
         function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
-            if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
-                print(f'隐藏第{index}页')
+            if abs(self.index - 1 - label.index) > self._PRELOAD_PAGES:
                 label.hide_image()
             else:
-                print(f'显示第{index}页')
                 label.show_image()
 
     def refresh_images(self):
@@ -83,7 +81,7 @@ class ScrollAreaPreview(ScrollAreaSmooth):
         function_normal.print_function_info()
         for index in range(self.layout.count()):
             label = self.layout.itemAt(index).widget()
-            if abs(self.index - 1 - index) > self._PRELOAD_PAGES:
+            if abs(self.index - 1 - label.index) > self._PRELOAD_PAGES:
                 label.hide_image()
             else:
                 label.refresh_image()
@@ -138,20 +136,21 @@ class ScrollAreaPreview(ScrollAreaSmooth):
         self._clear_labels()
         function_normal.print_function_info()
         label = LabelImageScroll(self._scroll_type, self.widget)
+        label.set_index(0)
         self.layout.addWidget(label)
 
     def _create_empty_labels(self):
         """按照图像大小预先创建空的label"""
         self._clear_labels()
-        for image_path in self._comic_info.page_list:
+        for index, image_path in enumerate(self._comic_info.page_list):
             label = LabelImageScroll(self._scroll_type, self.widget)
             label.set_comic(self._comic_info.path, self._comic_info.filetype)
             label.set_image(image_path)
+            label.set_index(index)
             label._load_pixmap()  # 备忘录，暂时先读取全部图像，之后做在子线程中读取
             self.layout.addWidget(label)
         # 更新索引列表
         self._update_index_list()
-
 
     def _clear_labels(self):
         """清空所有预生成的label"""

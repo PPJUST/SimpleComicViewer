@@ -8,7 +8,7 @@ from module.function_config_get import GetSetting
 from ui.preview_widget.label_image_page import LabelImagePage
 
 
-class WidgetComicPreviewSingle(QScrollArea):
+class WidgetPreviewSingle(QScrollArea):
     """预览控件，单页显示漫画图像"""
     signal_page_changed = Signal()
 

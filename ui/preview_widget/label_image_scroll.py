@@ -11,7 +11,12 @@ class LabelImageScroll(LabelImagePage):
         """:param scroll_type: 预览控件的滚动类型，横向h/纵向v"""
         self._scroll_type = scroll_type  # 预览控件的滚动类型，v/h
         self._is_show_image = False  # 是否已经显示图像
+        self.index = None  # 索引号
         super().__init__(parent)
+
+    def set_index(self, index: int):
+        """设置索引号"""
+        self.index = index
 
     def show_image(self):
         """显示图片"""
@@ -19,7 +24,6 @@ class LabelImageScroll(LabelImagePage):
         if self._is_show_image:
             return
         super().show_image()
-        print('label显示图片')
         self._is_show_image = True
 
     def hide_image(self):

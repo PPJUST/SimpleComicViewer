@@ -22,10 +22,11 @@ class ScrollAreaSmooth(QScrollArea):
         self.setVerticalScrollBar(self.scrollbar_v)
         self.setHorizontalScrollBar(self.scrollbar_h)
 
-    def set_direction(self, reverse:bool):
+    def set_direction(self, reverse: bool):
         """设置方向"""
         self.scrollbar_h.set_direction(reverse)
         self.scrollbar_v.set_direction(reverse)
+
     def start_autoplay(self, speed):
         if self.scrollbar_h.isVisible():
             self.scrollbar_h.start_autoplay(speed)
@@ -65,7 +66,7 @@ class ScrollBarSmooth(QScrollBar):
         # 设置方向
         self.reverse = False
 
-    def set_direction(self, reverse:bool):
+    def set_direction(self, reverse: bool):
         """设置方向"""
         self.reverse = reverse
 
@@ -74,6 +75,7 @@ class ScrollBarSmooth(QScrollBar):
         if self._last_speed == speed:
             return
         else:
+            self.setEnabled(False)  # 开始自动播放后禁用滚动条，防止滚动事件与自动播放事件冲突
             self._last_speed = speed
             self.animal.stop()
             self.animal.setEasingCurve(QEasingCurve.Linear)
@@ -88,6 +90,7 @@ class ScrollBarSmooth(QScrollBar):
 
     def quit_autoplay(self):
         """退出自动播放"""
+        self.setEnabled(True)
         self._last_speed = None
         self.animal.stop()
         self.animal.setEasingCurve(QEasingCurve.OutQuad)

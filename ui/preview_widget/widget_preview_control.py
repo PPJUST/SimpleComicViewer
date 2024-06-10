@@ -11,8 +11,8 @@ from ui.label_hover_comic_info import LabelHoverComicInfo
 from ui.label_hover_run_info import LabelHoverRunInfo
 from ui.preview_widget.scroll_area_preview import ScrollAreaPreview
 from ui.preview_widget.scroll_area_preview_reverse import ScrollAreaPreviewReverse
-from ui.preview_widget.widget_comic_preview_double import WidgetComicPreviewDouble
-from ui.preview_widget.widget_comic_preview_single import WidgetComicPreviewSingle
+from ui.preview_widget.widget_preview_double import WidgetPreviewDouble
+from ui.preview_widget.widget_preview_single import WidgetPreviewSingle
 
 
 class WidgetPreviewControl(QWidget):
@@ -121,17 +121,6 @@ class WidgetPreviewControl(QWidget):
         function_normal.print_function_info()
         self.child_preview_widget.reset_preview_size()
 
-    def reverse_preview(self, reverse:bool):
-        mode = GetSetting.current_view_mode_eng()
-        if mode  == 'mode_4' :
-            if reverse:
-                print('显示反向视图')
-                self._load_preview_widget_scroll_reverse()
-            else:
-                print('还原正向视图')
-                self._load_preview_widget_scroll('h')
-
-
     def _reset_autoplay_setting(self):
         """重置自动播放的设置参数"""
         function_normal.print_function_info()
@@ -149,7 +138,7 @@ class WidgetPreviewControl(QWidget):
         """接收自动播放线程的信号，执行对应的方法"""
         function_normal.print_function_info()
         # 如果是当前是单页/双页视图
-        if isinstance(self.child_preview_widget, (WidgetComicPreviewSingle, WidgetComicPreviewDouble)):
+        if isinstance(self.child_preview_widget, (WidgetPreviewSingle, WidgetPreviewDouble)):
             if self.child_preview_widget.index < self.max_index:
                 self.to_next_page()
             else:  # 页数超限，终止自动播放
@@ -180,7 +169,7 @@ class WidgetPreviewControl(QWidget):
             self._load_preview_widget_scroll('v')
         elif mode == 'mode_4':
             self._load_preview_widget_scroll('h')
-        elif mode == 'mode_4':
+        elif mode == 'mode_5':
             self._load_preview_widget_double()  # 备忘录 反向视图
         elif mode == 'mode_6':
             self._load_preview_widget_scroll_reverse()
@@ -189,7 +178,7 @@ class WidgetPreviewControl(QWidget):
         """加载预览子控件-单页模式"""
         function_normal.print_function_info()
         self._clear_preview_layout()
-        self.child_preview_widget = WidgetComicPreviewSingle(self)
+        self.child_preview_widget = WidgetPreviewSingle(self)
         self.child_preview_widget.signal_page_changed.connect(self._update_hover_label_info)
         self.layout.addWidget(self.child_preview_widget)
 
@@ -197,7 +186,7 @@ class WidgetPreviewControl(QWidget):
         """加载预览子控件-双页模式"""
         function_normal.print_function_info()
         self._clear_preview_layout()
-        self.child_preview_widget = WidgetComicPreviewDouble(self)
+        self.child_preview_widget = WidgetPreviewDouble(self)
         self.child_preview_widget.signal_page_changed.connect(self._update_hover_label_info)
         self.layout.addWidget(self.child_preview_widget)
 

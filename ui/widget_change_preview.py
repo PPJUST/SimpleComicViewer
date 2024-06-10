@@ -79,6 +79,10 @@ class WidgetChangePreviewChild(QWidget):
         self.ui.toolButton_preview_double_reverse.clicked.connect(lambda: self._click_preview_button('mode_5'))
         self.ui.toolButton_preview_h_reverse.clicked.connect(lambda: self._click_preview_button('mode_6'))
 
+        # 备忘录 屏蔽未完成功能
+        self.ui.toolButton_preview_double.setEnabled(False)
+        self.ui.toolButton_preview_double_reverse.setEnabled(False)
+
     def set_active_icon(self, preview_mode):
         """手动设置预览模式"""
         self._preview_mode = preview_mode
