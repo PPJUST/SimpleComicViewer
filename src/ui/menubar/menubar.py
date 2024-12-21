@@ -1,0 +1,86 @@
+import lzytools.qt_pyside6
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+
+from constant import _OPTION, _PREVIOUS, _AUTOPLAY_ENABLE, _NEXT, _PLAYLIST, _AUTOPLAY_DISABLE
+from ui_menubar import Ui_Form
+
+
+class Menubar(QWidget):
+    """选项栏"""
+    Option = Signal(name='打开选项')
+    PreviousPage = Signal(name='上一页')
+    PreviousRC = Signal(name='上一项（右键点击）')
+    AutoPlay = Signal(name='自动播放')
+    NextPage = Signal(name='下一页')
+    NextRC = Signal(name='下一项（右键点击）')
+    Playlist = Signal(name='打开列表')
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_Form()
+        self.ui.setupUi(self)
+
+        self._set_icon()
+        self._is_autoplay = False
+
+        # 设置透明背景
+        # lzytools.qt_pyside6.set_transparent_background(self)
+        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_option)
+        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_previous)
+        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_autoplay)
+        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_next)
+        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_playlist)
+
+        # 绑定信号
+        self.ui.toolButton_option.clicked.connect(self.Option.emit)
+        self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
+        self.ui.toolButton_autoplay.clicked.connect(self.AutoPlay.emit)
+        self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
+        self.ui.toolButton_playlist.clicked.connect(self.Playlist.emit)
+
+        # 绑定右键事件
+        self.ui.toolButton_previous.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.toolButton_previous.customContextMenuRequested.connect(self.PreviousRC.emit)
+        self.ui.toolButton_next.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.ui.toolButton_next.customContextMenuRequested.connect(self.NextRC.emit)
+
+    def change_autoplay_state(self):
+        self._is_autoplay = not self._is_autoplay
+
+    def reset_autoplay_icon(self):
+        if self._is_autoplay:
+            self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
+        else:
+            self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
+
+    def _set_icon(self):
+        self.ui.toolButton_option.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_OPTION))
+        self.ui.toolButton_previous.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PREVIOUS))
+        self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
+        self.ui.toolButton_next.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_NEXT))
+        self.ui.toolButton_playlist.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PLAYLIST))
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+        self.ui.toolButton_option.setVisible(True)
+        self.ui.toolButton_previous.setVisible(True)
+        self.ui.toolButton_autoplay.setVisible(True)
+        self.ui.toolButton_next.setVisible(True)
+        self.ui.toolButton_playlist.setVisible(True)
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        self.ui.toolButton_option.setVisible(False)
+        self.ui.toolButton_previous.setVisible(False)
+        self.ui.toolButton_autoplay.setVisible(False)
+        self.ui.toolButton_next.setVisible(False)
+        self.ui.toolButton_playlist.setVisible(False)
+
+
+if __name__ == "__main__":
+    app = QApplication()
+    ui = Menubar()
+    ui.show()
+    app.exec()
