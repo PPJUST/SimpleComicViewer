@@ -1,10 +1,10 @@
 import lzytools.qt_pyside6
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal
+from PySide6.QtGui import Qt
+from PySide6.QtWidgets import QWidget, QApplication
 
-from constant import _OPTION, _PREVIOUS, _AUTOPLAY_ENABLE, _NEXT, _PLAYLIST, _AUTOPLAY_DISABLE
-from ui_menubar import Ui_Form
+from components.menubar.icon_base64 import _OPTION, _PREVIOUS, _AUTOPLAY_ENABLE, _NEXT, _PLAYLIST, _AUTOPLAY_DISABLE
+from components.menubar.ui_menubar import Ui_Form
 
 
 class Menubar(QWidget):

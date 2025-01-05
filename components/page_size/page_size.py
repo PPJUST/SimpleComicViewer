@@ -2,9 +2,10 @@ import lzytools.qt_pyside6
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 
-from constant import _FIT_HEIGHT, _FIT_WIDTH, _FIT_WIDGET, _ROTATE_LEFT, \
-    _ROTATE_RIGHT, _FULL_SIZE, _ZOOM_IN, _ZOOM_OUT, _FIT_HEIGHT_RED, _FIT_WIDTH_RED, _FIT_WIDGET_RED, _FULL_SIZE_RED
-from .ui_page_size import Ui_Form
+from components.page_size.icon_base64 import _FIT_HEIGHT, _FIT_WIDTH, _FIT_WIDGET, _ROTATE_LEFT, _ROTATE_RIGHT
+from components.page_size.icon_base64 import _FIT_HEIGHT_RED, _FIT_WIDTH_RED, _FIT_WIDGET_RED, _FULL_SIZE_RED
+from components.page_size.icon_base64 import _FULL_SIZE, _ZOOM_IN, _ZOOM_OUT
+from components.page_size.ui_page_size import Ui_Form
 
 
 class PageSize(QWidget):

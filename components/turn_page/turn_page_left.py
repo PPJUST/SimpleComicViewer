@@ -3,8 +3,8 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from constant import _PREVIOUS2
-from ui_turn_page import Ui_Form
+from components.turn_page.ui_turn_page import Ui_Form
+from components.turn_page.icon_base64 import _PREVIOUS
 
 
 class TurnPageLeft(QWidget):
@@ -31,7 +31,7 @@ class TurnPageLeft(QWidget):
         self.ui.toolButton_turn_page.customContextMenuRequested.connect(self.TurnPageRC.emit)
 
     def _set_icon(self):
-        self.ui.toolButton_turn_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PREVIOUS2))
+        self.ui.toolButton_turn_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PREVIOUS))
 
     def enterEvent(self, event):
         super().enterEvent(event)

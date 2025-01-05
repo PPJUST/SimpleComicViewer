@@ -1,10 +1,10 @@
 import lzytools.qt_pyside6
-from PySide6.QtCore import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QApplication
 
-from constant import _SINGLE_PAGE, _DOUBLE_PAGE, _VERTICAL_SCROLL, _HORIZONTAL_SCROLL, _HORIZONTAL_SCROLL_RED, \
-    _VERTICAL_SCROLL_RED, _DOUBLE_PAGE_RED, _SINGLE_PAGE_RED
-from .ui_change_mode import Ui_Form
+from components.change_mode.icon_base64 import _DOUBLE_PAGE, _SINGLE_PAGE_RED, _DOUBLE_PAGE_RED, _HORIZONTAL_SCROLL_RED
+from components.change_mode.icon_base64 import _SINGLE_PAGE, _VERTICAL_SCROLL, _VERTICAL_SCROLL_RED, _HORIZONTAL_SCROLL
+from components.change_mode.ui_change_mode import Ui_Form
 
 
 class ChangeMode(QWidget):
