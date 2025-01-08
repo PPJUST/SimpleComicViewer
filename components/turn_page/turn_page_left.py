@@ -1,4 +1,4 @@
-import lzytools.qt_pyside6
+import lzytools._qt_pyside6
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
