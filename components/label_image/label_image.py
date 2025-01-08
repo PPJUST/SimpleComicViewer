@@ -21,7 +21,7 @@ class LabelImage(QLabel):
 
     def update_image_size(self):
         """更新图片尺寸"""
-        if not self.pixmap.isNull():
+        if self.pixmap and not self.pixmap.isNull():
             scaled_pixmap = self.pixmap.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.setPixmap(scaled_pixmap)
 
