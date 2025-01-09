@@ -1,4 +1,4 @@
-import lzytools.qt_pyside6
+import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QApplication
@@ -26,12 +26,12 @@ class Menubar(QWidget):
         self._is_autoplay = False
 
         # 设置透明背景
-        # lzytools.qt_pyside6.set_transparent_background(self)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_option)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_previous)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_autoplay)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_next)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_playlist)
+        # lzytools._qt_pyside6.set_transparent_background(self)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_option)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_previous)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_autoplay)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_next)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_playlist)
 
         # 绑定信号
         self.ui.toolButton_option.clicked.connect(self.Option.emit)
@@ -51,16 +51,16 @@ class Menubar(QWidget):
 
     def reset_autoplay_icon(self):
         if self._is_autoplay:
-            self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
+            self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
         else:
-            self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
+            self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
 
     def _set_icon(self):
-        self.ui.toolButton_option.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_OPTION))
-        self.ui.toolButton_previous.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PREVIOUS))
-        self.ui.toolButton_autoplay.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
-        self.ui.toolButton_next.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_NEXT))
-        self.ui.toolButton_playlist.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PLAYLIST))
+        self.ui.toolButton_option.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_OPTION))
+        self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_PREVIOUS))
+        self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
+        self.ui.toolButton_next.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_NEXT))
+        self.ui.toolButton_playlist.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_PLAYLIST))
 
     def enterEvent(self, event):
         super().enterEvent(event)

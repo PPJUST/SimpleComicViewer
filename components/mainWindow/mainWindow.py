@@ -5,6 +5,10 @@ from components.mainWindow.ui_mainWindow import Ui_MainWindow
 from components.menubar import Menubar
 from components.page_size import PageSize
 from components.turn_page import TurnPageLeft, TurnPageRight
+from components.viewer_double_page import ViewerDoublePage
+from components.viewer_horizontal_scroll import ViewerHorizontalScroll
+from components.viewer_single_page import ViewerSinglePage
+from components.viewer_vertical_scroll import ViewerVerticalScroll
 
 
 class MainWindow(QMainWindow):
@@ -31,6 +35,19 @@ class MainWindow(QMainWindow):
         # 选项栏
         self.widget_menubar = Menubar(self)
         self.widget_menubar.show()
+        # 预览控件-单页
+        self.viewer_single_page = ViewerSinglePage()
+        self.ui.page_single.layout().addWidget(self.viewer_single_page)
+        # 预览控件-双页
+        self.viewer_double_page = ViewerDoublePage()
+        self.ui.page_double_left.layout().addWidget(self.viewer_double_page)
+        # 预览控件-横向卷轴
+        self.viewer_horizontal_scroll = ViewerHorizontalScroll()
+        self.ui.page_horizontal_scroll_left.layout().addWidget(self.viewer_horizontal_scroll)
+        # 预览控件-纵向卷轴
+        self.viewer_vertical_scroll = ViewerVerticalScroll()
+        self.ui.page_single.layout().addWidget(self.viewer_vertical_scroll)
+
 
     def bind_signal(self):
         """绑定信号"""

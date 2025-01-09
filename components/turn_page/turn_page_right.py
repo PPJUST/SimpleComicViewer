@@ -1,4 +1,4 @@
-import lzytools.qt_pyside6
+import lzytools._qt_pyside6
 from PySide6.QtWidgets import *
 
 from components.turn_page import TurnPageLeft
@@ -12,7 +12,7 @@ class TurnPageRight(TurnPageLeft):
         super().__init__(parent)
 
     def _set_icon(self):
-        self.ui.toolButton_turn_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_NEXT))
+        self.ui.toolButton_turn_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_NEXT))
 
 
 if __name__ == '__main__':

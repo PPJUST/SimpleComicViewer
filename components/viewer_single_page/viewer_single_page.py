@@ -15,6 +15,7 @@ class ViewerSinglePage(ViewerFrame):
         self.layout.addWidget(self.label_image)
 
 
+
 if __name__ == '__main__':
     app = QApplication()
     ui = ViewerSinglePage()

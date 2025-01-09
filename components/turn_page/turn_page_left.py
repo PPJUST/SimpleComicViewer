@@ -20,8 +20,8 @@ class TurnPageLeft(QWidget):
         self._set_icon()
 
         # 设置透明背景
-        lzytools.qt_pyside6.set_transparent_background(self)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_turn_page)
+        lzytools._qt_pyside6.set_transparent_background(self)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_turn_page)
 
         # 绑定信号
         self.ui.toolButton_turn_page.clicked.connect(self.TurnPage.emit)
@@ -31,7 +31,7 @@ class TurnPageLeft(QWidget):
         self.ui.toolButton_turn_page.customContextMenuRequested.connect(self.TurnPageRC.emit)
 
     def _set_icon(self):
-        self.ui.toolButton_turn_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_PREVIOUS))
+        self.ui.toolButton_turn_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_PREVIOUS))
 
     def enterEvent(self, event):
         super().enterEvent(event)

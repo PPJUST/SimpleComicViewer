@@ -1,4 +1,4 @@
-import lzytools.qt_pyside6
+import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
@@ -22,11 +22,11 @@ class ChangeMode(QWidget):
         self._set_icon()
 
         # 设置透明背景
-        lzytools.qt_pyside6.set_transparent_background(self)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_single_page)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_double_page)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_vertical_scroll)
-        lzytools.qt_pyside6.set_transparent_background(self.ui.toolButton_horizontal_scroll)
+        lzytools._qt_pyside6.set_transparent_background(self)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_single_page)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_double_page)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_vertical_scroll)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_horizontal_scroll)
 
         # 绑定信号
         self.ui.toolButton_single_page.clicked.connect(self.SinglePage.emit)
@@ -45,19 +45,19 @@ class ChangeMode(QWidget):
         # 高亮
         button = self.sender()
         if button is self.ui.toolButton_single_page:
-            self.ui.toolButton_single_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_SINGLE_PAGE_RED))
+            self.ui.toolButton_single_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_SINGLE_PAGE_RED))
         elif button is self.ui.toolButton_double_page:
-            self.ui.toolButton_double_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_DOUBLE_PAGE_RED))
+            self.ui.toolButton_double_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_DOUBLE_PAGE_RED))
         elif button is self.ui.toolButton_vertical_scroll:
-            self.ui.toolButton_vertical_scroll.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_VERTICAL_SCROLL_RED))
+            self.ui.toolButton_vertical_scroll.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_VERTICAL_SCROLL_RED))
         elif button is self.ui.toolButton_horizontal_scroll:
-            self.ui.toolButton_horizontal_scroll.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_HORIZONTAL_SCROLL_RED))
+            self.ui.toolButton_horizontal_scroll.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_HORIZONTAL_SCROLL_RED))
 
     def _set_icon(self):
-        self.ui.toolButton_single_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_SINGLE_PAGE))
-        self.ui.toolButton_double_page.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_DOUBLE_PAGE))
-        self.ui.toolButton_vertical_scroll.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_VERTICAL_SCROLL))
-        self.ui.toolButton_horizontal_scroll.setIcon(lzytools.qt_pyside6.base64_to_pixmap(_HORIZONTAL_SCROLL))
+        self.ui.toolButton_single_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_SINGLE_PAGE))
+        self.ui.toolButton_double_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_DOUBLE_PAGE))
+        self.ui.toolButton_vertical_scroll.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_VERTICAL_SCROLL))
+        self.ui.toolButton_horizontal_scroll.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_HORIZONTAL_SCROLL))
 
     def enterEvent(self, event):
         super().enterEvent(event)
