@@ -21,23 +21,7 @@ class ComicInfo:
         self._count_filesize()
         self._count_page()
 
-    def _guess_filetype(self):
-        """确认文件类型"""
-        if os.path.isdir(self.path):
-            self.filetype = 'folder'
-        else:
-            if function_normal.is_archive(self.path):
-                self.filetype = 'archive'
-            else:
-                self.filetype = 'unsupported'
 
-    def _extract_filename(self):
-        """提取文件名"""
-        self.filename = os.path.basename(self.path)
-        if self.filetype == 'folder':
-            self.filetitle = self.filename
-        elif self.filetype == 'archive':
-            self.filetitle = os.path.basename(os.path.splitext(self.path)[0])
 
     def _count_filesize(self):
         """计算文件大小"""
