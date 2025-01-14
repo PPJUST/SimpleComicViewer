@@ -57,11 +57,13 @@ class Menubar(QWidget):
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
         else:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
+
     def emit_signal(self):
         if self._is_autoplay:
             self.AutoPlayStart.emit()
         else:
             self.AutoPlayStop.emit()
+
     def _set_icon(self):
         self.ui.toolButton_option.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_OPTION))
         self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_PREVIOUS))

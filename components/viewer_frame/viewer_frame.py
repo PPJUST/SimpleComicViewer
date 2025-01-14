@@ -1,5 +1,3 @@
-from abc import abstractmethod, ABC
-
 import lzytools._qt_pyside6
 from PySide6.QtWidgets import *
 
@@ -11,14 +9,15 @@ class ViewerFrame(QScrollArea):
 
     def __init__(self, parent=None, layout='horizontal'):
         super().__init__(parent)
-        # 设置外部框架控件
-        self.content_widget = QWidget(self)
-        self.setWidget(self.content_widget)
         self.setWidgetResizable(True)  # 使内容区域自适应大小
+        # 设置外部框架控件
+        self.content_widget = QWidget()
         if layout.lower() == 'horizontal':
-            self.layout = QHBoxLayout(self.content_widget)
+            self.layout = QHBoxLayout()
         elif layout.lower() == 'vertical':
-            self.layout = QVBoxLayout(self.content_widget)
+            self.layout = QVBoxLayout()
+        self.content_widget.setLayout(self.layout)
+        self.setWidget(self.content_widget)
         # 设置透明背景
         lzytools._qt_pyside6.set_transparent_background(self)
         lzytools._qt_pyside6.set_transparent_background(self.content_widget)
@@ -31,8 +30,10 @@ class ViewerFrame(QScrollArea):
         :param comic_path: 漫画路径"""
         # 防止报错，先检查路径对应文件是否为漫画
         self.comic = ComicInfo(comic_path)
+
     def show_image(self):
         """显示图片"""
+
     def previous_page(self):
         """上一页"""
 
@@ -62,7 +63,9 @@ class ViewerFrame(QScrollArea):
 
     def full_size(self):
         """页面实际大小"""
+
     def rotate_left(self):
         """页面向左旋转"""
+
     def rotate_right(self):
         """页面向右旋转"""

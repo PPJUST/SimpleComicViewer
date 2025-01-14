@@ -3,8 +3,8 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from components.turn_page.ui_turn_page import Ui_Form
 from components.turn_page.icon_base64 import _PREVIOUS
+from components.turn_page.ui_turn_page import Ui_Form
 
 
 class TurnPageLeft(QWidget):

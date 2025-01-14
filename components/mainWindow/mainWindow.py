@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setAcceptDrops(True)
-        self.setMinimumSize(300,400)
+        self.setMinimumSize(300, 400)
 
         """添加悬浮控件"""
         # 切换模式控件
@@ -37,32 +37,29 @@ class MainWindow(QMainWindow):
         self.widget_menubar.show()
         """添加预览控件"""
         # 预览控件-单页
-        self.viewer_single_page = ViewerSinglePage()
+        self.viewer_single_page = ViewerSinglePage(self)
         self.viewer_single_page.set_comic('测试序号图')
         self.ui.page_single.layout().addWidget(self.viewer_single_page)
         # 预览控件-双页
-        self.viewer_double_page = ViewerDoublePage()
+        self.viewer_double_page = ViewerDoublePage(self)
         self.ui.page_double_left.layout().addWidget(self.viewer_double_page)
         # 预览控件-横向卷轴
-        self.viewer_horizontal_scroll = ViewerHorizontalScroll()
+        self.viewer_horizontal_scroll = ViewerHorizontalScroll(self)
         self.ui.page_horizontal_scroll_left.layout().addWidget(self.viewer_horizontal_scroll)
         # 预览控件-纵向卷轴
-        self.viewer_vertical_scroll = ViewerVerticalScroll()
-        self.ui.page_single.layout().addWidget(self.viewer_vertical_scroll)
+        self.viewer_vertical_scroll = ViewerVerticalScroll(self)
+        self.ui.page_vertical_scroll.layout().addWidget(self.viewer_vertical_scroll)
 
         # 绑定信号
         self.bind_signal()
 
-
-
-
     def bind_signal(self):
         """绑定信号"""
         # 切换模式控件
-        self.widget_change_mode.SinglePage.connect(lambda :self.ui.stackedWidget.setCurrentIndex(0))
-        self.widget_change_mode.DoublePage.connect(lambda :self.ui.stackedWidget.setCurrentIndex(1))
-        self.widget_change_mode.VerticalScroll.connect(lambda :self.ui.stackedWidget.setCurrentIndex(3))
-        self.widget_change_mode.HorizontalScroll.connect(lambda :self.ui.stackedWidget.setCurrentIndex(4))
+        self.widget_change_mode.SinglePage.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
+        self.widget_change_mode.DoublePage.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
+        self.widget_change_mode.VerticalScroll.connect(lambda: self.ui.stackedWidget.setCurrentIndex(3))
+        self.widget_change_mode.HorizontalScroll.connect(lambda: self.ui.stackedWidget.setCurrentIndex(4))
         # 页面大小控件
         self.widget_page_size.FitHeight.connect(self._get_current_viewer().fit_height)
         self.widget_page_size.FitWidth.connect(self._get_current_viewer().fit_width)
@@ -87,6 +84,7 @@ class MainWindow(QMainWindow):
         self.widget_menubar.NextPage.connect(self._get_current_viewer().next_page)
         # self.widget_menubar.NextRC.connect()
         # self.widget_menubar.Playlist.connect()
+
     def _update_hover_position(self):
         """修改大小后，更新悬浮控件的位置"""
         p_rect = self.geometry()  # 框架
@@ -115,7 +113,7 @@ class MainWindow(QMainWindow):
         tab = self.ui.stackedWidget.currentWidget()
         if tab:
             layout = tab.layout()
-            viewer:ViewerSinglePage = layout.itemAt(0).widget()
+            viewer: ViewerSinglePage = layout.itemAt(0).widget()
             return viewer
 
     def resizeEvent(self, event):

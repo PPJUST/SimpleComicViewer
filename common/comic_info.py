@@ -57,7 +57,6 @@ class ComicInfo:
         elif self.filetype == 'archive':
             self.filesize_real = lzytools.archive.get_real_size(self.path)
 
-
     def _get_images(self):
         """提取图片列表"""
         if self.filetype == 'folder':

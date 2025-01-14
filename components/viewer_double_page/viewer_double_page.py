@@ -1,4 +1,3 @@
-import lzytools._qt_pyside6
 from PySide6.QtWidgets import *
 
 from components.label_image import LabelImage
