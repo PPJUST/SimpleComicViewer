@@ -53,19 +53,20 @@ class ComicInfo:
         self.filesize = lzytools.file.get_size(self.path)
 
         if self.filetype == 'folder':
-            self.filesize_real = lzytools.archive.get_real_size(self.path)
-        elif self.filetype == 'archive':
             self.filesize_real = self.filesize
+        elif self.filetype == 'archive':
+            self.filesize_real = lzytools.archive.get_real_size(self.path)
+
 
     def _get_images(self):
         """提取图片列表"""
         if self.filetype == 'folder':
             self.image_list = [os.path.normpath(os.path.join(self.path, i)) for i in os.listdir(self.path) if
-                               i.endwith(_IMAGE_SUFFIX)]
+                               i.endswith(_IMAGE_SUFFIX)]
             self.image_list = natsort.natsorted(self.image_list)
             self.page_count = len(self.image_list)
         elif self.filetype == 'archive':
             paths = lzytools.archive.get_structure(self.path)
-            self.image_list = [i for i in paths if i.endwith(_IMAGE_SUFFIX)]
+            self.image_list = [i for i in paths if i.endswith(_IMAGE_SUFFIX)]
             self.image_list = natsort.natsorted(self.image_list)
             self.page_count = len(self.image_list)

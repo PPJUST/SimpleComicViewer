@@ -12,7 +12,8 @@ class Menubar(QWidget):
     Option = Signal(name='打开选项')
     PreviousPage = Signal(name='上一页')
     PreviousRC = Signal(name='上一项（右键点击）')
-    AutoPlay = Signal(name='自动播放')
+    AutoPlayStart = Signal(name='开始自动播放')
+    AutoPlayStop = Signal(name='停止自动播放')
     NextPage = Signal(name='下一页')
     NextRC = Signal(name='下一项（右键点击）')
     Playlist = Signal(name='打开列表')
@@ -26,7 +27,7 @@ class Menubar(QWidget):
         self._is_autoplay = False
 
         # 设置透明背景
-        # lzytools._qt_pyside6.set_transparent_background(self)
+        lzytools._qt_pyside6.set_transparent_background(self)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_option)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_previous)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_autoplay)
@@ -36,7 +37,7 @@ class Menubar(QWidget):
         # 绑定信号
         self.ui.toolButton_option.clicked.connect(self.Option.emit)
         self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
-        self.ui.toolButton_autoplay.clicked.connect(self.AutoPlay.emit)
+        self.ui.toolButton_autoplay.clicked.connect(self.change_autoplay_state)
         self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
         self.ui.toolButton_playlist.clicked.connect(self.Playlist.emit)
 
@@ -48,13 +49,19 @@ class Menubar(QWidget):
 
     def change_autoplay_state(self):
         self._is_autoplay = not self._is_autoplay
+        self.reset_autoplay_icon()
+        self.emit_signal()
 
     def reset_autoplay_icon(self):
         if self._is_autoplay:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
         else:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
-
+    def emit_signal(self):
+        if self._is_autoplay:
+            self.AutoPlayStart.emit()
+        else:
+            self.AutoPlayStop.emit()
     def _set_icon(self):
         self.ui.toolButton_option.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_OPTION))
         self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_PREVIOUS))

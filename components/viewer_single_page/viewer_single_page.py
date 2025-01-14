@@ -14,6 +14,32 @@ class ViewerSinglePage(ViewerFrame):
         self.label_image = LabelImage()
         self.layout.addWidget(self.label_image)
 
+        # 设置参数
+        self.page_index = 1  # 当前显示的页码（从1开始）
+    
+    def set_comic(self, comic_path: str):
+        """设置漫画类
+        :param comic_path: 漫画路径"""
+        super().set_comic(comic_path)
+        self.show_image()
+
+
+    def show_image(self):
+        """显示图片"""
+        self.label_image.set_image(self.comic.image_list[self.page_index-1])
+    def previous_page(self):
+        """上一页"""
+        if self.page_index >1:
+            self.page_index -= 1
+            self.show_image()
+
+
+    def next_page(self):
+        """下一页"""
+        if self.page_index < self.comic.page_count:
+            self.page_index += 1
+            self.show_image()
+
 
 
 if __name__ == '__main__':
