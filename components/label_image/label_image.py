@@ -1,3 +1,6 @@
+import time
+
+from PySide6.QtCore import QSize
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
@@ -17,14 +20,47 @@ class LabelImage(QLabel):
     def set_image(self, image_path: str = None):
         """设置图片"""
         self.pixmap = QPixmap(image_path)
-        self.update_image_size()
+        self._image_size_auto()
 
-    def update_image_size(self):
+    def update_image_size(self,qsize:QSize=None):
         """更新图片尺寸"""
+        if self.pixmap and not self.pixmap.isNull():
+            if qsize:
+                base_size = qsize
+            else:
+                base_size = self.size()
+            scaled_pixmap = self.pixmap.scaled(base_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.setPixmap(scaled_pixmap)
+
+    def _image_size_auto(self):
+        """更新图片尺寸，适合其自身尺寸"""
         if self.pixmap and not self.pixmap.isNull():
             scaled_pixmap = self.pixmap.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.setPixmap(scaled_pixmap)
 
-    def resizeEvent(self, event):
-        self.update_image_size()
-        super().resizeEvent(event)
+    def _image_size_fit_page(self,qsize:QSize):
+        """更新图片尺寸，适合页面框架尺寸"""
+        if self.pixmap and not self.pixmap.isNull():
+            scaled_pixmap = self.pixmap.scaled(qsize, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.setPixmap(scaled_pixmap)
+
+    def _image_size_fit_height(self,height:int):
+        """更新图片尺寸，适合高度"""
+        # 备忘录 需要考虑滑动条的宽度
+        if self.pixmap and not self.pixmap.isNull():
+            calc_width = int(height / self.pixmap.height() *self.pixmap.width())-1
+            size = QSize(calc_width, height)
+            scaled_pixmap = self.pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.setPixmap(scaled_pixmap)
+    def _image_size_fit_width(self,width:int):
+        """更新图片尺寸，适合宽度"""
+        # 备忘录 需要考虑滑动条的宽度
+        if self.pixmap and not self.pixmap.isNull():
+            calc_height = int(width / self.pixmap.width() *self.pixmap.height())-1
+            size = QSize(width, calc_height)
+            scaled_pixmap = self.pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.setPixmap(scaled_pixmap)
+
+    def _image_size_full_size(self):
+        """更新图片尺寸，实际大小"""
+        pass

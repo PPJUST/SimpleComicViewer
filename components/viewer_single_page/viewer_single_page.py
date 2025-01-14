@@ -15,6 +15,7 @@ class ViewerSinglePage(ViewerFrame):
 
         # 设置参数
         self.page_index = 1  # 当前显示的页码（从1开始）
+        self.page_size_mode = None  #
 
     def set_comic(self, comic_path: str):
         """设置漫画类
@@ -38,6 +39,9 @@ class ViewerSinglePage(ViewerFrame):
             self.page_index += 1
             self.show_image()
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.label_image._image_size_fit_height(self.size().height())
 
 if __name__ == '__main__':
     app = QApplication()

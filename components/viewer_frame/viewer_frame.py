@@ -16,6 +16,7 @@ class ViewerFrame(QScrollArea):
             self.layout = QHBoxLayout()
         elif layout.lower() == 'vertical':
             self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0,0,0,0)
         self.content_widget.setLayout(self.layout)
         self.setWidget(self.content_widget)
         # 设置透明背景
