@@ -4,6 +4,8 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from common.size_mode import PageSizeMode
+
 
 class LabelImage(QLabel):
     """自适应大小显示图片"""
@@ -22,15 +24,17 @@ class LabelImage(QLabel):
         self.pixmap = QPixmap(image_path)
         self._image_size_auto()
 
-    def update_image_size(self,qsize:QSize=None):
+    def update_image_size(self, size_mode:PageSizeMode, arg=None):
         """更新图片尺寸"""
-        if self.pixmap and not self.pixmap.isNull():
-            if qsize:
-                base_size = qsize
-            else:
-                base_size = self.size()
-            scaled_pixmap = self.pixmap.scaled(base_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.setPixmap(scaled_pixmap)
+        if size_mode is PageSizeMode.FitPage:
+            self._image_size_fit_page(arg)
+        elif size_mode is PageSizeMode.FitHieght:
+            self._image_size_fit_height(arg)
+        elif size_mode is PageSizeMode.FitWidth:
+            self._image_size_fit_width(arg)
+        elif size_mode is PageSizeMode.FullSize:
+            self._image_size_full_size()
+
 
     def _image_size_auto(self):
         """更新图片尺寸，适合其自身尺寸"""
@@ -48,7 +52,7 @@ class LabelImage(QLabel):
         """更新图片尺寸，适合高度"""
         # 备忘录 需要考虑滑动条的宽度
         if self.pixmap and not self.pixmap.isNull():
-            calc_width = int(height / self.pixmap.height() *self.pixmap.width())-1
+            calc_width = int(height / self.pixmap.height() *self.pixmap.width())
             size = QSize(calc_width, height)
             scaled_pixmap = self.pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.setPixmap(scaled_pixmap)
@@ -63,4 +67,5 @@ class LabelImage(QLabel):
 
     def _image_size_full_size(self):
         """更新图片尺寸，实际大小"""
-        pass
+        if self.pixmap and not self.pixmap.isNull():
+            self.setPixmap(self.pixmap)

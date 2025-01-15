@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import *
 
+from common.size_mode import PageSizeMode
 from components.label_image import LabelImage
 from components.viewer_frame import ViewerFrame
 
@@ -15,7 +16,7 @@ class ViewerSinglePage(ViewerFrame):
 
         # 设置参数
         self.page_index = 1  # 当前显示的页码（从1开始）
-        self.page_size_mode = None  #
+        self.page_size_mode = None  # 显示模式（适合页面/适合宽度/适合高度/实际大小）
 
     def set_comic(self, comic_path: str):
         """设置漫画类
@@ -39,9 +40,23 @@ class ViewerSinglePage(ViewerFrame):
             self.page_index += 1
             self.show_image()
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.label_image._image_size_fit_height(self.size().height())
+    def fit_width(self):
+        if self.page_size_mode is not PageSizeMode.FitWidth:
+            self.page_size_mode = PageSizeMode.FitWidth
+        self.label_image.update_image_size(PageSizeMode.FitWidth,self.size().width())
+    def fit_height(self):
+        if self.page_size_mode is not PageSizeMode.FitHieght:
+            self.page_size_mode = PageSizeMode.FitHieght
+        self.label_image.update_image_size(PageSizeMode.FitHieght,self.size().height())
+    def fit_widget(self):
+        if self.page_size_mode is not PageSizeMode.FitPage:
+            self.page_size_mode = PageSizeMode.FitPage
+        self.label_image.update_image_size(PageSizeMode.FitPage,self.size())
+    def full_size(self):
+        if self.page_size_mode is not PageSizeMode.FullSize:
+            self.page_size_mode = PageSizeMode.FullSize
+        self.label_image.update_image_size(PageSizeMode.FullSize)
+
 
 if __name__ == '__main__':
     app = QApplication()

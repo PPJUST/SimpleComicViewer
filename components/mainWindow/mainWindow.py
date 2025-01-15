@@ -120,6 +120,18 @@ class MainWindow(QMainWindow):
         super().resizeEvent(event)
         self._update_hover_position()
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        urls = event.mimeData().urls()
+        if urls:
+            paths = []
+            for index in range(len(urls)):
+                path = urls[index].toLocalFile()
+                paths.append(path)
+            self._get_current_viewer().set_comic(paths[0])
 
 if __name__ == '__main__':
     app = QApplication()

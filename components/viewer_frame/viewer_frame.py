@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtWidgets import *
 
 from common.comic_info import ComicInfo
+from common.size_mode import PageSizeMode
 
 
 class ViewerFrame(QScrollArea):
@@ -25,15 +26,19 @@ class ViewerFrame(QScrollArea):
 
         # 设置参数
         self.comic: ComicInfo = None  # 当前显示的漫画类
+        self.page_index = 1  # 当前显示的页码（从1开始）
+        self.page_size_mode = None  # 当前的显示模式
 
     def set_comic(self, comic_path: str):
         """设置漫画类
         :param comic_path: 漫画路径"""
         # 防止报错，先检查路径对应文件是否为漫画
         self.comic = ComicInfo(comic_path)
+        self.page_index = 1
 
     def show_image(self):
         """显示图片"""
+
 
     def previous_page(self):
         """上一页"""
@@ -70,3 +75,18 @@ class ViewerFrame(QScrollArea):
 
     def rotate_right(self):
         """页面向右旋转"""
+
+
+    def _update_image_size(self):
+        """更新图像大小（通过修改子控件大小实现"""
+        if self.page_size_mode is PageSizeMode.FitPage:
+            self.fit_widget()
+        elif self.page_size_mode is PageSizeMode.FitWidth:
+            self.fit_width()
+        elif self.page_size_mode is PageSizeMode.FitHieght:
+            self.fit_height()
+        elif self.page_size_mode is PageSizeMode.FullSize:
+            self.full_size()
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_image_size()
