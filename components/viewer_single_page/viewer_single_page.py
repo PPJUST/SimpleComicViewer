@@ -15,8 +15,6 @@ class ViewerSinglePage(ViewerFrame):
         self.layout.addWidget(self.label_image)
 
         # 设置参数
-        self.page_index = 1  # 当前显示的页码（从1开始）
-        self.page_size_mode = None  # 显示模式（适合页面/适合宽度/适合高度/实际大小）
 
     def set_comic(self, comic_path: str):
         """设置漫画类
@@ -25,37 +23,55 @@ class ViewerSinglePage(ViewerFrame):
         self.show_image()
 
     def show_image(self):
-        """显示图片"""
         self.label_image.set_image(self.comic.image_list[self.page_index - 1])
 
     def previous_page(self):
-        """上一页"""
         if self.page_index > 1:
             self.page_index -= 1
             self.show_image()
 
     def next_page(self):
-        """下一页"""
         if self.page_index < self.comic.page_count:
             self.page_index += 1
             self.show_image()
 
+    def keep_size(self):
+        super().keep_size()
+        self.label_image.update_image_size(PageSizeMode.Fixed)
+
     def fit_width(self):
-        if self.page_size_mode is not PageSizeMode.FitWidth:
-            self.page_size_mode = PageSizeMode.FitWidth
-        self.label_image.update_image_size(PageSizeMode.FitWidth,self.size().width())
+        super().fit_width()
+        self.label_image.update_image_size(PageSizeMode.FitWidth, self.size().width())
+
     def fit_height(self):
-        if self.page_size_mode is not PageSizeMode.FitHieght:
-            self.page_size_mode = PageSizeMode.FitHieght
-        self.label_image.update_image_size(PageSizeMode.FitHieght,self.size().height())
+        super().fit_height()
+        self.label_image.update_image_size(PageSizeMode.FitHieght, self.size().height())
+
     def fit_widget(self):
-        if self.page_size_mode is not PageSizeMode.FitPage:
-            self.page_size_mode = PageSizeMode.FitPage
-        self.label_image.update_image_size(PageSizeMode.FitPage,self.size())
+        super().fit_widget()
+        self.label_image.update_image_size(PageSizeMode.FitPage, self.size())
+
     def full_size(self):
-        if self.page_size_mode is not PageSizeMode.FullSize:
-            self.page_size_mode = PageSizeMode.FullSize
+        super().full_size()
         self.label_image.update_image_size(PageSizeMode.FullSize)
+
+    def zoom_in(self):
+        super().zoom_in()
+        self.label_image.zoom_in()
+
+    def zoom_out(self):
+        super().zoom_in()
+        self.label_image.zoom_out()
+
+    def rotate_left(self):
+        super().rotate_left()
+        self.label_image.rotate_left()
+        self._update_image_size()
+
+    def rotate_right(self):
+        super().rotate_right()
+        self.label_image.rotate_right()
+        self._update_image_size()
 
 
 if __name__ == '__main__':

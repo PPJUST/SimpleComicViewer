@@ -17,7 +17,7 @@ class ViewerFrame(QScrollArea):
             self.layout = QHBoxLayout()
         elif layout.lower() == 'vertical':
             self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0,0,0,0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.content_widget.setLayout(self.layout)
         self.setWidget(self.content_widget)
         # 设置透明背景
@@ -27,7 +27,7 @@ class ViewerFrame(QScrollArea):
         # 设置参数
         self.comic: ComicInfo = None  # 当前显示的漫画类
         self.page_index = 1  # 当前显示的页码（从1开始）
-        self.page_size_mode = None  # 当前的显示模式
+        self.page_size_mode = PageSizeMode.Fixed  # 当前的显示模式，默认为固定尺寸
 
     def set_comic(self, comic_path: str):
         """设置漫画类
@@ -39,7 +39,6 @@ class ViewerFrame(QScrollArea):
     def show_image(self):
         """显示图片"""
 
-
     def previous_page(self):
         """上一页"""
 
@@ -48,9 +47,11 @@ class ViewerFrame(QScrollArea):
 
     def zoom_in(self):
         """放大页面"""
+        self.page_size_mode = PageSizeMode.Fixed
 
     def zoom_out(self):
         """缩小页面"""
+        self.page_size_mode = PageSizeMode.Fixed
 
     def autoplay_start(self):
         """开始自动播放"""
@@ -58,17 +59,30 @@ class ViewerFrame(QScrollArea):
     def autoplay_stop(self):
         """停止自动播放"""
 
-    def fit_height(self):
-        """页面大小适应高度"""
-
-    def fit_widget(self):
-        """页面大小适应宽度"""
+    def keep_size(self):
+        """页面大小保持不变"""
+        if self.page_size_mode is not PageSizeMode.Fixed:
+            self.page_size_mode = PageSizeMode.Fixed
 
     def fit_width(self):
-        """页面大小适应框架"""
+        """页面大小适应宽度"""
+        if self.page_size_mode is not PageSizeMode.FitWidth:
+            self.page_size_mode = PageSizeMode.FitWidth
+
+    def fit_height(self):
+        """页面大小适应高度"""
+        if self.page_size_mode is not PageSizeMode.FitHieght:
+            self.page_size_mode = PageSizeMode.FitHieght
+
+    def fit_widget(self):
+        """页面大小适应框架控件"""
+        if self.page_size_mode is not PageSizeMode.FitPage:
+            self.page_size_mode = PageSizeMode.FitPage
 
     def full_size(self):
         """页面实际大小"""
+        if self.page_size_mode is not PageSizeMode.FullSize:
+            self.page_size_mode = PageSizeMode.FullSize
 
     def rotate_left(self):
         """页面向左旋转"""
@@ -76,10 +90,11 @@ class ViewerFrame(QScrollArea):
     def rotate_right(self):
         """页面向右旋转"""
 
-
     def _update_image_size(self):
         """更新图像大小（通过修改子控件大小实现"""
-        if self.page_size_mode is PageSizeMode.FitPage:
+        if self.page_size_mode is PageSizeMode.Fixed:
+            self.keep_size()
+        elif self.page_size_mode is PageSizeMode.FitPage:
             self.fit_widget()
         elif self.page_size_mode is PageSizeMode.FitWidth:
             self.fit_width()
@@ -87,6 +102,7 @@ class ViewerFrame(QScrollArea):
             self.fit_height()
         elif self.page_size_mode is PageSizeMode.FullSize:
             self.full_size()
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._update_image_size()

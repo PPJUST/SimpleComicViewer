@@ -133,6 +133,7 @@ class MainWindow(QMainWindow):
                 paths.append(path)
             self._get_current_viewer().set_comic(paths[0])
 
+
 if __name__ == '__main__':
     app = QApplication()
     ui = MainWindow()

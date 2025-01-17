@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_turn_pagefwQtiI.ui'
+## Form generated from reading UI file 'ui_turn_pagecnXkJg.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -29,6 +29,7 @@ class Ui_Form(object):
         self.horizontalLayout.setContentsMargins(3, 3, 3, 3)
         self.toolButton_turn_page = QToolButton(Form)
         self.toolButton_turn_page.setObjectName(u"toolButton_turn_page")
+        self.toolButton_turn_page.setMinimumSize(QSize(0, 0))
 
         self.horizontalLayout.addWidget(self.toolButton_turn_page)
 

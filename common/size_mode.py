@@ -3,6 +3,9 @@
 class PageSizeMode:
     """显示模式"""
 
+    class Fixed:
+        """固定大小（缩放时）"""
+        pass
 
     class FitPage:
         """适合页面"""
