@@ -23,12 +23,29 @@ class ComicInfo:
         self.filesize_real = 0  # 实际漫画文件大小，byte（针对压缩文件，为其解压后大小）
         self.page_count = 0  # 页数
         self.image_list = []  # 所含图片路径，如果是文件夹，则为本地文件路径；如果是压缩文件，则为压缩文件内部路径
+        self.rotate_angle_dict = dict()  # 对应图片路径的旋转角度
 
         # 提取信息
         self._get_filetype()  # 提取文件类型
         self._get_filename()  # 提取文件名
         self._get_filesize()  # 提取文件大小
         self._get_images()
+
+    def update_rotate(self, image_path:str, angel:int):
+        """更新旋转角度字典
+        :param image_path: 图片路径
+        :param angel: 对应的旋转角度"""
+        if image_path in self.rotate_angle_dict:
+            self.rotate_angle_dict[image_path] += angel
+        else:
+            self.rotate_angle_dict[image_path] = angel
+
+    def get_rotate(self, image_path:int)->tuple[int, None]:
+        """获取图片是否旋转及其旋转角度
+        :param image_path: 图片路径
+        :return: 旋转角度int，或不旋转None"""
+        if image_path in self.rotate_angle_dict:
+            return self.rotate_angle_dict[image_path]
 
     def _get_filetype(self):
         """提取文件类型"""
@@ -69,3 +86,4 @@ class ComicInfo:
             self.image_list = [i for i in paths if i.endswith(_IMAGE_SUFFIX)]
             self.image_list = natsort.natsorted(self.image_list)
             self.page_count = len(self.image_list)
+

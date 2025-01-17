@@ -1,6 +1,6 @@
 import lzytools._qt_pyside6
-from PySide6.QtCore import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QApplication
 
 from components.page_size.icon_base64 import _FIT_HEIGHT, _FIT_WIDTH, _FIT_WIDGET, _ROTATE_LEFT, _ROTATE_RIGHT
 from components.page_size.icon_base64 import _FIT_HEIGHT_RED, _FIT_WIDTH_RED, _FIT_WIDGET_RED, _FULL_SIZE_RED

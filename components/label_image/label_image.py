@@ -1,6 +1,6 @@
-from PySide6.QtCore import QSize
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import QSize, Qt
+from PySide6.QtGui import QPixmap, QTransform
+from PySide6.QtWidgets import QLabel, QSizePolicy
 
 from common.size_mode import PageSizeMode
 
@@ -21,7 +21,6 @@ class LabelImage(QLabel):
     def set_image(self, image_path: str = None):
         """设置图片"""
         self.pixmap_original = QPixmap(image_path)
-        self._image_size_auto()
 
     def zoom_in(self):
         """放大固定尺寸（奕宽度为基准放大）"""
@@ -68,14 +67,18 @@ class LabelImage(QLabel):
 
     def _image_size_keep(self):
         """更新图片尺寸，保持图片尺寸，仅处理旋转操作"""
-        # 在宽高比变动时才更新图片
-        if self.pixmap_original and not self.pixmap_original.isNull():
-            ratio_current = round(self.pixmap().width() / self.pixmap().height(), 1)
-            ratio_original = round(self.pixmap_original.width() / self.pixmap_original.height(), 1)
-            if ratio_current != ratio_original:
-                size = QSize(self.pixmap().height(), self.pixmap().width())
-                scaled_pixmap = self.pixmap_original.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                self.setPixmap(scaled_pixmap)
+        # 初始设置图片，如果还未设置图片时
+        if self.pixmap() and not self.pixmap().isNull():
+            # 在宽高比变动时才更新图片
+            if self.pixmap_original and not self.pixmap_original.isNull():
+                ratio_current = round(self.pixmap().width() / self.pixmap().height(), 1)
+                ratio_original = round(self.pixmap_original.width() / self.pixmap_original.height(), 1)
+                if ratio_current != ratio_original:
+                    size = QSize(self.pixmap().height(), self.pixmap().width())
+                    scaled_pixmap = self.pixmap_original.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    self.setPixmap(scaled_pixmap)
+        else:
+            self._image_size_auto()
 
     def _image_size_auto(self):
         """更新图片尺寸，适合其自身尺寸"""

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QApplication
 
 from common.size_mode import PageSizeMode
 from components.label_image import LabelImage
@@ -23,7 +23,9 @@ class ViewerSinglePage(ViewerFrame):
         self.show_image()
 
     def show_image(self):
-        self.label_image.set_image(self.comic.image_list[self.page_index - 1])
+        image_path_showed = self.comic.image_list[self.page_index - 1]
+        self.label_image.set_image(image_path_showed)
+        self._update_image_size()
 
     def previous_page(self):
         if self.page_index > 1:

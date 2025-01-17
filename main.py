@@ -7,9 +7,9 @@ from components.mainWindow import MainWindow
 def load_app():
     app = QApplication()
     app.setStyle('Fusion')
-    # palette = QPalette()
-    # palette.setColor(QPalette.Window, QColor(255, 255, 255))
-    # app.setPalette(palette)
+    palette = QPalette()
+    palette.setColor(QPalette.Window, QColor(255, 255, 255))
+    app.setPalette(palette)
 
     ui = MainWindow()
     ui.show()

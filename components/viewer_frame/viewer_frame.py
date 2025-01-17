@@ -1,5 +1,5 @@
 import lzytools._qt_pyside6
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QScrollArea, QWidget, QHBoxLayout, QVBoxLayout
 
 from common.comic_info import ComicInfo
 from common.size_mode import PageSizeMode
