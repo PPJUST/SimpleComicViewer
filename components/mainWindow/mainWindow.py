@@ -1,6 +1,9 @@
 from PySide6.QtWidgets import QMainWindow, QApplication
 
-from components.change_mode import ChangeMode
+from common.comic_info import ComicInfo
+from common.image_info import ImageInfo
+from components.hover_image_info import HoverImageInfo
+from components.viewer_mode import ViewerMode
 from components.mainWindow.ui_mainWindow import Ui_MainWindow
 from components.menubar import Menubar
 from components.page_size import PageSize
@@ -21,7 +24,7 @@ class MainWindow(QMainWindow):
 
         """添加悬浮控件"""
         # 切换模式控件
-        self.widget_change_mode = ChangeMode(self)
+        self.widget_change_mode = ViewerMode(self)
         self.widget_change_mode.show()
         # 页面大小控件
         self.widget_page_size = PageSize(self)
@@ -35,11 +38,14 @@ class MainWindow(QMainWindow):
         # 选项栏
         self.widget_menubar = Menubar(self)
         self.widget_menubar.show()
+        # 悬浮的漫画和图片信息
+        self.hover_image_info = HoverImageInfo(self)
+        self.hover_image_info.show()
         """添加预览控件"""
         # 预览控件-单页
         self.viewer_single_page = ViewerSinglePage(self)
-        self.viewer_single_page.set_comic('测试序号图')
         self.ui.page_single.layout().addWidget(self.viewer_single_page)
+        self.viewer_single_page.imageInfoShowed.connect(self._show_image_info)
         # 预览控件-双页
         self.viewer_double_page = ViewerDoublePage(self)
         self.ui.page_double_left.layout().addWidget(self.viewer_double_page)
@@ -52,6 +58,17 @@ class MainWindow(QMainWindow):
 
         # 绑定信号
         self.bind_signal()
+
+
+    def drop_paths(self, paths:list):
+        """拖入文件"""
+        # 备忘录 先检查路径中的符合条件的漫画文件
+        # 提取漫画信息类
+        comic_info = ComicInfo(paths[0])
+        # 设置组件属性
+        self._get_current_viewer().set_comic(comic_info)
+        self.hover_image_info.set_comic(comic_info)
+
 
     def bind_signal(self):
         """绑定信号"""
@@ -108,13 +125,21 @@ class MainWindow(QMainWindow):
         new_x = (p_rect.width() - self.widget_menubar.width()) // 2
         new_y = p_rect.height() - self.widget_menubar.height() - 50
         self.widget_menubar.move(new_x, new_y)
+        # 悬浮的漫画和图片信息
+        new_x = 0
+        new_y = self.widget_change_mode.height()
+        self.hover_image_info.move(new_x, new_y)
 
     def _get_current_viewer(self):
+        """获取当前视图模式对应的控件"""
         tab = self.ui.stackedWidget.currentWidget()
         if tab:
             layout = tab.layout()
             viewer: ViewerSinglePage = layout.itemAt(0).widget()
             return viewer
+    def _show_image_info(self, image_info:ImageInfo):
+        """更新漫画和图片信息"""
+        self.hover_image_info.set_image(image_info)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -131,7 +156,8 @@ class MainWindow(QMainWindow):
             for index in range(len(urls)):
                 path = urls[index].toLocalFile()
                 paths.append(path)
-            self._get_current_viewer().set_comic(paths[0])
+            self.drop_paths(paths)
+
 
 
 if __name__ == '__main__':

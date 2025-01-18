@@ -47,9 +47,7 @@ class PageSize(QWidget):
         self.ui.toolButton_full_size.clicked.connect(self.FullSize.emit)
         self.ui.toolButton_full_size.clicked.connect(self.highlight)
         self.ui.toolButton_rotate_left.clicked.connect(self.RotateLeft.emit)
-        self.ui.toolButton_rotate_left.clicked.connect(self.highlight)
         self.ui.toolButton_rotate_right.clicked.connect(self.RotateRight.emit)
-        self.ui.toolButton_rotate_right.clicked.connect(self.highlight)
         self.ui.toolButton_zoom_in.clicked.connect(self.ZoomIn.emit)
         self.ui.toolButton_zoom_in.clicked.connect(self.highlight)
         self.ui.toolButton_zoom_out.clicked.connect(self.ZoomOut.emit)
@@ -57,10 +55,10 @@ class PageSize(QWidget):
 
     def highlight(self):
         """高亮目前模式图标"""
-        # 重置
-        self._set_icon()
-        # 高亮
         button = self.sender()
+        # 重置图标
+        self._reset_mode_icon()
+        # 高亮
         if button is self.ui.toolButton_fit_height:
             self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT_RED))
         elif button is self.ui.toolButton_fit_width:
@@ -69,8 +67,6 @@ class PageSize(QWidget):
             self.ui.toolButton_fit_widght.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET_RED))
         elif button is self.ui.toolButton_full_size:
             self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE_RED))
-        else:
-            self._set_icon()
 
     def _set_icon(self):
         self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT))
@@ -81,6 +77,12 @@ class PageSize(QWidget):
         self.ui.toolButton_rotate_right.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_ROTATE_RIGHT))
         self.ui.toolButton_zoom_in.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_ZOOM_IN))
         self.ui.toolButton_zoom_out.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_ZOOM_OUT))
+
+    def _reset_mode_icon(self):
+        self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT))
+        self.ui.toolButton_fit_width.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDTH))
+        self.ui.toolButton_fit_widght.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET))
+        self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE))
 
     def enterEvent(self, event):
         super().enterEvent(event)

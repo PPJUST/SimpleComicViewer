@@ -1,17 +1,17 @@
-# 显示模式（适合页面/适合宽度/适合高度/实际大小）
+# 图片大小模式（固定宽度/适合页面/适合宽度/适合高度/实际大小）
 
-class PageSizeMode:
-    """显示模式"""
+class ImageSizeMode:
+    """图片大小模式"""
 
     class Fixed:
-        """固定大小（缩放时）"""
+        """固定宽度"""
         pass
 
     class FitPage:
         """适合页面"""
         pass
 
-    class FitHieght:
+    class FitHeight:
         """适合高度"""
         pass
 
@@ -22,6 +22,3 @@ class PageSizeMode:
     class FullSize:
         """实际大小"""
         pass
-
-    def get_current_mode(self):
-        """获取当前显示模式"""

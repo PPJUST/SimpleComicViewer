@@ -6,6 +6,8 @@ import lzytools.file
 import lzytools.image
 import natsort
 
+from common.comic_type import ComicType
+
 _IMAGE_SUFFIX = ('.jpg', '.png', '.webp', '.jpeg', '.gif', '.bmp')
 
 
@@ -31,7 +33,7 @@ class ComicInfo:
         self._get_filesize()  # 提取文件大小
         self._get_images()
 
-    def update_rotate(self, image_path:str, angel:int):
+    def update_rotate_angle(self, image_path: str, angel: int):
         """更新旋转角度字典
         :param image_path: 图片路径
         :param angel: 对应的旋转角度"""
@@ -40,7 +42,7 @@ class ComicInfo:
         else:
             self.rotate_angle_dict[image_path] = angel
 
-    def get_rotate(self, image_path:int)->tuple[int, None]:
+    def get_rotate_angle(self, image_path: int) -> tuple[int, None]:
         """获取图片是否旋转及其旋转角度
         :param image_path: 图片路径
         :return: 旋转角度int，或不旋转None"""
@@ -50,40 +52,39 @@ class ComicInfo:
     def _get_filetype(self):
         """提取文件类型"""
         if os.path.isdir(self.path):
-            self.filetype = 'folder'
+            self.filetype = ComicType.Folder
         else:
             if lzytools.archive.is_archive(self.path):
-                self.filetype = 'archive'
+                self.filetype = ComicType.Archive
             else:
-                self.filetype = 'unsupported'
+                self.filetype = ComicType.Unsupported
 
     def _get_filename(self):
         """提取文件名和文件标题"""
         self.filename = os.path.basename(self.path)
-        if self.filetype == 'folder':
+        if self.filetype == ComicType.Folder:
             self.filetitle = self.filename
-        elif self.filetype == 'archive':
+        elif self.filetype == ComicType.Archive:
             self.filetitle = lzytools.archive.get_filetitle(self.filename)
 
     def _get_filesize(self):
         """提取文件大小"""
         self.filesize = lzytools.file.get_size(self.path)
 
-        if self.filetype == 'folder':
+        if self.filetype == ComicType.Folder:
             self.filesize_real = self.filesize
-        elif self.filetype == 'archive':
+        elif self.filetype == ComicType.Archive:
             self.filesize_real = lzytools.archive.get_real_size(self.path)
 
     def _get_images(self):
         """提取图片列表"""
-        if self.filetype == 'folder':
+        if self.filetype == ComicType.Folder:
             self.image_list = [os.path.normpath(os.path.join(self.path, i)) for i in os.listdir(self.path) if
                                i.endswith(_IMAGE_SUFFIX)]
             self.image_list = natsort.natsorted(self.image_list)
             self.page_count = len(self.image_list)
-        elif self.filetype == 'archive':
+        elif self.filetype == ComicType.Archive:
             paths = lzytools.archive.get_structure(self.path)
             self.image_list = [i for i in paths if i.endswith(_IMAGE_SUFFIX)]
             self.image_list = natsort.natsorted(self.image_list)
             self.page_count = len(self.image_list)
-

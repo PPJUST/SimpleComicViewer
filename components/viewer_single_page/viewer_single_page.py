@@ -1,12 +1,16 @@
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication
 
-from common.size_mode import PageSizeMode
+from common.comic_info import ComicInfo
+from common.image_info import ImageInfo
+from common.image_size_mode import ImageSizeMode
 from components.label_image import LabelImage
 from components.viewer_frame import ViewerFrame
 
 
 class ViewerSinglePage(ViewerFrame):
     """预览控件——单页"""
+    imageInfoShowed = Signal(ImageInfo,name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -16,16 +20,22 @@ class ViewerSinglePage(ViewerFrame):
 
         # 设置参数
 
-    def set_comic(self, comic_path: str):
+    def set_comic(self, comic_info: ComicInfo):
         """设置漫画类
-        :param comic_path: 漫画路径"""
-        super().set_comic(comic_path)
+        :param comic_info: ComicInfo类"""
+        super().set_comic(comic_info)
         self.show_image()
 
+
     def show_image(self):
-        image_path_showed = self.comic.image_list[self.page_index - 1]
-        self.label_image.set_image(image_path_showed)
+        image_path = self.comic_info.image_list[self.page_index - 1]
+        angle = self.comic_info.get_rotate_angle(image_path)  # 旋转角度
+        image_info = ImageInfo(self.comic_info, image_path)  # 图片信息类
+        image_info.set_page_index(self.page_index)
+        self.label_image.set_image(image_info, angle)
         self._update_image_size()
+
+        self.imageInfoShowed.emit(image_info)
 
     def previous_page(self):
         if self.page_index > 1:
@@ -33,29 +43,29 @@ class ViewerSinglePage(ViewerFrame):
             self.show_image()
 
     def next_page(self):
-        if self.page_index < self.comic.page_count:
+        if self.page_index < self.comic_info.page_count:
             self.page_index += 1
             self.show_image()
 
-    def keep_size(self):
-        super().keep_size()
-        self.label_image.update_image_size(PageSizeMode.Fixed)
+    def keep_width(self):
+        super().keep_width()
+        self.label_image.show_image(ImageSizeMode.Fixed)
 
     def fit_width(self):
         super().fit_width()
-        self.label_image.update_image_size(PageSizeMode.FitWidth, self.size().width())
+        self.label_image.show_image(ImageSizeMode.FitWidth, self.size().width())
 
     def fit_height(self):
         super().fit_height()
-        self.label_image.update_image_size(PageSizeMode.FitHieght, self.size().height())
+        self.label_image.show_image(ImageSizeMode.FitHeight, self.size().height())
 
     def fit_widget(self):
         super().fit_widget()
-        self.label_image.update_image_size(PageSizeMode.FitPage, self.size())
+        self.label_image.show_image(ImageSizeMode.FitPage, self.size())
 
     def full_size(self):
         super().full_size()
-        self.label_image.update_image_size(PageSizeMode.FullSize)
+        self.label_image.show_image(ImageSizeMode.FullSize)
 
     def zoom_in(self):
         super().zoom_in()
@@ -67,13 +77,19 @@ class ViewerSinglePage(ViewerFrame):
 
     def rotate_left(self):
         super().rotate_left()
+        # 显示旋转后的图片
         self.label_image.rotate_left()
         self._update_image_size()
+        # 更新角度字典
 
     def rotate_right(self):
         super().rotate_right()
+        # 显示旋转后的图片
         self.label_image.rotate_right()
         self._update_image_size()
+        # 更新角度字典
+        current_image_path = self.comic_info.image_list[self.page_index - 1]
+        self.comic_info.update_rotate_angle(current_image_path, 90)
 
 
 if __name__ == '__main__':

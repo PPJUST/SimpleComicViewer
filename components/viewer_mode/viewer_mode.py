@@ -2,13 +2,13 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from components.change_mode.icon_base64 import _DOUBLE_PAGE, _SINGLE_PAGE_RED, _DOUBLE_PAGE_RED, _HORIZONTAL_SCROLL_RED
-from components.change_mode.icon_base64 import _SINGLE_PAGE, _VERTICAL_SCROLL, _VERTICAL_SCROLL_RED, _HORIZONTAL_SCROLL
-from components.change_mode.ui_change_mode import Ui_Form
+from components.viewer_mode.icon_base64 import _DOUBLE_PAGE, _SINGLE_PAGE_RED, _DOUBLE_PAGE_RED, _HORIZONTAL_SCROLL_RED
+from components.viewer_mode.icon_base64 import _SINGLE_PAGE, _VERTICAL_SCROLL, _VERTICAL_SCROLL_RED, _HORIZONTAL_SCROLL
+from components.viewer_mode.ui_change_mode import Ui_Form
 
 
-class ChangeMode(QWidget):
-    """切换浏览模式"""
+class ViewerMode(QWidget):
+    """浏览模式（单页/双页/纵向卷轴/横向卷轴）"""
     SinglePage = Signal(name='单页')
     DoublePage = Signal(name='双页')
     VerticalScroll = Signal(name='纵向卷轴')
@@ -76,6 +76,6 @@ class ChangeMode(QWidget):
 
 if __name__ == '__main__':
     app = QApplication()
-    ui = ChangeMode()
+    ui = ViewerMode()
     ui.show()
     app.exec()
