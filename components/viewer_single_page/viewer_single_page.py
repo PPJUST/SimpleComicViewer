@@ -81,6 +81,8 @@ class ViewerSinglePage(ViewerFrame):
         self.label_image.rotate_left()
         self._update_image_size()
         # 更新角度字典
+        current_image_path = self.comic_info.image_list[self.page_index - 1]
+        self.comic_info.update_rotate_angle(current_image_path, -90)
 
     def rotate_right(self):
         super().rotate_right()

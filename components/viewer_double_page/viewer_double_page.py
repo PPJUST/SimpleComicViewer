@@ -1,11 +1,16 @@
+from PySide6.QtCore import Signal, QSize
 from PySide6.QtWidgets import QApplication
 
+from common.comic_info import ComicInfo
+from common.image_info import ImageInfo
+from common.image_size_mode import ImageSizeMode
 from components.label_image import LabelImage
 from components.viewer_frame import ViewerFrame
 
 
 class ViewerDoublePage(ViewerFrame):
     """预览控件——双页"""
+    imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -16,6 +21,115 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_right = LabelImage()
         self.layout.addWidget(self.label_image_right)
 
+
+
+        # 设置参数
+
+    def set_comic(self, comic_info: ComicInfo):
+        """设置漫画类
+        :param comic_info: ComicInfo类"""
+        super().set_comic(comic_info)
+        self.show_image()
+
+
+    def show_image(self):
+        print(1)
+        # 设置左页
+        image_path_left = self.comic_info.image_list[self.page_index - 1]
+        angle = self.comic_info.get_rotate_angle(image_path_left)  # 旋转角度
+        image_info_left = ImageInfo(self.comic_info, image_path_left)  # 图片信息类
+        image_info_left.set_page_index(self.page_index)
+        self.label_image_left.set_image(image_info_left, angle)
+        # 设置右页
+        image_path_right = self.comic_info.image_list[self.page_index]
+        angle = self.comic_info.get_rotate_angle(image_path_right)  # 旋转角度
+        image_info_right = ImageInfo(self.comic_info, image_path_right)  # 图片信息类
+        image_info_right.set_page_index(self.page_index)
+        self.label_image_right.set_image(image_info_right, angle)
+
+        self._update_image_size()
+        self.imageInfoShowed.emit(image_info_left)
+
+    def previous_page(self):
+        if self.page_index > 1:
+            self.page_index -= 2
+            self.show_image()
+
+    def next_page(self):
+        if self.page_index < self.comic_info.page_count:
+            self.page_index += 2
+            self.show_image()
+
+    def keep_width(self):
+        super().keep_width()
+        # 双页不支持
+        pass
+
+    def fit_width(self):
+        super().fit_width()
+        # 双页不支持
+        pass
+    def fit_height(self):
+        super().fit_height()
+        print(2)
+        # 提取原始尺寸
+        left_image_width, left_image_height = self.label_image_left.image_info.size
+        right_image_width, right_image_height = self.label_image_right.image_info.size
+        page_height = self.height()
+        # 计算新宽度
+        new_width_left =int(page_height/left_image_height*left_image_width)
+        new_width_right = int(page_height / right_image_height * right_image_width)
+
+        self.label_image_left.show_image(ImageSizeMode.FitPage, QSize(new_width_left,page_height ))
+        self.label_image_right.show_image(ImageSizeMode.FitHeight, QSize(new_width_right,page_height))
+
+
+    def fit_widget(self):
+        super().fit_widget()
+        print(3)
+        # 双页逻辑：在页面上同时显示两张图片，先以统一其高度，然后保持纵横比计算最终的宽高
+        # 提取原始尺寸
+        left_image_width, left_image_height = self.label_image_left.image_info.size
+        right_image_width, right_image_height = self.label_image_right.image_info.size
+        page_height = self.height()
+        page_width = self.width()
+        # 计算两张图片统一高度时的新宽度
+        temp_width_left =page_height/left_image_height*left_image_width
+        temp_width_right = page_height / right_image_height * right_image_width
+        joined_width = temp_width_left+temp_width_right
+        # 计算新的高度
+        new_height = int(joined_width/page_width*page_height)
+        new_width_left = new_height/left_image_height*left_image_width
+        new_width_right = new_height/right_image_height*right_image_width
+
+        self.label_image_left.show_image(ImageSizeMode.FitPage,  QSize(new_width_left,new_height ))
+        self.label_image_right.show_image(ImageSizeMode.FitPage, QSize(new_width_right, new_height))
+
+
+    def full_size(self):
+        super().full_size()
+        # 双页不支持
+        pass
+
+    def zoom_in(self):
+        super().zoom_in()
+        # 双页不支持
+        pass
+
+    def zoom_out(self):
+        super().zoom_in()
+        # 双页不支持
+        pass
+
+    def rotate_left(self):
+        super().rotate_left()
+        # 双页不支持
+        pass
+
+    def rotate_right(self):
+        super().rotate_right()
+        # 双页不支持
+        pass
 
 if __name__ == '__main__':
     app = QApplication()
