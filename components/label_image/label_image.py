@@ -1,11 +1,11 @@
 import lzytools._qt_pyside6
 import lzytools.archive
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QPixmap, QTransform, QImage
-from PySide6.QtWidgets import QLabel, QSizePolicy
+from PySide6.QtGui import QPixmap, QTransform
+from PySide6.QtWidgets import QLabel
 
 from common.image_info import ImageInfo
-from common.image_size_mode import ImageSizeMode
+from common.mode_image_size import ModeImageSize
 
 
 class LabelImage(QLabel):
@@ -19,8 +19,8 @@ class LabelImage(QLabel):
         # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # 参数设置
-        self.pixmap_original:QPixmap = None  # 原始pixmap图片对象
-        self.image_info:ImageInfo = image_info  # 图片信息类
+        self.pixmap_original: QPixmap = None  # 原始pixmap图片对象
+        self.image_info: ImageInfo = image_info  # 图片信息类
         if self.image_info:
             self.pixmap_original = lzytools._qt_pyside6.bytes_to_pixmap(self.image_info.image_bytes)
         self.width_fixed = None  # 图片尺寸模式为Fixed时的图片宽度（单独赋值给变量，防止在读取pixmap()对象计算高度时不统一的情形）
@@ -66,19 +66,19 @@ class LabelImage(QLabel):
         """向右旋转图片"""
         self._rotate(90)
 
-    def show_image(self, image_size_mode: ImageSizeMode, arg=None):
+    def show_image(self, image_size_mode: ModeImageSize, arg=None):
         """显示图片
         :param image_size_mode: 图片大小模式
         :param arg: 对应模式的大小参数"""
-        if image_size_mode is ImageSizeMode.Fixed:
+        if image_size_mode is ModeImageSize.Fixed:
             self._image_size_keep_width()
-        if image_size_mode is ImageSizeMode.FitPage:
+        if image_size_mode is ModeImageSize.FitPage:
             self._image_size_fit_page(arg)
-        elif image_size_mode is ImageSizeMode.FitHeight:
+        elif image_size_mode is ModeImageSize.FitHeight:
             self._image_size_fit_height(arg)
-        elif image_size_mode is ImageSizeMode.FitWidth:
+        elif image_size_mode is ModeImageSize.FitWidth:
             self._image_size_fit_width(arg)
-        elif image_size_mode is ImageSizeMode.FullSize:
+        elif image_size_mode is ModeImageSize.FullSize:
             self._image_size_full_size()
 
     def _image_size_keep_width(self):

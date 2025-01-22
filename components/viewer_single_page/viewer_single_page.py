@@ -3,14 +3,14 @@ from PySide6.QtWidgets import QApplication
 
 from common.comic_info import ComicInfo
 from common.image_info import ImageInfo
-from common.image_size_mode import ImageSizeMode
+from common.mode_image_size import ModeImageSize
 from components.label_image import LabelImage
 from components.viewer_frame import ViewerFrame
 
 
 class ViewerSinglePage(ViewerFrame):
     """预览控件——单页"""
-    imageInfoShowed = Signal(ImageInfo,name='当前显示的图片信息类')
+    imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -25,7 +25,6 @@ class ViewerSinglePage(ViewerFrame):
         :param comic_info: ComicInfo类"""
         super().set_comic(comic_info)
         self.show_image()
-
 
     def show_image(self):
         image_path = self.comic_info.image_list[self.page_index - 1]
@@ -49,23 +48,23 @@ class ViewerSinglePage(ViewerFrame):
 
     def keep_width(self):
         super().keep_width()
-        self.label_image.show_image(ImageSizeMode.Fixed)
+        self.label_image.show_image(ModeImageSize.Fixed)
 
     def fit_width(self):
         super().fit_width()
-        self.label_image.show_image(ImageSizeMode.FitWidth, self.size().width())
+        self.label_image.show_image(ModeImageSize.FitWidth, self.size().width())
 
     def fit_height(self):
         super().fit_height()
-        self.label_image.show_image(ImageSizeMode.FitHeight, self.size().height())
+        self.label_image.show_image(ModeImageSize.FitHeight, self.size().height())
 
     def fit_widget(self):
         super().fit_widget()
-        self.label_image.show_image(ImageSizeMode.FitPage, self.size())
+        self.label_image.show_image(ModeImageSize.FitPage, self.size())
 
     def full_size(self):
         super().full_size()
-        self.label_image.show_image(ImageSizeMode.FullSize)
+        self.label_image.show_image(ModeImageSize.FullSize)
 
     def zoom_in(self):
         super().zoom_in()

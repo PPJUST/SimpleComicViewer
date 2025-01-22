@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
+from common.mode_viewer import ModeViewer
 from components.viewer_mode.icon_base64 import _DOUBLE_PAGE, _SINGLE_PAGE_RED, _DOUBLE_PAGE_RED, _HORIZONTAL_SCROLL_RED
 from components.viewer_mode.icon_base64 import _SINGLE_PAGE, _VERTICAL_SCROLL, _VERTICAL_SCROLL_RED, _HORIZONTAL_SCROLL
 from components.viewer_mode.ui_change_mode import Ui_Form
@@ -9,10 +10,10 @@ from components.viewer_mode.ui_change_mode import Ui_Form
 
 class ViewerMode(QWidget):
     """浏览模式（单页/双页/纵向卷轴/横向卷轴）"""
-    SinglePage = Signal(name='单页')
-    DoublePage = Signal(name='双页')
-    VerticalScroll = Signal(name='纵向卷轴')
-    HorizontalScroll = Signal(name='横向卷轴')
+    SinglePage = Signal(ModeViewer, name='单页')
+    DoublePage = Signal(ModeViewer, name='双页')
+    VerticalScroll = Signal(ModeViewer, name='纵向卷轴')
+    HorizontalScroll = Signal(ModeViewer, name='横向卷轴')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -29,13 +30,14 @@ class ViewerMode(QWidget):
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_horizontal_scroll)
 
         # 绑定信号
-        self.ui.toolButton_single_page.clicked.connect(self.SinglePage.emit)
+        self.ui.toolButton_single_page.clicked.connect(lambda: self.SinglePage.emit(ModeViewer.SinglePage))
         self.ui.toolButton_single_page.clicked.connect(self.highlight)
-        self.ui.toolButton_double_page.clicked.connect(self.DoublePage.emit)
+        self.ui.toolButton_double_page.clicked.connect(lambda: self.DoublePage.emit(ModeViewer.DoublePage.Left))
         self.ui.toolButton_double_page.clicked.connect(self.highlight)
-        self.ui.toolButton_vertical_scroll.clicked.connect(self.VerticalScroll.emit)
+        self.ui.toolButton_vertical_scroll.clicked.connect(lambda: self.VerticalScroll.emit(ModeViewer.Scroll.Vertical))
         self.ui.toolButton_vertical_scroll.clicked.connect(self.highlight)
-        self.ui.toolButton_horizontal_scroll.clicked.connect(self.HorizontalScroll.emit)
+        self.ui.toolButton_horizontal_scroll.clicked.connect(
+            lambda: self.HorizontalScroll.emit(ModeViewer.Scroll.Horizontal.Left))
         self.ui.toolButton_horizontal_scroll.clicked.connect(self.highlight)
 
     def highlight(self):

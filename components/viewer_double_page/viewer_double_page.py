@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QApplication
 
 from common.comic_info import ComicInfo
 from common.image_info import ImageInfo
-from common.image_size_mode import ImageSizeMode
+from common.mode_image_size import ModeImageSize
 from components.label_image import LabelImage
 from components.viewer_frame import ViewerFrame
 
@@ -17,13 +17,11 @@ class ViewerDoublePage(ViewerFrame):
         # 设置图片显示控件
         self.label_image_left = LabelImage()
         self.layout.addWidget(self.label_image_left)
-
         self.label_image_right = LabelImage()
         self.layout.addWidget(self.label_image_right)
 
-
-
         # 设置参数
+        self.page_size_mode = ModeImageSize.FitHeight
 
     def set_comic(self, comic_info: ComicInfo):
         """设置漫画类
@@ -31,9 +29,7 @@ class ViewerDoublePage(ViewerFrame):
         super().set_comic(comic_info)
         self.show_image()
 
-
     def show_image(self):
-        print(1)
         # 设置左页
         image_path_left = self.comic_info.image_list[self.page_index - 1]
         angle = self.comic_info.get_rotate_angle(image_path_left)  # 旋转角度
@@ -69,24 +65,22 @@ class ViewerDoublePage(ViewerFrame):
         super().fit_width()
         # 双页不支持
         pass
+
     def fit_height(self):
         super().fit_height()
-        print(2)
         # 提取原始尺寸
         left_image_width, left_image_height = self.label_image_left.image_info.size
         right_image_width, right_image_height = self.label_image_right.image_info.size
         page_height = self.height()
         # 计算新宽度
-        new_width_left =int(page_height/left_image_height*left_image_width)
+        new_width_left = int(page_height / left_image_height * left_image_width)
         new_width_right = int(page_height / right_image_height * right_image_width)
 
-        self.label_image_left.show_image(ImageSizeMode.FitPage, QSize(new_width_left,page_height ))
-        self.label_image_right.show_image(ImageSizeMode.FitHeight, QSize(new_width_right,page_height))
-
+        self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, page_height))
+        self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, page_height))
 
     def fit_widget(self):
         super().fit_widget()
-        print(3)
         # 双页逻辑：在页面上同时显示两张图片，先以统一其高度，然后保持纵横比计算最终的宽高
         # 提取原始尺寸
         left_image_width, left_image_height = self.label_image_left.image_info.size
@@ -94,17 +88,16 @@ class ViewerDoublePage(ViewerFrame):
         page_height = self.height()
         page_width = self.width()
         # 计算两张图片统一高度时的新宽度
-        temp_width_left =page_height/left_image_height*left_image_width
+        temp_width_left = page_height / left_image_height * left_image_width
         temp_width_right = page_height / right_image_height * right_image_width
-        joined_width = temp_width_left+temp_width_right
+        joined_width = temp_width_left + temp_width_right
         # 计算新的高度
-        new_height = int(joined_width/page_width*page_height)
-        new_width_left = new_height/left_image_height*left_image_width
-        new_width_right = new_height/right_image_height*right_image_width
+        new_height = int(page_width / joined_width * page_height)
+        new_width_left = new_height / left_image_height * left_image_width
+        new_width_right = new_height / right_image_height * right_image_width
 
-        self.label_image_left.show_image(ImageSizeMode.FitPage,  QSize(new_width_left,new_height ))
-        self.label_image_right.show_image(ImageSizeMode.FitPage, QSize(new_width_right, new_height))
-
+        self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, new_height))
+        self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, new_height))
 
     def full_size(self):
         super().full_size()
@@ -130,6 +123,7 @@ class ViewerDoublePage(ViewerFrame):
         super().rotate_right()
         # 双页不支持
         pass
+
 
 if __name__ == '__main__':
     app = QApplication()
