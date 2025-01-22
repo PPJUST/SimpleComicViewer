@@ -66,8 +66,9 @@ class MainWindow(QMainWindow):
         # 提取漫画信息类
         comic_info = ComicInfo(paths[0])
         # 设置组件属性
-        self._get_current_viewer().set_comic(comic_info)
         self.hover_image_info.set_comic(comic_info)
+        self._get_current_viewer().set_comic(comic_info)
+
 
 
     def bind_signal(self):

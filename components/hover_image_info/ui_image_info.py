@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_image_infoUwiHpV.ui'
+## Form generated from reading UI file 'ui_image_infoULuCQG.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -22,7 +22,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(150, 197)
+        Form.resize(181, 207)
         self.verticalLayout_3 = QVBoxLayout(Form)
         self.verticalLayout_3.setSpacing(3)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
@@ -178,15 +178,15 @@ class Ui_Form(object):
         self.label_4.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u5927\u5c0f:", None))
         self.label_comic_filesize.setText("")
         self.label_3.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u540d:", None))
-        self.label_5.setText(QCoreApplication.translate("Form", u"\u9875\u6570:", None))
+        self.label_5.setText(QCoreApplication.translate("Form", u"\u603b\u9875\u6570:", None))
         self.label_comic_page_count.setText("")
         self.label_2.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u8def\u5f84:", None))
         self.label_image_icon.setText(QCoreApplication.translate("Form", u"\u56fe\u7247\u56fe\u6807", None))
         self.label_12.setText(QCoreApplication.translate("Form", u"\u56fe\u7247\u4fe1\u606f", None))
         self.label_page_index.setText("")
-        self.label_8.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u5927\u5c0f:", None))
+        self.label_8.setText(QCoreApplication.translate("Form", u"\u56fe\u7247\u5927\u5c0f:", None))
         self.label_10.setText(QCoreApplication.translate("Form", u"\u9875\u7801:", None))
-        self.label_9.setText(QCoreApplication.translate("Form", u"\u5c3a\u5bf8:", None))
+        self.label_9.setText(QCoreApplication.translate("Form", u"\u56fe\u7247\u5c3a\u5bf8:", None))
         self.label_image_filesize.setText("")
         self.label_7.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u540d:", None))
         self.label_image_size.setText("")
