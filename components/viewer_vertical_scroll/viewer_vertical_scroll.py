@@ -13,9 +13,12 @@ class ViewerVerticalScroll(ViewerFrame):
     imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent,layout='vertical')
+
+        self.verticalScrollBar().valueChanged.connect(self._index_changed)
 
         # 设置参数
+
 
     def set_comic(self, comic_info: ComicInfo):
         """设置漫画类
@@ -81,7 +84,8 @@ class ViewerVerticalScroll(ViewerFrame):
     def rotate_left(self):
         super().rotate_left()
         # 获取当前页码的Label
-        label :LabelImage= None
+        label :LabelImage= self._get_first_showed_label()
+        print(label)
         # 显示旋转后的图片
         label.rotate_left()
         if self.page_size_mode is ModeImageSize.Fixed:
@@ -95,7 +99,8 @@ class ViewerVerticalScroll(ViewerFrame):
     def rotate_right(self):
         super().rotate_right()
         # 获取当前页码的Label
-        label :LabelImage= None
+        label :LabelImage= self._get_first_showed_label()
+        print(label)
         # 显示旋转后的图片
         label.rotate_right()
         if self.page_size_mode is ModeImageSize.Fixed:
@@ -112,6 +117,28 @@ class ViewerVerticalScroll(ViewerFrame):
             widget = item.widget()
             if widget is not None:
                 widget.deleteLater()
+
+    def _get_first_showed_label(self):
+        """获取页面上显示的第一个label"""
+        spacing = self.layout.spacing()
+        # 提取当前滑动条的值
+        bar_value = self.verticalScrollBar().value()
+        # 遍历控件，提取滑动条值对应的label
+        height_total = 0
+        for i in range(self.layout.count()):
+            label = self.layout.itemAt(i).widget()
+            height_label = label.height()
+            if height_total <= bar_value < height_total+height_label + spacing:
+                print(i+1, label)
+                return label
+            else:
+                height_total += height_label +spacing
+
+    def _index_changed(self):
+        """显示的索引改变时发生信号"""
+        # 备忘录
+        pass
+
 
 if __name__ == '__main__':
     app = QApplication()

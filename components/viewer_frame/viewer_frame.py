@@ -110,12 +110,4 @@ class ViewerFrame(QScrollArea):
         super().resizeEvent(event)
         self._update_image_size()
 
-    def wheelEvent(self, event):
-        """设置鼠标滚轮切页"""
-        # 获取鼠标滚轮滚动的角度
-        angle = event.angleDelta().y()
-        # 根据角度的正负区分滚轮向上向下操作
-        if angle > 0:  # 向上
-            self.previous_page()
-        else:  # 向下
-            self.next_page()
+
