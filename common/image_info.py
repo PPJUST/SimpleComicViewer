@@ -30,11 +30,11 @@ class ImageInfo:
         self._read_image()
         self._get_filesize()
         self._get_size()
+        self._set_page_index()
 
-    def set_page_index(self, index:int):
-        """设置图片对应的页码
-        :param index: 页码"""
-        self.page_index = index
+    def _set_page_index(self):
+        """设置图片对应的页码"""
+        self.page_index = self.comic_info.image_list.index(self.path)+1
     def _read_image(self):
         """读取图片"""
         if self.comic_type==ComicType.Folder:

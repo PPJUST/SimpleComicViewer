@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
+from common.mode_viewer import ModeViewer
 from components.page_size.icon_base64 import _FIT_HEIGHT, _FIT_WIDTH, _FIT_WIDGET, _ROTATE_LEFT, _ROTATE_RIGHT
 from components.page_size.icon_base64 import _FIT_HEIGHT_RED, _FIT_WIDTH_RED, _FIT_WIDGET_RED, _FULL_SIZE_RED
 from components.page_size.icon_base64 import _FULL_SIZE, _ZOOM_IN, _ZOOM_OUT
@@ -30,7 +31,7 @@ class PageSize(QWidget):
         # lzytools._qt_pyside6.set_transparent_background(self)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_fit_height)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_fit_width)
-        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_fit_widght)
+        lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_fit_widget)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_rotate_left)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_rotate_right)
         lzytools._qt_pyside6.set_transparent_background(self.ui.toolButton_full_size)
@@ -42,8 +43,8 @@ class PageSize(QWidget):
         self.ui.toolButton_fit_height.clicked.connect(self.highlight)
         self.ui.toolButton_fit_width.clicked.connect(self.FitWidth.emit)
         self.ui.toolButton_fit_width.clicked.connect(self.highlight)
-        self.ui.toolButton_fit_widght.clicked.connect(self.FitWidget.emit)
-        self.ui.toolButton_fit_widght.clicked.connect(self.highlight)
+        self.ui.toolButton_fit_widget.clicked.connect(self.FitWidget.emit)
+        self.ui.toolButton_fit_widget.clicked.connect(self.highlight)
         self.ui.toolButton_full_size.clicked.connect(self.FullSize.emit)
         self.ui.toolButton_full_size.clicked.connect(self.highlight)
         self.ui.toolButton_rotate_left.clicked.connect(self.RotateLeft.emit)
@@ -63,15 +64,37 @@ class PageSize(QWidget):
             self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT_RED))
         elif button is self.ui.toolButton_fit_width:
             self.ui.toolButton_fit_width.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDTH_RED))
-        elif button is self.ui.toolButton_fit_widght:
-            self.ui.toolButton_fit_widght.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET_RED))
+        elif button is self.ui.toolButton_fit_widget:
+            self.ui.toolButton_fit_widget.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET_RED))
         elif button is self.ui.toolButton_full_size:
             self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE_RED))
+
+
+    def set_button_mode(self, viewer_mode:ModeViewer):
+        """根据显示模式设置按钮的启用关系"""
+        self.disable_buttons()
+        if viewer_mode is ModeViewer.SinglePage: # 单页视图启用全部
+            self.enable_buttons()
+        elif viewer_mode is ModeViewer.DoublePage.Left: # 双页视图只启用适合高度、适合页面
+            self.ui.toolButton_fit_height.setEnabled(True)
+            self.ui.toolButton_fit_widget.setEnabled(True)
+        elif viewer_mode is ModeViewer.Scroll.Vertical:  # 纵向卷轴只启用适合宽度、放大、缩小、左旋、右旋
+            self.ui.toolButton_fit_width.setEnabled(True)
+            self.ui.toolButton_zoom_in.setEnabled(True)
+            self.ui.toolButton_zoom_out.setEnabled(True)
+            self.ui.toolButton_rotate_left.setEnabled(True)
+            self.ui.toolButton_rotate_right.setEnabled(True)
+        elif viewer_mode is ModeViewer.Scroll.Horizontal.Left:  # 横向卷轴只启用适合高度、放大、缩小、左旋、右旋
+            self.ui.toolButton_fit_height.setEnabled(True)
+            self.ui.toolButton_zoom_in.setEnabled(True)
+            self.ui.toolButton_zoom_out.setEnabled(True)
+            self.ui.toolButton_rotate_left.setEnabled(True)
+            self.ui.toolButton_rotate_right.setEnabled(True)
 
     def _set_icon(self):
         self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT))
         self.ui.toolButton_fit_width.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDTH))
-        self.ui.toolButton_fit_widght.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET))
+        self.ui.toolButton_fit_widget.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET))
         self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE))
         self.ui.toolButton_rotate_left.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_ROTATE_LEFT))
         self.ui.toolButton_rotate_right.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_ROTATE_RIGHT))
@@ -81,14 +104,33 @@ class PageSize(QWidget):
     def _reset_mode_icon(self):
         self.ui.toolButton_fit_height.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_HEIGHT))
         self.ui.toolButton_fit_width.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDTH))
-        self.ui.toolButton_fit_widght.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET))
+        self.ui.toolButton_fit_widget.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FIT_WIDGET))
         self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE))
+
+    def disable_buttons(self):
+        self.ui.toolButton_fit_height.setEnabled(False)
+        self.ui.toolButton_fit_width.setEnabled(False)
+        self.ui.toolButton_fit_widget.setEnabled(False)
+        self.ui.toolButton_rotate_left.setEnabled(False)
+        self.ui.toolButton_rotate_right.setEnabled(False)
+        self.ui.toolButton_full_size.setEnabled(False)
+        self.ui.toolButton_zoom_in.setEnabled(False)
+        self.ui.toolButton_zoom_out.setEnabled(False)
+    def enable_buttons(self):
+        self.ui.toolButton_fit_height.setEnabled(True)
+        self.ui.toolButton_fit_width.setEnabled(True)
+        self.ui.toolButton_fit_widget.setEnabled(True)
+        self.ui.toolButton_rotate_left.setEnabled(True)
+        self.ui.toolButton_rotate_right.setEnabled(True)
+        self.ui.toolButton_full_size.setEnabled(True)
+        self.ui.toolButton_zoom_in.setEnabled(True)
+        self.ui.toolButton_zoom_out.setEnabled(True)
 
     def enterEvent(self, event):
         super().enterEvent(event)
         self.ui.toolButton_fit_height.setVisible(True)
         self.ui.toolButton_fit_width.setVisible(True)
-        self.ui.toolButton_fit_widght.setVisible(True)
+        self.ui.toolButton_fit_widget.setVisible(True)
         self.ui.toolButton_rotate_left.setVisible(True)
         self.ui.toolButton_rotate_right.setVisible(True)
         self.ui.toolButton_full_size.setVisible(True)
@@ -99,7 +141,7 @@ class PageSize(QWidget):
         super().leaveEvent(event)
         self.ui.toolButton_fit_height.setVisible(False)
         self.ui.toolButton_fit_width.setVisible(False)
-        self.ui.toolButton_fit_widght.setVisible(False)
+        self.ui.toolButton_fit_widget.setVisible(False)
         self.ui.toolButton_rotate_left.setVisible(False)
         self.ui.toolButton_rotate_right.setVisible(False)
         self.ui.toolButton_full_size.setVisible(False)

@@ -149,6 +149,14 @@ class MainWindow(QMainWindow):
 
     def _change_viewer(self, viewer_mode: ModeViewer):
         """修改显示模式"""
+        # 设置页面尺寸选项
+        self.widget_page_size.set_button_mode(viewer_mode)
+        # 清除旧的预览控件显示的图像
+        self._get_current_viewer().clear()
+        # 将当前显示的漫画集成至新的预览控件中
+        if self.comic_showed:
+            self.show_comic(self.comic_showed)
+        # 切换到对应页
         if viewer_mode is ModeViewer.SinglePage:
             self.ui.stackedWidget.setCurrentIndex(0)
         elif viewer_mode is ModeViewer.DoublePage.Left:
@@ -162,8 +170,6 @@ class MainWindow(QMainWindow):
         elif viewer_mode is ModeViewer.Scroll.Horizontal.Right:
             self.ui.stackedWidget.setCurrentIndex(5)
 
-        if self.comic_showed:
-            self.show_comic(self.comic_showed)
 
     def _viewer_fit_height(self):
         """设置预览控件-图片尺寸，适合高度"""

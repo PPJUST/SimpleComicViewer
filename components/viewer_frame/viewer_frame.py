@@ -90,6 +90,9 @@ class ViewerFrame(QScrollArea):
     def rotate_right(self):
         """页面向右旋转"""
 
+    def clear(self):
+        """清除显示"""
+
     def _update_image_size(self):
         """更新图像的显示大小"""
         if self.page_size_mode is ModeImageSize.Fixed:

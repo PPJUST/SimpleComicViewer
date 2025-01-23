@@ -34,13 +34,11 @@ class ViewerDoublePage(ViewerFrame):
         image_path_left = self.comic_info.image_list[self.page_index - 1]
         angle = self.comic_info.get_rotate_angle(image_path_left)  # 旋转角度
         image_info_left = ImageInfo(self.comic_info, image_path_left)  # 图片信息类
-        image_info_left.set_page_index(self.page_index)
         self.label_image_left.set_image(image_info_left, angle)
         # 设置右页
         image_path_right = self.comic_info.image_list[self.page_index]
         angle = self.comic_info.get_rotate_angle(image_path_right)  # 旋转角度
         image_info_right = ImageInfo(self.comic_info, image_path_right)  # 图片信息类
-        image_info_right.set_page_index(self.page_index)
         self.label_image_right.set_image(image_info_right, angle)
 
         self._update_image_size()
@@ -56,15 +54,9 @@ class ViewerDoublePage(ViewerFrame):
             self.page_index += 2
             self.show_image()
 
-    def keep_width(self):
-        super().keep_width()
-        # 双页不支持
-        pass
 
-    def fit_width(self):
-        super().fit_width()
-        # 双页不支持
-        pass
+
+
 
     def fit_height(self):
         super().fit_height()
@@ -99,31 +91,18 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, new_height))
         self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, new_height))
 
-    def full_size(self):
-        super().full_size()
-        # 双页不支持
-        pass
 
-    def zoom_in(self):
-        super().zoom_in()
-        # 双页不支持
-        pass
 
-    def zoom_out(self):
-        super().zoom_in()
-        # 双页不支持
-        pass
 
-    def rotate_left(self):
-        super().rotate_left()
-        # 双页不支持
-        pass
 
-    def rotate_right(self):
-        super().rotate_right()
-        # 双页不支持
-        pass
 
+
+
+
+    def clear(self):
+        super().clear()
+        self.label_image_left.clear()
+        self.label_image_right.clear()
 
 if __name__ == '__main__':
     app = QApplication()

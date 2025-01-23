@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_page_sizeNoiTkj.ui'
+## Form generated from reading UI file 'ui_page_sizebXaXYh.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -57,10 +57,10 @@ class Ui_Form(object):
 
         self.gridLayout.addWidget(self.toolButton_rotate_right, 4, 1, 1, 1)
 
-        self.toolButton_fit_widght = QToolButton(Form)
-        self.toolButton_fit_widght.setObjectName(u"toolButton_fit_widght")
+        self.toolButton_fit_widget = QToolButton(Form)
+        self.toolButton_fit_widget.setObjectName(u"toolButton_fit_widget")
 
-        self.gridLayout.addWidget(self.toolButton_fit_widght, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.toolButton_fit_widget, 0, 0, 1, 1)
 
         self.toolButton_full_size = QToolButton(Form)
         self.toolButton_full_size.setObjectName(u"toolButton_full_size")
@@ -81,7 +81,7 @@ class Ui_Form(object):
         self.toolButton_rotate_left.setText(QCoreApplication.translate("Form", u"\u5de6\u65cb", None))
         self.toolButton_zoom_in.setText(QCoreApplication.translate("Form", u"\u653e\u5927", None))
         self.toolButton_rotate_right.setText(QCoreApplication.translate("Form", u"\u53f3\u65cb", None))
-        self.toolButton_fit_widght.setText(QCoreApplication.translate("Form", u"\u9002\u9875", None))
+        self.toolButton_fit_widget.setText(QCoreApplication.translate("Form", u"\u9002\u9875", None))
         self.toolButton_full_size.setText(QCoreApplication.translate("Form", u"\u5b9e\u9645", None))
     # retranslateUi
 

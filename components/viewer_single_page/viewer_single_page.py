@@ -30,7 +30,6 @@ class ViewerSinglePage(ViewerFrame):
         image_path = self.comic_info.image_list[self.page_index - 1]
         angle = self.comic_info.get_rotate_angle(image_path)  # 旋转角度
         image_info = ImageInfo(self.comic_info, image_path)  # 图片信息类
-        image_info.set_page_index(self.page_index)
         self.label_image.set_image(image_info, angle)
         self._update_image_size()
 
@@ -91,6 +90,9 @@ class ViewerSinglePage(ViewerFrame):
         # 更新角度字典
         current_image_path = self.comic_info.image_list[self.page_index - 1]
         self.comic_info.update_rotate_angle(current_image_path, 90)
+    def clear(self):
+        super().clear()
+        self.label_image.clear()
 
 
 if __name__ == '__main__':
