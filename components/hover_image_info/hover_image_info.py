@@ -27,12 +27,10 @@ class HoverImageInfo(QWidget):
         self._set_icon()
 
         # 设置参数
-        self.comic_info:ComicInfo = None  # 漫画信息类
-        self.image_info:ImageInfo = None  # 图片信息类
+        self.comic_info: ComicInfo = None  # 漫画信息类
+        self.image_info: ImageInfo = None  # 图片信息类
 
-
-
-    def set_comic(self, comic_info:ComicInfo):
+    def set_comic(self, comic_info: ComicInfo):
         self.comic_info = comic_info
         self.label_comic_filepath.setText(comic_info.path)
         self.label_comic_filepath.setToolTip(comic_info.path)
@@ -41,17 +39,17 @@ class HoverImageInfo(QWidget):
         self.ui.label_comic_filesize.setText(f'{round(comic_info.filesize / 1024 / 1024, 2)} MB')
         self.ui.label_comic_page_count.setText(f'{comic_info.page_count} 页')
 
-    def set_image(self, image_info:ImageInfo):
+    def set_image(self, image_info: ImageInfo):
         self.image_info = image_info
         self.label_image_filename.setText(image_info.filename)
         self.ui.label_image_filesize.setText(f'{round(image_info.filesize / 1024 / 1024, 2)} MB')
         self.ui.label_image_size.setText(f'{image_info.size[0]} x {image_info.size[1]} px')
         self.ui.label_page_index.setText(f'{image_info.page_index}/{self.comic_info.page_count}')
 
-
     def _set_icon(self):
-        self.ui.label_image_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(_IMAGE).scaled(QSize(16,16)))
+        self.ui.label_image_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(_IMAGE).scaled(QSize(16, 16)))
         self.ui.label_comic_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(_ARCHIVE).scaled(QSize(16, 16)))
+
     def enterEvent(self, event):
         super().enterEvent(event)
         self.label_comic_filepath.setVisible(True)
@@ -75,8 +73,6 @@ class HoverImageInfo(QWidget):
         self.ui.label_11.setVisible(True)
         self.ui.label_12.setVisible(True)
 
-
-
     def leaveEvent(self, event):
         super().leaveEvent(event)
         self.label_comic_filepath.setVisible(False)
@@ -99,7 +95,6 @@ class HoverImageInfo(QWidget):
         self.ui.label_10.setVisible(False)
         self.ui.label_11.setVisible(False)
         self.ui.label_12.setVisible(False)
-
 
 
 if __name__ == '__main__':

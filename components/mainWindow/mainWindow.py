@@ -170,7 +170,6 @@ class MainWindow(QMainWindow):
         elif viewer_mode is ModeViewer.Scroll.Horizontal.Right:
             self.ui.stackedWidget.setCurrentIndex(5)
 
-
     def _viewer_fit_height(self):
         """设置预览控件-图片尺寸，适合高度"""
         viewer = self._get_current_viewer()

@@ -3,47 +3,6 @@
 # 自动播放的平滑滚动：滚动到滑动条底部，按预计滚动距离/预设滚动速度计算出动画总时长，动画曲线为线性。
 # 自动播放时，使用滚轮则中断自动播放，并切换动画曲线；切换自动播放速度时，暂停动画，重新计算预计动画时长后重新设置并启动动画。
 
-from PySide6.QtCore import Signal, QEasingCurve, QPropertyAnimation
-from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QScrollBar, QScrollArea
-
-
-class ScrollAreaSmooth(QScrollArea):
-    """实现平滑滚动的scrollArea"""
-    signal_stop_autoplay = Signal()
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        # 替换滚动条
-        self.scrollbar_h = ScrollBarSmooth()
-        self.scrollbar_v = ScrollBarSmooth()
-        self.scrollbar_h.setOrientation(Qt.Horizontal)
-        self.scrollbar_v.setOrientation(Qt.Vertical)
-        self.setVerticalScrollBar(self.scrollbar_v)
-        self.setHorizontalScrollBar(self.scrollbar_h)
-
-    def set_direction(self, reverse: bool):
-        """设置方向"""
-        self.scrollbar_h.set_direction(reverse)
-        self.scrollbar_v.set_direction(reverse)
-
-    def start_autoplay(self, speed):
-        if self.scrollbar_h.isVisible():
-            self.scrollbar_h.start_autoplay(speed)
-        elif self.scrollbar_v.isVisible():
-            self.scrollbar_v.start_autoplay(speed)
-
-    def stop_autoplay(self):
-        self.scrollbar_h.quit_autoplay()
-        self.scrollbar_v.quit_autoplay()
-
-    def wheelEvent(self, e):
-        self.stop_autoplay()
-        self.signal_stop_autoplay.emit()
-        if self.scrollbar_h.isVisible():
-            self.scrollbar_h.scroll_value(-e.angleDelta().y())
-        elif self.scrollbar_v.isVisible():
-            self.scrollbar_v.scroll_value(-e.angleDelta().y())
 
 
 class ScrollBarSmooth(QScrollBar):
@@ -96,37 +55,3 @@ class ScrollBarSmooth(QScrollBar):
         self.animal.setEasingCurve(QEasingCurve.OutQuad)
         self.animal.setDuration(self._default_animal_duration)
 
-    def setValue(self, value: int):
-        if value == self.value():
-            return
-
-        # 停止动画
-        self.animal.stop()
-        self.signal_scroll_end.emit()
-
-        # 重新开始动画
-        self.animal.setStartValue(self.value())
-        self.animal.setEndValue(value)
-        self.animal.start()
-
-    def scroll_value(self, value: int):
-        """滚动指定距离"""
-        value += self.value()
-        self._scroll_to_value(value)
-
-    def _scroll_to_value(self, value: int):
-        """滚动到指定位置"""
-        value = min(self.maximum(), max(self.minimum(), value))  # 防止超限
-        self.setValue(value)
-
-    def mousePressEvent(self, e):
-        self.animal.stop()
-        super().mousePressEvent(e)
-
-    def mouseReleaseEvent(self, e):
-        self.animal.stop()
-        super().mouseReleaseEvent(e)
-
-    def mouseMoveEvent(self, e):
-        self.animal.stop()
-        super().mouseMoveEvent(e)

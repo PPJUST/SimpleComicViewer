@@ -93,6 +93,7 @@ class ViewerSinglePage(ViewerFrame):
         # 更新角度字典
         current_image_path = self.comic_info.image_list[self.page_index - 1]
         self.comic_info.update_rotate_angle(current_image_path, 90)
+
     def clear(self):
         super().clear()
         self.label_image.clear()
@@ -106,6 +107,7 @@ class ViewerSinglePage(ViewerFrame):
             self.previous_page()
         else:  # 向下
             self.next_page()
+
 
 if __name__ == '__main__':
     app = QApplication()

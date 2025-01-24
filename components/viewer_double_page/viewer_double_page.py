@@ -57,10 +57,6 @@ class ViewerDoublePage(ViewerFrame):
             self.page_index += 2
             self.show_image()
 
-
-
-
-
     def fit_height(self):
         super().fit_height()
         # 提取原始尺寸
@@ -94,14 +90,6 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, new_height))
         self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, new_height))
 
-
-
-
-
-
-
-
-
     def clear(self):
         super().clear()
         self.label_image_left.clear()
@@ -116,6 +104,8 @@ class ViewerDoublePage(ViewerFrame):
             self.previous_page()
         else:  # 向下
             self.next_page()
+
+
 if __name__ == '__main__':
     app = QApplication()
     ui = ViewerDoublePage()

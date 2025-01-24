@@ -109,5 +109,3 @@ class ViewerFrame(QScrollArea):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._update_image_size()
-
-

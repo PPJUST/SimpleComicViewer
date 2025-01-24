@@ -69,13 +69,12 @@ class PageSize(QWidget):
         elif button is self.ui.toolButton_full_size:
             self.ui.toolButton_full_size.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_FULL_SIZE_RED))
 
-
-    def set_button_mode(self, viewer_mode:ModeViewer):
+    def set_button_mode(self, viewer_mode: ModeViewer):
         """根据显示模式设置按钮的启用关系"""
         self.disable_buttons()
-        if viewer_mode is ModeViewer.SinglePage: # 单页视图启用全部
+        if viewer_mode is ModeViewer.SinglePage:  # 单页视图启用全部
             self.enable_buttons()
-        elif viewer_mode is ModeViewer.DoublePage.Left: # 双页视图只启用适合高度、适合页面
+        elif viewer_mode is ModeViewer.DoublePage.Left:  # 双页视图只启用适合高度、适合页面
             self.ui.toolButton_fit_height.setEnabled(True)
             self.ui.toolButton_fit_widget.setEnabled(True)
         elif viewer_mode is ModeViewer.Scroll.Vertical:  # 纵向卷轴只启用适合宽度、放大、缩小、左旋、右旋
@@ -116,6 +115,7 @@ class PageSize(QWidget):
         self.ui.toolButton_full_size.setEnabled(False)
         self.ui.toolButton_zoom_in.setEnabled(False)
         self.ui.toolButton_zoom_out.setEnabled(False)
+
     def enable_buttons(self):
         self.ui.toolButton_fit_height.setEnabled(True)
         self.ui.toolButton_fit_width.setEnabled(True)
