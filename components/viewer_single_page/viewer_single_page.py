@@ -27,6 +27,7 @@ class ViewerSinglePage(ViewerFrame):
         self.show_image()
 
     def show_image(self):
+        super().show_image()
         image_path = self.comic_info.image_list[self.page_index - 1]
         angle = self.comic_info.get_rotate_angle(image_path)  # 旋转角度
         image_info = ImageInfo(self.comic_info, image_path)  # 图片信息类
@@ -36,11 +37,13 @@ class ViewerSinglePage(ViewerFrame):
         self.imageInfoShowed.emit(image_info)
 
     def previous_page(self):
+        super().previous_page()
         if self.page_index > 1:
             self.page_index -= 1
             self.show_image()
 
     def next_page(self):
+        super().next_page()
         if self.page_index < self.comic_info.page_count:
             self.page_index += 1
             self.show_image()
@@ -94,6 +97,15 @@ class ViewerSinglePage(ViewerFrame):
         super().clear()
         self.label_image.clear()
 
+    def wheelEvent(self, event):
+        """设置鼠标滚轮切页"""
+        # 获取鼠标滚轮滚动的角度
+        angle = event.angleDelta().y()
+        # 根据角度的正负区分滚轮向上向下操作
+        if angle > 0:  # 向上
+            self.previous_page()
+        else:  # 向下
+            self.next_page()
 
 if __name__ == '__main__':
     app = QApplication()

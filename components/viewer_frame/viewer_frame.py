@@ -26,7 +26,7 @@ class ViewerFrame(QScrollArea):
 
         # 设置参数
         self.comic_info: ComicInfo = None  # 当前显示的漫画类
-        self.page_index = 1  # 当前显示的页码（从1开始）
+        self.page_index = 0  # 当前显示的页码（从1开始）
         self.page_size_mode = ModeImageSize.Fixed  # 当前的显示模式，默认为固定尺寸
 
     def set_comic(self, comic_info: ComicInfo):

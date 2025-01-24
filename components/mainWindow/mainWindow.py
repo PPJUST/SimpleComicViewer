@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         # 预览控件-纵向卷轴
         self.viewer_vertical_scroll = ViewerVerticalScroll(self)
         self.ui.page_vertical_scroll.layout().addWidget(self.viewer_vertical_scroll)
-
+        self.viewer_vertical_scroll.imageInfoShowed.connect(self._show_image_info)
         # 绑定信号
         self.bind_signal()
 
