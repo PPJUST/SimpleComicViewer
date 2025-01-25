@@ -98,6 +98,10 @@ class ViewerSinglePage(ViewerFrame):
         super().clear()
         self.label_image.clear()
 
+    def _next_page_autoplay(self):
+        super()._next_page_autoplay()
+        self.next_page()
+
     def wheelEvent(self, event):
         """设置鼠标滚轮切页"""
         # 获取鼠标滚轮滚动的角度

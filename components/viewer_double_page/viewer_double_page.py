@@ -90,10 +90,17 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, new_height))
         self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, new_height))
 
+    def autoplay_start(self):
+        super().autoplay_start()
+
     def clear(self):
         super().clear()
         self.label_image_left.clear()
         self.label_image_right.clear()
+
+    def _next_page_autoplay(self):
+        super()._next_page_autoplay()
+        self.next_page()
 
     def wheelEvent(self, event):
         """设置鼠标滚轮切页"""

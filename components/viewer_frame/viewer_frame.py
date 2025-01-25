@@ -1,4 +1,5 @@
 import lzytools._qt_pyside6
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QScrollArea, QWidget, QHBoxLayout, QVBoxLayout
 
 from common.comic_info import ComicInfo
@@ -23,6 +24,12 @@ class ViewerFrame(QScrollArea):
         # 设置透明背景
         lzytools._qt_pyside6.set_transparent_background(self)
         lzytools._qt_pyside6.set_transparent_background(self.content_widget)
+
+        # 设置自动播放计时器
+        self.timer_autoplay = QTimer()  # 自动播放的计时器
+        self.speed_autoplay = 1  # 自动播放的速度 n秒/页
+        self.timer_autoplay.timeout.connect(self._next_page_autoplay)
+        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
 
         # 设置参数
         self.comic_info: ComicInfo = None  # 当前显示的漫画类
@@ -55,9 +62,11 @@ class ViewerFrame(QScrollArea):
 
     def autoplay_start(self):
         """开始自动播放"""
+        self.timer_autoplay.start()
 
     def autoplay_stop(self):
         """停止自动播放"""
+        self.timer_autoplay.stop()
 
     def keep_width(self):
         """以宽度为基准，固定尺寸显示图片"""
@@ -92,6 +101,15 @@ class ViewerFrame(QScrollArea):
 
     def clear(self):
         """清除显示"""
+
+    def _set_autoplay_speed(self, add_speed: float):
+        """设置自动播放的速度
+        :param add_speed: 两位小数，变动的自动播放速度"""
+        self.speed_autoplay += add_speed
+        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+
+    def _next_page_autoplay(self):
+        """自动播放专用的下一页操作"""
 
     def _update_image_size(self):
         """更新图像的显示大小"""

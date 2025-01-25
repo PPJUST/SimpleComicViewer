@@ -192,6 +192,16 @@ class ViewerScrollFrame(ViewerFrame):
             self.page_index = current_index
             self.imageInfoShowed.emit(current_image)
 
+    def autoplay_start(self):
+        # 设置滚动动画为线性
+        self.scrollbar.set_scroll_type_liner()
+        # 根据播放速度，计算滑动到底部/右端所需时间
+        scroll_pages = self.comic_info.page_count - self.page_index
+        animal_duration = scroll_pages * self.speed_autoplay
+        self.scrollbar.set_animal_duration(animal_duration * 1000)
+        # 开始滑动
+        self.scrollbar._scroll_to_value(self.scrollbar.maximum())
+
     def wheelEvent(self, event):
         self.scrollbar.scroll_value(-event.angleDelta().y())
 
