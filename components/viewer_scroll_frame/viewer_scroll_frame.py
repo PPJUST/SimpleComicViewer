@@ -202,6 +202,12 @@ class ViewerScrollFrame(ViewerFrame):
         # 开始滑动
         self.scrollbar._scroll_to_value(self.scrollbar.maximum())
 
+    def autoplay_stop(self):
+        # 还原滚动动画
+        self.scrollbar.set_scroll_type_smooth()
+        # 停止滑动
+        self.scrollbar.scroll_value(0)
+
     def wheelEvent(self, event):
         self.scrollbar.scroll_value(-event.angleDelta().y())
 
