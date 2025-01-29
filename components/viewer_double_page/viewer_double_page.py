@@ -100,10 +100,10 @@ class ViewerDoublePage(ViewerFrame):
 
     def _next_page_autoplay(self):
         super()._next_page_autoplay()
-        self.next_page()
 
     def wheelEvent(self, event):
         """设置鼠标滚轮切页"""
+        self.autoplay_stop()
         # 获取鼠标滚轮滚动的角度
         angle = event.angleDelta().y()
         # 根据角度的正负区分滚轮向上向下操作

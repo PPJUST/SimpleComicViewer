@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal, Qt, QEasingCurve
 from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout
 from lzytools._qt_pyside6 import ScrollBarSmooth
 
@@ -165,6 +165,46 @@ class ViewerScrollFrame(ViewerFrame):
             if widget is not None:
                 widget.deleteLater()
 
+    def autoplay_start(self):
+        # 设置滚动动画为线性
+        self.scrollbar.set_scroll_type_liner()
+        # 根据播放速度，计算滑动到底部/右端所需时间
+        scroll_distance = self.scrollbar.maximum() - self.scrollbar.value()
+        speed = self.speed_autoplay * 100  # 100倍率
+        animal_duration = int(scroll_distance / speed)
+        self.scrollbar.set_animal_duration(animal_duration * 1000)
+        # 开始滑动
+        self.scrollbar._scroll_to_value(self.scrollbar.maximum())
+
+    def is_autoplay_running(self):
+        # 通过判断滑动动画来判断是否正在进行自动播放
+        if self.scrollbar.animal.easingCurve().type() == QEasingCurve.Linear:
+            return True
+        else:
+            return False
+
+    def set_autoplay_speed(self, add_speed: float):
+        super().set_autoplay_speed(add_speed)
+        # 卷轴视图时需要重新开始自动播放才能刷新播放速度
+        if self.is_autoplay_running:
+            self.autoplay_stop()
+            self.autoplay_start()
+
+    def reset_autoplay_speed(self):
+        super().reset_autoplay_speed()
+        # 卷轴视图时需要重新开始自动播放才能刷新播放速度
+        if self.is_autoplay_running:
+            self.autoplay_stop()
+            self.autoplay_start()
+
+    def autoplay_stop(self):
+        # 还原滚动动画
+        self.scrollbar.set_scroll_type_smooth()
+        # 还原滚动动画时间
+        self.scrollbar.animal.setDuration(400)
+        # 停止滑动
+        self.scrollbar.scroll_value(0)
+
     def _get_first_showed_label(self):
         """获取页面上显示的第一个label"""
         spacing = self.layout.spacing()
@@ -191,22 +231,6 @@ class ViewerScrollFrame(ViewerFrame):
         if current_index != self.page_index:
             self.page_index = current_index
             self.imageInfoShowed.emit(current_image)
-
-    def autoplay_start(self):
-        # 设置滚动动画为线性
-        self.scrollbar.set_scroll_type_liner()
-        # 根据播放速度，计算滑动到底部/右端所需时间
-        scroll_pages = self.comic_info.page_count - self.page_index
-        animal_duration = scroll_pages * self.speed_autoplay
-        self.scrollbar.set_animal_duration(animal_duration * 1000)
-        # 开始滑动
-        self.scrollbar._scroll_to_value(self.scrollbar.maximum())
-
-    def autoplay_stop(self):
-        # 还原滚动动画
-        self.scrollbar.set_scroll_type_smooth()
-        # 停止滑动
-        self.scrollbar.scroll_value(0)
 
     def wheelEvent(self, event):
         self.scrollbar.scroll_value(-event.angleDelta().y())

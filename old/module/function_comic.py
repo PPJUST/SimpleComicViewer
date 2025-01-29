@@ -20,7 +20,6 @@ def is_comic_archive(archive_path):
 
 def filter_comic_folder_and_archive(check_dirpath):
     """从文件夹中筛选出符合要求的漫画文件夹和所有压缩包"""
-    function_normal.print_function_info()
     folder_structure_dict = dict()  # 文件夹内部文件类型 {文件夹路径:{'dir':set(), 'image':set(), 'archive':set()}, ...}
 
     for dirpath, dirnames, filenames in os.walk(check_dirpath):

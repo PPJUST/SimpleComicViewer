@@ -64,9 +64,32 @@ class ViewerFrame(QScrollArea):
         """开始自动播放"""
         self.timer_autoplay.start()
 
+    def is_autoplay_running(self) -> bool:
+        """是否正在自动播放"""
+        return self.timer_autoplay.isActive()
+
+    def set_autoplay_speed(self, add_speed: float):
+        """设置自动播放的速度
+        :param add_speed: 两位小数，变动的自动播放速度"""
+        self.speed_autoplay += add_speed
+        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+
+    def reset_autoplay_speed(self):
+        """重置自动播放的速度"""
+        self.speed_autoplay = 1
+        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+
     def autoplay_stop(self):
         """停止自动播放"""
         self.timer_autoplay.stop()
+
+    def _autoplay_end_when_bottom(self):
+        """自动播放到尾页/底部时停止"""
+        if self.page_index == self.comic_info.page_count:
+            self.autoplay_stop()
+            return False
+        else:
+            return True
 
     def keep_width(self):
         """以宽度为基准，固定尺寸显示图片"""
@@ -102,14 +125,10 @@ class ViewerFrame(QScrollArea):
     def clear(self):
         """清除显示"""
 
-    def _set_autoplay_speed(self, add_speed: float):
-        """设置自动播放的速度
-        :param add_speed: 两位小数，变动的自动播放速度"""
-        self.speed_autoplay += add_speed
-        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
-
     def _next_page_autoplay(self):
         """自动播放专用的下一页操作"""
+        if self._autoplay_end_when_bottom():
+            self.next_page()
 
     def _update_image_size(self):
         """更新图像的显示大小"""

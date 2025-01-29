@@ -172,51 +172,61 @@ class MainWindow(QMainWindow):
 
     def _viewer_fit_height(self):
         """设置预览控件-图片尺寸，适合高度"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_height()
 
     def _viewer_fit_width(self):
         """设置预览控件-图片尺寸，适合宽度"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_width()
 
     def _viewer_fit_widget(self):
         """设置预览控件-图片尺寸，适合页面"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_widget()
 
     def _viewer_full_size(self):
         """设置预览控件-图片尺寸，实际大小"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.full_size()
 
     def _viewer_rotate_left(self):
         """设置预览控件-向左旋转图片"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.rotate_left()
 
     def _viewer_rotate_right(self):
         """设置预览控件-向右旋转图片"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.rotate_right()
 
     def _viewer_zoom_in(self):
         """设置预览控件-放大图片"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.zoom_in()
 
     def _viewer_zoom_out(self):
         """设置预览控件-缩小图片"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.zoom_out()
 
     def _viewer_previous_page(self):
         """设置预览控件-上一页"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.previous_page()
 
     def _viewer_next_page(self):
         """设置预览控件-下一页"""
+        self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.next_page()
 
@@ -224,6 +234,26 @@ class MainWindow(QMainWindow):
         """设置预览控件-开始自动播放"""
         viewer = self._get_current_viewer()
         viewer.autoplay_start()
+
+    def change_autoplay_state(self):
+        """修改自动播放状态，（开启时关闭，关闭时开启）"""
+        viewer = self._get_current_viewer()
+        is_running = viewer.is_autoplay_running()
+        if is_running:
+            self._viewer_stop_autoplay()
+        else:
+            self._viewer_start_autoplay()
+
+    def _viewer_set_autoplay_speed(self, add_speed: float):
+        """设置预览控件-设置自动播放的速度
+        :param add_speed: 两位小数，变动的自动播放速度"""
+        viewer = self._get_current_viewer()
+        viewer.set_autoplay_speed(add_speed)
+
+    def _viewer_reset_autoplay_speed(self):
+        """设置预览控件-重置自动播放的速度"""
+        viewer = self._get_current_viewer()
+        viewer.reset_autoplay_speed()
 
     def _viewer_stop_autoplay(self):
         """设置预览控件-停止自动播放"""
