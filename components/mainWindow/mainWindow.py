@@ -47,17 +47,22 @@ class MainWindow(QMainWindow):
         self.viewer_single_page = ViewerSinglePage(self)
         self.ui.page_single.layout().addWidget(self.viewer_single_page)
         self.viewer_single_page.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_single_page.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-双页
         self.viewer_double_page = ViewerDoublePage(self)
         self.ui.page_double_left.layout().addWidget(self.viewer_double_page)
         self.viewer_double_page.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_double_page.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-横向卷轴
         self.viewer_horizontal_scroll = ViewerHorizontalScroll(self)
         self.ui.page_horizontal_scroll_left.layout().addWidget(self.viewer_horizontal_scroll)
+        self.viewer_horizontal_scroll.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_horizontal_scroll.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-纵向卷轴
         self.viewer_vertical_scroll = ViewerVerticalScroll(self)
         self.ui.page_vertical_scroll.layout().addWidget(self.viewer_vertical_scroll)
         self.viewer_vertical_scroll.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_vertical_scroll.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 绑定信号
         self.bind_signal()
 
@@ -259,6 +264,11 @@ class MainWindow(QMainWindow):
         """设置预览控件-停止自动播放"""
         viewer = self._get_current_viewer()
         viewer.autoplay_stop()
+        self._set_menubar_stop_autoplay()
+
+    def _set_menubar_stop_autoplay(self):
+        """设置控制栏的自动播放停止状态"""
+        self.widget_menubar.set_autoplay_state_stop()
 
     def _show_image_info(self, image_info: ImageInfo):
         """更新漫画和图片信息"""

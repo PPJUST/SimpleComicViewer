@@ -37,7 +37,7 @@ class Menubar(QWidget):
         # 绑定信号
         self.ui.toolButton_option.clicked.connect(self.Option.emit)
         self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
-        self.ui.toolButton_autoplay.clicked.connect(self.change_autoplay_state)
+        self.ui.toolButton_autoplay.clicked.connect(self.reverse_autoplay_state)
         self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
         self.ui.toolButton_playlist.clicked.connect(self.Playlist.emit)
 
@@ -47,10 +47,14 @@ class Menubar(QWidget):
         self.ui.toolButton_next.setContextMenuPolicy(Qt.CustomContextMenu)
         self.ui.toolButton_next.customContextMenuRequested.connect(self.NextRC.emit)
 
-    def change_autoplay_state(self):
+    def reverse_autoplay_state(self):
         self._is_autoplay = not self._is_autoplay
         self.reset_autoplay_icon()
         self.emit_signal()
+
+    def set_autoplay_state_stop(self):
+        self._is_autoplay = False
+        self.reset_autoplay_icon()
 
     def reset_autoplay_icon(self):
         if self._is_autoplay:

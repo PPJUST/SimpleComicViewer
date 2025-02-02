@@ -1,5 +1,5 @@
 import lzytools._qt_pyside6
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtWidgets import QScrollArea, QWidget, QHBoxLayout, QVBoxLayout
 
 from common.comic_info import ComicInfo
@@ -8,6 +8,7 @@ from common.mode_image_size import ModeImageSize
 
 class ViewerFrame(QScrollArea):
     """预览控件框架"""
+    StopAutoPlay = Signal(name='在自动播放运行时，进行手动翻页则停止自动播放')
 
     def __init__(self, parent=None, layout='horizontal'):
         super().__init__(parent)
@@ -82,6 +83,7 @@ class ViewerFrame(QScrollArea):
     def autoplay_stop(self):
         """停止自动播放"""
         self.timer_autoplay.stop()
+        self.StopAutoPlay.emit()
 
     def _autoplay_end_when_bottom(self):
         """自动播放到尾页/底部时停止"""
