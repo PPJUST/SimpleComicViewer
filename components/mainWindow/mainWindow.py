@@ -1,9 +1,12 @@
+import lzytools._qt_pyside6
 from PySide6.QtWidgets import QMainWindow, QApplication
 
 from common.comic_info import ComicInfo
 from common.image_info import ImageInfo
 from common.mode_viewer import ModeViewer
 from components.hover_image_info import HoverImageInfo
+from components.hover_tips.hover_tips import HoverTips
+from components.mainWindow.icon_base64 import _APP
 from components.mainWindow.ui_mainWindow import Ui_MainWindow
 from components.menubar import Menubar
 from components.page_size import PageSize
@@ -22,12 +25,13 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.setAcceptDrops(True)
         self.setMinimumSize(300, 400)
+        self._set_icon()
 
         """添加悬浮控件"""
         # 切换模式控件
         self.widget_change_mode = ViewerMode(self)
         self.widget_change_mode.show()
-        # 页面大小控件
+        # 页面尺寸控件
         self.widget_page_size = PageSize(self)
         self.widget_page_size.show()
         # 左翻页控件
@@ -42,27 +46,36 @@ class MainWindow(QMainWindow):
         # 悬浮的漫画和图片信息
         self.hover_image_info = HoverImageInfo(self)
         self.hover_image_info.show()
+        # 悬浮的操作信息提示
+        self.hover_tips = HoverTips(self)
+        self.hover_image_info.show()
+
         """添加预览控件"""
         # 预览控件-单页
         self.viewer_single_page = ViewerSinglePage(self)
         self.ui.page_single.layout().addWidget(self.viewer_single_page)
         self.viewer_single_page.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_single_page.StartAutoPlay.connect(self._set_menubar_start_autoplay)
         self.viewer_single_page.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-双页
         self.viewer_double_page = ViewerDoublePage(self)
         self.ui.page_double_left.layout().addWidget(self.viewer_double_page)
         self.viewer_double_page.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_double_page.StartAutoPlay.connect(self._set_menubar_start_autoplay)
         self.viewer_double_page.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-横向卷轴
         self.viewer_horizontal_scroll = ViewerHorizontalScroll(self)
         self.ui.page_horizontal_scroll_left.layout().addWidget(self.viewer_horizontal_scroll)
         self.viewer_horizontal_scroll.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_horizontal_scroll.StartAutoPlay.connect(self._set_menubar_start_autoplay)
         self.viewer_horizontal_scroll.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
         # 预览控件-纵向卷轴
         self.viewer_vertical_scroll = ViewerVerticalScroll(self)
         self.ui.page_vertical_scroll.layout().addWidget(self.viewer_vertical_scroll)
         self.viewer_vertical_scroll.imageInfoShowed.connect(self._show_image_info)
+        self.viewer_vertical_scroll.StartAutoPlay.connect(self._set_menubar_start_autoplay)
         self.viewer_vertical_scroll.StopAutoPlay.connect(self._set_menubar_stop_autoplay)
+
         # 绑定信号
         self.bind_signal()
 
@@ -79,6 +92,7 @@ class MainWindow(QMainWindow):
         self.comic_showed = ComicInfo(paths[0])
         # 显示
         self.show_comic(self.comic_showed)
+        HoverTips().show_tips('更新显示的漫画')
 
     def show_comic(self, comic_info: ComicInfo):
         self.hover_image_info.set_comic(comic_info)
@@ -91,7 +105,7 @@ class MainWindow(QMainWindow):
         self.widget_change_mode.DoublePage.connect(self._change_viewer)
         self.widget_change_mode.VerticalScroll.connect(self._change_viewer)
         self.widget_change_mode.HorizontalScroll.connect(self._change_viewer)
-        # 页面大小控件
+        # 页面尺寸控件
         self.widget_page_size.FitHeight.connect(self._viewer_fit_height)
         self.widget_page_size.FitWidth.connect(self._viewer_fit_width)
         self.widget_page_size.FitWidget.connect(self._viewer_fit_widget)
@@ -117,13 +131,13 @@ class MainWindow(QMainWindow):
         # self.widget_menubar.Playlist.connect()
 
     def _update_hover_position(self):
-        """修改大小后，更新悬浮控件的位置"""
+        """修改尺寸后，更新悬浮控件的位置"""
         p_rect = self.geometry()  # 框架
         # 切换模式控件
         new_x = 0
         new_y = 0
         self.widget_change_mode.move(new_x, new_y)
-        # 页面大小控件
+        # 页面尺寸控件
         new_x = p_rect.width() - self.widget_page_size.width()
         new_y = 0
         self.widget_page_size.move(new_x, new_y)
@@ -143,6 +157,10 @@ class MainWindow(QMainWindow):
         new_x = 0
         new_y = self.widget_change_mode.height()
         self.hover_image_info.move(new_x, new_y)
+        # 悬浮的操作信息提示
+        new_x = 0
+        new_y = p_rect.height() - self.hover_tips.height()
+        self.hover_tips.move(new_x, new_y)
 
     def _get_current_viewer(self):
         """获取当前视图模式对应的控件"""
@@ -164,64 +182,78 @@ class MainWindow(QMainWindow):
         # 切换到对应页
         if viewer_mode is ModeViewer.SinglePage:
             self.ui.stackedWidget.setCurrentIndex(0)
+            HoverTips().show_tips('切换显示模式 - 单页模式')
         elif viewer_mode is ModeViewer.DoublePage.Left:
             self.ui.stackedWidget.setCurrentIndex(1)
+            HoverTips().show_tips('切换显示模式 - 双页模式（左开本）')
         elif viewer_mode is ModeViewer.DoublePage.Right:
             self.ui.stackedWidget.setCurrentIndex(2)
+            HoverTips().show_tips('切换显示模式 - 双页模式（右开本）')
         elif viewer_mode is ModeViewer.Scroll.Vertical:
             self.ui.stackedWidget.setCurrentIndex(3)
+            HoverTips().show_tips('切换显示模式 -纵向卷轴模式')
         elif viewer_mode is ModeViewer.Scroll.Horizontal.Left:
             self.ui.stackedWidget.setCurrentIndex(4)
+            HoverTips().show_tips('切换显示模式 -横向卷轴模式（左开本）')
         elif viewer_mode is ModeViewer.Scroll.Horizontal.Right:
             self.ui.stackedWidget.setCurrentIndex(5)
+            HoverTips().show_tips('切换显示模式 -横向卷轴模式（右开本）')
 
     def _viewer_fit_height(self):
         """设置预览控件-图片尺寸，适合高度"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_height()
+        HoverTips().show_tips('设置图片模式 - 适合高度')
 
     def _viewer_fit_width(self):
         """设置预览控件-图片尺寸，适合宽度"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_width()
+        HoverTips().show_tips('设置图片模式 - 适合高度')
 
     def _viewer_fit_widget(self):
         """设置预览控件-图片尺寸，适合页面"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.fit_widget()
+        HoverTips().show_tips('设置图片模式 - 适合页面')
 
     def _viewer_full_size(self):
-        """设置预览控件-图片尺寸，实际大小"""
+        """设置预览控件-图片尺寸，实际尺寸"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.full_size()
+        HoverTips().show_tips('设置图片模式 - 实际尺寸')
 
     def _viewer_rotate_left(self):
         """设置预览控件-向左旋转图片"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.rotate_left()
+        HoverTips().show_tips('向左旋转当前图片')
 
     def _viewer_rotate_right(self):
         """设置预览控件-向右旋转图片"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.rotate_right()
+        HoverTips().show_tips('向右旋转当前图片')
 
     def _viewer_zoom_in(self):
         """设置预览控件-放大图片"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.zoom_in()
+        HoverTips().show_tips('放大图片')
 
     def _viewer_zoom_out(self):
         """设置预览控件-缩小图片"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
         viewer.zoom_out()
+        HoverTips().show_tips('缩小图片')
 
     def _viewer_previous_page(self):
         """设置预览控件-上一页"""
@@ -239,6 +271,7 @@ class MainWindow(QMainWindow):
         """设置预览控件-开始自动播放"""
         viewer = self._get_current_viewer()
         viewer.autoplay_start()
+        HoverTips().show_tips('开始自动播放')
 
     def change_autoplay_state(self):
         """修改自动播放状态，（开启时关闭，关闭时开启）"""
@@ -253,18 +286,25 @@ class MainWindow(QMainWindow):
         """设置预览控件-设置自动播放的速度
         :param add_speed: 两位小数，变动的自动播放速度"""
         viewer = self._get_current_viewer()
-        viewer.set_autoplay_speed(add_speed)
+        speed = viewer.set_autoplay_speed(add_speed)
+        HoverTips().show_tips(f'设置自动播放速度 当前：{speed}')
 
     def _viewer_reset_autoplay_speed(self):
         """设置预览控件-重置自动播放的速度"""
         viewer = self._get_current_viewer()
-        viewer.reset_autoplay_speed()
+        speed = viewer.reset_autoplay_speed()
+        HoverTips().show_tips(f'设置自动播放速度 当前：{speed}')
 
     def _viewer_stop_autoplay(self):
         """设置预览控件-停止自动播放"""
         viewer = self._get_current_viewer()
         viewer.autoplay_stop()
         self._set_menubar_stop_autoplay()
+        HoverTips().show_tips('停止自动播放')
+
+    def _set_menubar_start_autoplay(self):
+        """设置控制栏的自动播放开始状态"""
+        self.widget_menubar.set_autoplay_state_start()
 
     def _set_menubar_stop_autoplay(self):
         """设置控制栏的自动播放停止状态"""
@@ -273,6 +313,9 @@ class MainWindow(QMainWindow):
     def _show_image_info(self, image_info: ImageInfo):
         """更新漫画和图片信息"""
         self.hover_image_info.set_image(image_info)
+
+    def _set_icon(self):
+        self.setWindowIcon(lzytools._qt_pyside6.base64_to_pixmap(_APP))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

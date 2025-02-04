@@ -68,8 +68,8 @@ class LabelImage(QLabel):
 
     def show_image(self, image_size_mode: ModeImageSize, arg=None):
         """显示图片
-        :param image_size_mode: 图片大小模式
-        :param arg: 对应模式的大小参数"""
+        :param image_size_mode: 图片尺寸模式
+        :param arg: 对应模式的尺寸参数"""
         if image_size_mode is ModeImageSize.Fixed:
             self._image_size_keep_width()
         if image_size_mode is ModeImageSize.FitPage:
@@ -89,7 +89,7 @@ class LabelImage(QLabel):
             self._image_size_fit_width(self.width_fixed)
 
     def _image_size_fit_self(self):
-        """适合label自身大小，显示图片"""
+        """适合label自身尺寸，显示图片"""
         if self.pixmap_original and not self.pixmap_original.isNull():
             scaled_pixmap = self.pixmap_original.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.setPixmap(scaled_pixmap)
@@ -120,7 +120,7 @@ class LabelImage(QLabel):
             self.setPixmap(scaled_pixmap)
 
     def _image_size_full_size(self):
-        """以实际大小显示图片"""
+        """以实际尺寸显示图片"""
         if self.pixmap_original and not self.pixmap_original.isNull():
             self.setPixmap(self.pixmap_original)
 

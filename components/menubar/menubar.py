@@ -56,6 +56,10 @@ class Menubar(QWidget):
         self._is_autoplay = False
         self.reset_autoplay_icon()
 
+    def set_autoplay_state_start(self):
+        self._is_autoplay = True
+        self.reset_autoplay_icon()
+
     def reset_autoplay_icon(self):
         if self._is_autoplay:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))

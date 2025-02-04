@@ -5,14 +5,18 @@ from PySide6.QtWidgets import QScrollArea, QWidget, QHBoxLayout, QVBoxLayout
 from common.comic_info import ComicInfo
 from common.mode_image_size import ModeImageSize
 
+_MIN_SPEED = 0.1  # 限制的最慢自动播放速度
+_MAX_SPEED = 5.0  # 限制的最快自动播放速度
+
 
 class ViewerFrame(QScrollArea):
     """预览控件框架"""
     StopAutoPlay = Signal(name='在自动播放运行时，进行手动翻页则停止自动播放')
+    StartAutoPlay = Signal(name='自动播放开始信号')
 
     def __init__(self, parent=None, layout='horizontal'):
         super().__init__(parent)
-        self.setWidgetResizable(True)  # 使内容区域自适应大小
+        self.setWidgetResizable(True)  # 使内容区域自适应尺寸
         # 设置外部框架控件
         self.content_widget = QWidget()
         if layout.lower() == 'horizontal':
@@ -28,9 +32,9 @@ class ViewerFrame(QScrollArea):
 
         # 设置自动播放计时器
         self.timer_autoplay = QTimer()  # 自动播放的计时器
-        self.speed_autoplay = 1  # 自动播放的速度 n秒/页
+        self.speed_autoplay: float = 1.0  # 自动播放的速度 n秒/页
         self.timer_autoplay.timeout.connect(self._next_page_autoplay)
-        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+        self.timer_autoplay.setInterval(int(self.speed_autoplay * 1000))
 
         # 设置参数
         self.comic_info: ComicInfo = None  # 当前显示的漫画类
@@ -64,6 +68,7 @@ class ViewerFrame(QScrollArea):
     def autoplay_start(self):
         """开始自动播放"""
         self.timer_autoplay.start()
+        self.StartAutoPlay.emit()
 
     def is_autoplay_running(self) -> bool:
         """是否正在自动播放"""
@@ -71,14 +76,22 @@ class ViewerFrame(QScrollArea):
 
     def set_autoplay_speed(self, add_speed: float):
         """设置自动播放的速度
-        :param add_speed: 两位小数，变动的自动播放速度"""
-        self.speed_autoplay += add_speed
-        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+        :param add_speed: 1位小数，变动的自动播放速度"""
+        self.speed_autoplay = round(self.speed_autoplay + add_speed, 1)
+        # 处理超限
+        if self.speed_autoplay < _MIN_SPEED:
+            self.speed_autoplay = _MIN_SPEED
+        if self.speed_autoplay > _MAX_SPEED:
+            self.speed_autoplay = _MAX_SPEED
+
+        self.timer_autoplay.setInterval(int(self.speed_autoplay * 1000))
+        return self.speed_autoplay
 
     def reset_autoplay_speed(self):
         """重置自动播放的速度"""
-        self.speed_autoplay = 1
-        self.timer_autoplay.setInterval(self.speed_autoplay * 1000)
+        self.speed_autoplay = 1.0
+        self.timer_autoplay.setInterval(int(self.speed_autoplay * 1000))
+        return self.speed_autoplay
 
     def autoplay_stop(self):
         """停止自动播放"""
@@ -114,7 +127,7 @@ class ViewerFrame(QScrollArea):
             self.page_size_mode = ModeImageSize.FitPage
 
     def full_size(self):
-        """页面实际大小"""
+        """页面实际尺寸"""
         if self.page_size_mode is not ModeImageSize.FullSize:
             self.page_size_mode = ModeImageSize.FullSize
 
@@ -133,7 +146,7 @@ class ViewerFrame(QScrollArea):
             self.next_page()
 
     def _update_image_size(self):
-        """更新图像的显示大小"""
+        """更新图像的显示尺寸"""
         if self.page_size_mode is ModeImageSize.Fixed:
             self.keep_width()
         elif self.page_size_mode is ModeImageSize.FitPage:

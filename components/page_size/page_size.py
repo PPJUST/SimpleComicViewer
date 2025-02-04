@@ -10,11 +10,11 @@ from components.page_size.ui_page_size import Ui_Form
 
 
 class PageSize(QWidget):
-    """页面大小设置"""
+    """页面尺寸设置"""
     FitHeight = Signal(name='适应高度')
     FitWidth = Signal(name='适应宽度')
     FitWidget = Signal(name='适应页面')
-    FullSize = Signal(name='实际大小')
+    FullSize = Signal(name='实际尺寸')
     RotateLeft = Signal(name='左旋转')
     RotateRight = Signal(name='右旋转')
     ZoomIn = Signal(name='放大')
