@@ -145,8 +145,8 @@ class ViewerFrame(QScrollArea):
         if self._autoplay_end_when_bottom():
             self.next_page()
 
-    def _update_image_size(self):
-        """更新图像的显示尺寸"""
+    def _update_size(self):
+        """更新尺寸"""
         if self.page_size_mode is ModeImageSize.Fixed:
             self.keep_width()
         elif self.page_size_mode is ModeImageSize.FitPage:
@@ -160,4 +160,4 @@ class ViewerFrame(QScrollArea):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self._update_image_size()
+        self._update_size()

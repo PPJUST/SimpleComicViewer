@@ -42,7 +42,7 @@ class ViewerDoublePage(ViewerFrame):
         image_info_right = ImageInfo(self.comic_info, image_path_right)  # 图片信息类
         self.label_image_right.set_image(image_info_right, angle)
 
-        self._update_image_size()
+        self._update_size()
         self.imageInfoShowed.emit(image_info_left)
 
     def previous_page(self):
@@ -67,8 +67,8 @@ class ViewerDoublePage(ViewerFrame):
         new_width_left = int(page_height / left_image_height * left_image_width)
         new_width_right = int(page_height / right_image_height * right_image_width)
 
-        self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, page_height))
-        self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, page_height))
+        self.label_image_left.set_label_size(ModeImageSize.FitPage, QSize(new_width_left, page_height))
+        self.label_image_right.set_label_size(ModeImageSize.FitPage, QSize(new_width_right, page_height))
 
     def fit_widget(self):
         super().fit_widget()
@@ -87,8 +87,8 @@ class ViewerDoublePage(ViewerFrame):
         new_width_left = new_height / left_image_height * left_image_width
         new_width_right = new_height / right_image_height * right_image_width
 
-        self.label_image_left.show_image(ModeImageSize.FitPage, QSize(new_width_left, new_height))
-        self.label_image_right.show_image(ModeImageSize.FitPage, QSize(new_width_right, new_height))
+        self.label_image_left.set_label_size(ModeImageSize.FitPage, QSize(new_width_left, new_height))
+        self.label_image_right.set_label_size(ModeImageSize.FitPage, QSize(new_width_right, new_height))
 
     def autoplay_start(self):
         super().autoplay_start()

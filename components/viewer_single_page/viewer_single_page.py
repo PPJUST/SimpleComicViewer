@@ -18,8 +18,6 @@ class ViewerSinglePage(ViewerFrame):
         self.label_image = LabelImage()
         self.layout.addWidget(self.label_image)
 
-        # 设置参数
-
     def set_comic(self, comic_info: ComicInfo):
         """设置漫画类
         :param comic_info: ComicInfo类"""
@@ -32,7 +30,7 @@ class ViewerSinglePage(ViewerFrame):
         angle = self.comic_info.get_rotate_angle(image_path)  # 旋转角度
         image_info = ImageInfo(self.comic_info, image_path)  # 图片信息类
         self.label_image.set_image(image_info, angle)
-        self._update_image_size()
+        self._update_size()
 
         self.imageInfoShowed.emit(image_info)
 
@@ -50,23 +48,23 @@ class ViewerSinglePage(ViewerFrame):
 
     def keep_width(self):
         super().keep_width()
-        self.label_image.show_image(ModeImageSize.Fixed)
+        self.label_image.set_label_size(ModeImageSize.Fixed, self.size())
 
     def fit_width(self):
         super().fit_width()
-        self.label_image.show_image(ModeImageSize.FitWidth, self.size().width())
+        self.label_image.set_label_size(ModeImageSize.FitWidth, self.size())
 
     def fit_height(self):
         super().fit_height()
-        self.label_image.show_image(ModeImageSize.FitHeight, self.size().height())
+        self.label_image.set_label_size(ModeImageSize.FitHeight, self.size())
 
     def fit_widget(self):
         super().fit_widget()
-        self.label_image.show_image(ModeImageSize.FitPage, self.size())
+        self.label_image.set_label_size(ModeImageSize.FitPage, self.size())
 
     def full_size(self):
         super().full_size()
-        self.label_image.show_image(ModeImageSize.FullSize)
+        self.label_image.set_label_size(ModeImageSize.FullSize, self.size())
 
     def zoom_in(self):
         super().zoom_in()
@@ -80,7 +78,7 @@ class ViewerSinglePage(ViewerFrame):
         super().rotate_left()
         # 显示旋转后的图片
         self.label_image.rotate_left()
-        self._update_image_size()
+        self._update_size()
         # 更新角度字典
         current_image_path = self.comic_info.image_list[self.page_index - 1]
         self.comic_info.update_rotate_angle(current_image_path, -90)
@@ -89,14 +87,14 @@ class ViewerSinglePage(ViewerFrame):
         super().rotate_right()
         # 显示旋转后的图片
         self.label_image.rotate_right()
-        self._update_image_size()
+        self._update_size()
         # 更新角度字典
         current_image_path = self.comic_info.image_list[self.page_index - 1]
         self.comic_info.update_rotate_angle(current_image_path, 90)
 
     def clear(self):
         super().clear()
-        self.label_image.clear()
+        self.label_image.clear_image()
 
     def _next_page_autoplay(self):
         super()._next_page_autoplay()
