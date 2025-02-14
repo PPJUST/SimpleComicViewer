@@ -44,7 +44,6 @@ class ViewerFrame(QScrollArea):
     def set_comic(self, comic_info: ComicInfo):
         """设置漫画类
         :param comic_info: ComicInfo类"""
-        # 备忘录 防止报错，先检查路径对应文件是否为漫画
         self.comic_info = comic_info
         self.page_index = 1
 

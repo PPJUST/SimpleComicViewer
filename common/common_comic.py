@@ -21,8 +21,8 @@ def is_comic(filepath: str):
 
 def is_comic_archive(archive_path):
     """是否为漫画压缩包（内部图片数>=指定值）"""
-    files = lzytools.archive.get_infolist(archive_path)
-    images = [i for i in files if i.lower().endswith(_IMAGE_SUFFIX)]
+    filenames = [i.filename for i in lzytools.archive.get_infolist(archive_path)]
+    images = [i for i in filenames if i.lower().endswith(_IMAGE_SUFFIX)]
     if len(images) >= _IMAGE_LIMIT:
         return True
     else:

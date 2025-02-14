@@ -1,6 +1,7 @@
 import lzytools._qt_pyside6
 from PySide6.QtWidgets import QMainWindow, QApplication
 
+from common import common_comic
 from common.comic_info import ComicInfo
 from common.image_info import ImageInfo
 from common.mode_viewer import ModeViewer
@@ -85,14 +86,18 @@ class MainWindow(QMainWindow):
 
     def drop_paths(self, paths: list):
         """拖入文件"""
-        # 备忘录 先检查路径中的符合条件的漫画文件
-        comics = paths
-        self.comics = comics
-        # 提取漫画信息类
-        self.comic_showed = ComicInfo(paths[0])
-        # 显示
-        self.show_comic(self.comic_showed)
-        HoverTips().show_tips('更新显示的漫画')
+        # 检查路径中的符合条件的漫画文件
+        self.comics = [i for i in paths if common_comic.is_comic(i)]
+        if self.comics:
+            # 如果正在执行自动播放，则终止
+            self._viewer_stop_autoplay()
+            # 提取漫画信息类
+            self.comic_showed = ComicInfo(paths[0])
+            # 显示
+            self.show_comic(self.comic_showed)
+            HoverTips().show_tips('更新显示的漫画')
+        else:
+            HoverTips().show_tips('未识别到漫画')
 
     def show_comic(self, comic_info: ComicInfo):
         self.hover_image_info.set_comic(comic_info)
@@ -298,9 +303,11 @@ class MainWindow(QMainWindow):
     def _viewer_stop_autoplay(self):
         """设置预览控件-停止自动播放"""
         viewer = self._get_current_viewer()
-        viewer.autoplay_stop()
-        self._set_menubar_stop_autoplay()
-        HoverTips().show_tips('停止自动播放')
+        is_autoplay = viewer.is_autoplay_running()
+        if is_autoplay:
+            viewer.autoplay_stop()
+            self._set_menubar_stop_autoplay()
+            HoverTips().show_tips('停止自动播放')
 
     def _set_menubar_start_autoplay(self):
         """设置控制栏的自动播放开始状态"""
