@@ -29,5 +29,3 @@ class ModeViewer:
 
         class Vertical:
             """纵向"""
-
-

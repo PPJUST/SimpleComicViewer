@@ -8,5 +8,8 @@ class ComicType:
     class Folder:
         """文件夹类漫画"""
 
+    class PDF:
+        """PDF类漫画"""
+
     class Unsupported:
         """不支持类型"""

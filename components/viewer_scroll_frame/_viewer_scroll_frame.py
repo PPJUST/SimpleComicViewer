@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QHBoxLayout, QVBoxLayout
 from lzytools._qt_pyside6 import ScrollBarSmooth
 
@@ -11,9 +11,8 @@ from components.viewer_frame import ViewerFrame
 _PRELOAD_PAGE = 5
 
 
-class ViewerScrollFrame(ViewerFrame):
+class _ViewerScrollFrame(ViewerFrame):
     """卷轴模式框架"""
-    imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None, layout='horizontal'):
         super().__init__(parent, layout)
@@ -27,7 +26,6 @@ class ViewerScrollFrame(ViewerFrame):
             self.setVerticalScrollBar(self.scrollbar)
         # 绑定滑动条信号
         self.scrollbar.valueChanged.connect(self._index_changed)
-        self.scrollbar.AutoPlayStop.connect(self.StopAutoPlay.emit)
         self.scrollbar.MoveFinished.connect(self._reset_scroll_arg)
 
         # 设置参数
@@ -194,35 +192,6 @@ class ViewerScrollFrame(ViewerFrame):
             if widget is not None:
                 widget.deleteLater()
 
-    def autoplay_start(self):
-        # 根据播放速度，计算滑动到底部/右端所需时间
-        scroll_distance = self.scrollbar.maximum() - self.scrollbar.value()
-        speed = self.speed_autoplay * 100  # 100倍率
-        animal_duration = int(scroll_distance / speed)
-        self.scrollbar.set_type_linear(self.scrollbar.maximum(), animal_duration)
-        self.StartAutoPlay.emit()
-
-    def is_autoplay_running(self):
-        return self.scrollbar.is_autoplay_running()
-
-    def set_autoplay_speed(self, add_speed: float):
-        super().set_autoplay_speed(add_speed)
-        # 卷轴视图时需要重新开始自动播放才能刷新播放速度
-        if self.is_autoplay_running():
-            self.autoplay_stop()
-            self.autoplay_start()
-
-    def reset_autoplay_speed(self):
-        super().reset_autoplay_speed()
-        # 卷轴视图时需要重新开始自动播放才能刷新播放速度
-        if self.is_autoplay_running:
-            self.autoplay_stop()
-            self.autoplay_start()
-
-    def autoplay_stop(self):
-        self.scrollbar.set_type_smooth()
-        self.StopAutoPlay.emit()
-
     def _get_first_showed_label(self):
         """获取页面上显示的第一个label"""
         spacing = self.layout.spacing()
@@ -283,6 +252,6 @@ class ViewerScrollFrame(ViewerFrame):
 
 if __name__ == '__main__':
     app = QApplication()
-    ui = ViewerScrollFrame()
+    ui = _ViewerScrollFrame()
     ui.show()
     app.exec()

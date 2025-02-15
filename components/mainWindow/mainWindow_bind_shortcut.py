@@ -1,10 +1,10 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 
-from components.mainWindow import MainWindow
+from components.mainWindow._mainWindow_viewer import _MainWindowViewer
 
 
-class MainWindowBindShortcut(MainWindow):
+class MainWindowShortcut(_MainWindowViewer):
     def __init__(self, parent=None):
         super().__init__(parent)
         # 绑定快捷键
@@ -25,7 +25,7 @@ class MainWindowBindShortcut(MainWindow):
 
         # 自动播放
         shortcut_2_1 = QShortcut(QKeySequence(Qt.Key_Space), self)
-        shortcut_2_1.activated.connect(self.change_autoplay_state)
+        shortcut_2_1.activated.connect(self._viewer_change_autoplay_state)
         shortcut_2_1 = QShortcut(QKeySequence(Qt.Key_Z), self)
         shortcut_2_1.activated.connect(lambda: self._viewer_set_autoplay_speed(-0.1))
         shortcut_2_1 = QShortcut(QKeySequence(Qt.Key_X), self)

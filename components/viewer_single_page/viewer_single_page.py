@@ -1,4 +1,3 @@
-from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication
 
 from common.comic_info import ComicInfo
@@ -10,7 +9,6 @@ from components.viewer_frame import ViewerFrame
 
 class ViewerSinglePage(ViewerFrame):
     """预览控件——单页"""
-    imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -96,12 +94,9 @@ class ViewerSinglePage(ViewerFrame):
         super().clear()
         self.label_image.clear_image()
 
-    def _next_page_autoplay(self):
-        super()._next_page_autoplay()
-
     def wheelEvent(self, event):
         """设置鼠标滚轮切页"""
-        self.autoplay_stop()
+        self.stop_autoplay()
         # 获取鼠标滚轮滚动的角度
         angle = event.angleDelta().y()
         # 根据角度的正负区分滚轮向上向下操作

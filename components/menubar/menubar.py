@@ -48,25 +48,30 @@ class Menubar(QWidget):
         self.ui.toolButton_next.customContextMenuRequested.connect(self.NextRC.emit)
 
     def reverse_autoplay_state(self):
+        """开始/停止自动播放"""
         self._is_autoplay = not self._is_autoplay
         self.reset_autoplay_icon()
         self.emit_signal()
 
     def set_autoplay_state_stop(self):
+        """设置自动播放状态为停止（仅修改UI和参数而不执行实际操作）"""
         self._is_autoplay = False
         self.reset_autoplay_icon()
 
     def set_autoplay_state_start(self):
+        """设置自动播放状态为开始（仅修改UI和参数而不执行实际操作）"""
         self._is_autoplay = True
         self.reset_autoplay_icon()
 
     def reset_autoplay_icon(self):
+        """重置自动播放图标"""
         if self._is_autoplay:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_DISABLE))
         else:
             self.ui.toolButton_autoplay.setIcon(lzytools._qt_pyside6.base64_to_pixmap(_AUTOPLAY_ENABLE))
 
     def emit_signal(self):
+        """发送信号"""
         if self._is_autoplay:
             self.AutoPlayStart.emit()
         else:

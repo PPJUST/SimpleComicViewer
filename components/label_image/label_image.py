@@ -12,14 +12,14 @@ class LabelImage(QLabel):
     """显示图片的控件"""
     ZOOM_WIDTH = 50  # 缩放时以宽度为基准进行缩放操作
 
-    def __init__(self, image_info: str = None):
+    def __init__(self, image_info: ImageInfo = None):
         """:param image_info: 图片信息类"""
         super().__init__()
         self.setAlignment(Qt.AlignCenter)
         # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # 参数设置
-        self.pixmap_original: QPixmap = None  # 原始pixmap图片对象
+        self.pixmap_original: QPixmap = QPixmap()  # 原始pixmap图片对象
         self.image_info: ImageInfo = image_info  # 图片信息类
         if self.image_info:
             self.pixmap_original = lzytools._qt_pyside6.bytes_to_pixmap(self.image_info.image_bytes)
@@ -86,7 +86,6 @@ class LabelImage(QLabel):
                 new_width = int(frame_height * aspect_ratio)
             else:
                 new_height = frame_height
-
             self.setFixedSize(new_width, new_height)
 
     def _fit_height(self, qsize: QSize):
@@ -96,7 +95,6 @@ class LabelImage(QLabel):
             image_width = self.pixmap_original.width()
             image_height = self.pixmap_original.height()
             frame_height = qsize.height()
-
             new_width = int(frame_height / image_height * image_width)
             self.setFixedSize(new_width, frame_height)
 
@@ -107,7 +105,6 @@ class LabelImage(QLabel):
             image_width = self.pixmap_original.width()
             image_height = self.pixmap_original.height()
             frame_width = qsize.width()
-
             new_height = int(frame_width / image_width * image_height)
             self.setFixedSize(frame_width, new_height)
 

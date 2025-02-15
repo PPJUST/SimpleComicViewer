@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal, QSize
+from PySide6.QtCore import QSize
 from PySide6.QtWidgets import QApplication
 
 from common.comic_info import ComicInfo
@@ -10,7 +10,6 @@ from components.viewer_frame import ViewerFrame
 
 class ViewerDoublePage(ViewerFrame):
     """预览控件——双页"""
-    imageInfoShowed = Signal(ImageInfo, name='当前显示的图片信息类')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -98,12 +97,9 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_left.clear()
         self.label_image_right.clear()
 
-    def _next_page_autoplay(self):
-        super()._next_page_autoplay()
-
     def wheelEvent(self, event):
         """设置鼠标滚轮切页"""
-        self.autoplay_stop()
+        self.stop_autoplay()
         # 获取鼠标滚轮滚动的角度
         angle = event.angleDelta().y()
         # 根据角度的正负区分滚轮向上向下操作

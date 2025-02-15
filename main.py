@@ -1,7 +1,7 @@
-from PySide6.QtGui import QPalette, QColor, QIcon
+from PySide6.QtGui import QPalette, QColor
 from PySide6.QtWidgets import QApplication
 
-from components.mainWindow import MainWindowBindShortcut
+from components.mainWindow import MainWindow
 
 
 def load_app():
@@ -11,7 +11,7 @@ def load_app():
     palette.setColor(QPalette.Window, QColor(255, 255, 255))
     app.setPalette(palette)
 
-    ui = MainWindowBindShortcut()
+    ui = MainWindow()
     ui.show()
 
     app.exec()

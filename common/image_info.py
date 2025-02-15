@@ -25,7 +25,6 @@ class ImageInfo:
 
         self.image_bytes = b''  # bytes图片对象
 
-
         # 更新参数
         self._read_image()
         self._get_filesize()
@@ -34,12 +33,13 @@ class ImageInfo:
 
     def _set_page_index(self):
         """设置图片对应的页码"""
-        self.page_index = self.comic_info.image_list.index(self.path)+1
+        self.page_index = self.comic_info.image_list.index(self.path) + 1
+
     def _read_image(self):
         """读取图片"""
-        if self.comic_type==ComicType.Folder:
+        if self.comic_type == ComicType.Folder:
             self.image_bytes = lzytools.image.read_image(self.path)
-        elif self.comic_type== ComicType.Archive:
+        elif self.comic_type == ComicType.Archive:
             self.image_bytes = lzytools.archive.read_image(self.comic_info.path, self.path)
 
     def _get_filesize(self):
