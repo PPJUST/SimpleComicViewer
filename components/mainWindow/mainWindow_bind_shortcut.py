@@ -1,10 +1,11 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 
+from components.mainWindow._mainWindow_menu import _MainWindowMenu
 from components.mainWindow._mainWindow_viewer import _MainWindowViewer
 
 
-class MainWindowShortcut(_MainWindowViewer):
+class MainWindowShortcut(_MainWindowMenu):
     def __init__(self, parent=None):
         super().__init__(parent)
         # 绑定快捷键

@@ -12,6 +12,7 @@ class ViewerScrollFrameAutoplay(_ViewerScrollFrame):
         super().__init__(parent, layout)
         # 绑定滑动条信号
         self.scrollbar.AutoPlayStop.connect(self.StopAutoPlay.emit)
+        self.scrollbar.valueChanged.connect(self._autoplay_end_when_bottom)
 
     def start_autoplay(self):
         # 根据播放速度，计算滑动到底部/右端所需时间
@@ -41,6 +42,14 @@ class ViewerScrollFrameAutoplay(_ViewerScrollFrame):
     def stop_autoplay(self):
         self.scrollbar.set_type_smooth()
         self.StopAutoPlay.emit()
+
+    def _autoplay_end_when_bottom(self):
+        """自动播放到尾页/底部时停止"""
+        if self.scrollbar.value() == self.scrollbar.maximum():
+            self.stop_autoplay()
+            return False
+        else:
+            return True
 
 
 if __name__ == '__main__':

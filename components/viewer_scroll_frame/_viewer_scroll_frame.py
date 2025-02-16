@@ -36,6 +36,7 @@ class _ViewerScrollFrame(ViewerFrame):
         """设置漫画类
         :param comic_info: ComicInfo类"""
         super().set_comic(comic_info)
+        self.clear()
         self._add_labels()
         self.show_image()
 
@@ -203,7 +204,7 @@ class _ViewerScrollFrame(ViewerFrame):
             label: LabelImage = self.layout.itemAt(i).widget()
             if isinstance(self.layout, QHBoxLayout):  # 横向布局找宽度
                 label_height_or_width = label.width()
-            elif isinstance(self.layout, QVBoxLayout):  # 纵向布局找高度
+            else:  # 纵向布局找高度
                 label_height_or_width = label.height()
             if total <= bar_value < total + label_height_or_width + spacing:
                 return label

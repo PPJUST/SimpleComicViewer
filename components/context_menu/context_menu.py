@@ -42,3 +42,10 @@ class ContextMenu(QMenu):
         action_other_option.triggered.connect(self.OtherOption.emit)
         action_quit = self.addAction('退出')
         action_quit.triggered.connect(self.Quit.emit)
+
+        # 屏蔽未完成的功能
+        action_open_pdf.setEnabled(False)
+        action_previous_comic.setEnabled(False)
+        action_next_comic.setEnabled(False)
+        action_random_mode.setEnabled(False)
+        action_other_option.setEnabled(False)
