@@ -93,28 +93,28 @@ class _MainWindowViewer(_MainWindow):
         """设置预览控件-图片尺寸，适合高度"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
-        viewer.fit_height()
+        viewer.update_size_fit_height()
         HoverTips().show_tips('设置图片模式 - 适合高度')
 
     def _viewer_fit_width(self):
         """设置预览控件-图片尺寸，适合宽度"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
-        viewer.fit_width()
+        viewer.update_size_fit_width()
         HoverTips().show_tips('设置图片模式 - 适合高度')
 
     def _viewer_fit_widget(self):
         """设置预览控件-图片尺寸，适合页面"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
-        viewer.fit_widget()
+        viewer.update_size_fit_widget()
         HoverTips().show_tips('设置图片模式 - 适合页面')
 
     def _viewer_full_size(self):
         """设置预览控件-图片尺寸，实际尺寸"""
         self._viewer_stop_autoplay()
         viewer = self._get_current_viewer()
-        viewer.full_size()
+        viewer.update_size_full_size()
         HoverTips().show_tips('设置图片模式 - 实际尺寸')
 
     def _viewer_rotate_left(self):

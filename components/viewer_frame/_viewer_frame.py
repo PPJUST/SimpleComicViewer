@@ -15,7 +15,7 @@ class _ViewerFrame(QScrollArea):
         super().__init__(parent)
         self.setWidgetResizable(True)  # 使内容区域自适应尺寸
         # 设置外部框架控件
-        self.content_widget = QWidget()
+        self.content_widget = QWidget(self)
         if layout.lower() == 'horizontal':
             self.layout = QHBoxLayout()
         elif layout.lower() == 'vertical':
@@ -55,30 +55,25 @@ class _ViewerFrame(QScrollArea):
         """缩小页面"""
         self.page_size_mode = ModeImageSize.Fixed
 
-    def keep_width(self):
+    def update_size_fixed(self):
         """以宽度为基准，固定尺寸显示图片"""
-        if self.page_size_mode is not ModeImageSize.Fixed:
-            self.page_size_mode = ModeImageSize.Fixed
+        self.page_size_mode = ModeImageSize.Fixed
 
-    def fit_width(self):
+    def update_size_fit_width(self):
         """以指定宽度为基准，显示图片"""
-        if self.page_size_mode is not ModeImageSize.FitWidth:
-            self.page_size_mode = ModeImageSize.FitWidth
+        self.page_size_mode = ModeImageSize.FitWidth
 
-    def fit_height(self):
+    def update_size_fit_height(self):
         """以指定高度为基准，显示图片"""
-        if self.page_size_mode is not ModeImageSize.FitHeight:
-            self.page_size_mode = ModeImageSize.FitHeight
+        self.page_size_mode = ModeImageSize.FitHeight
 
-    def fit_widget(self):
+    def update_size_fit_widget(self):
         """以框架控件为基准，显示图片"""
-        if self.page_size_mode is not ModeImageSize.FitPage:
-            self.page_size_mode = ModeImageSize.FitPage
+        self.page_size_mode = ModeImageSize.FitPage
 
-    def full_size(self):
+    def update_size_full_size(self):
         """页面实际尺寸"""
-        if self.page_size_mode is not ModeImageSize.FullSize:
-            self.page_size_mode = ModeImageSize.FullSize
+        self.page_size_mode = ModeImageSize.FullSize
 
     def rotate_left(self):
         """页面向左旋转"""
@@ -92,16 +87,18 @@ class _ViewerFrame(QScrollArea):
     def _update_size(self):
         """更新尺寸"""
         if self.page_size_mode is ModeImageSize.Fixed:
-            self.keep_width()
+            self.update_size_fixed()
         elif self.page_size_mode is ModeImageSize.FitPage:
-            self.fit_widget()
+            self.update_size_fit_widget()
         elif self.page_size_mode is ModeImageSize.FitWidth:
-            self.fit_width()
+            self.update_size_fit_width()
         elif self.page_size_mode is ModeImageSize.FitHeight:
-            self.fit_height()
+            self.update_size_fit_height()
         elif self.page_size_mode is ModeImageSize.FullSize:
-            self.full_size()
+            self.update_size_full_size()
 
-    # def resizeEvent(self, event):
-    #     super().resizeEvent(event)
-    #     self._update_size()
+
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_size()
