@@ -13,7 +13,7 @@ class ViewerSinglePage(ViewerFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         # 设置图片显示控件
-        self.label_image = LabelImage()
+        self.label_image = LabelImage(parent=self)
         self.layout.addWidget(self.label_image)
 
     def set_comic(self, comic_info: ComicInfo):
@@ -44,24 +44,24 @@ class ViewerSinglePage(ViewerFrame):
             self.page_index += 1
             self.show_image()
 
-    def keep_width(self):
-        super().keep_width()
+    def update_size_fixed(self):
+        super().update_size_fixed()
         self.label_image.set_label_size(ModeImageSize.Fixed, self.size())
 
-    def fit_width(self):
-        super().fit_width()
+    def update_size_fit_width(self):
+        super().update_size_fit_width()
         self.label_image.set_label_size(ModeImageSize.FitWidth, self.size())
 
-    def fit_height(self):
-        super().fit_height()
+    def update_size_fit_height(self):
+        super().update_size_fit_height()
         self.label_image.set_label_size(ModeImageSize.FitHeight, self.size())
 
-    def fit_widget(self):
-        super().fit_widget()
+    def update_size_fit_widget(self):
+        super().update_size_fit_widget()
         self.label_image.set_label_size(ModeImageSize.FitPage, self.size())
 
-    def full_size(self):
-        super().full_size()
+    def update_size_full_size(self):
+        super().update_size_full_size()
         self.label_image.set_label_size(ModeImageSize.FullSize, self.size())
 
     def zoom_in(self):

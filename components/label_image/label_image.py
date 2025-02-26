@@ -2,7 +2,7 @@ import lzytools._qt_pyside6
 import lzytools.archive
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap, QTransform
-from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLabel, QScrollArea
 
 from common.image_info import ImageInfo
 from common.mode_image_size import ModeImageSize
@@ -12,9 +12,9 @@ class LabelImage(QLabel):
     """显示图片的控件"""
     ZOOM_WIDTH = 50  # 缩放时以宽度为基准进行缩放操作
 
-    def __init__(self, image_info: ImageInfo = None):
+    def __init__(self, image_info: ImageInfo = None, parent=None):
         """:param image_info: 图片信息类"""
-        super().__init__()
+        super().__init__(parent=parent)
         self.setAlignment(Qt.AlignCenter)
         # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -90,23 +90,31 @@ class LabelImage(QLabel):
 
     def _fit_height(self, qsize: QSize):
         """以父控件的高度为基准，保持图片纵横比设置label尺寸"""
-        # 备忘录 需要考虑滑动条的宽度
         if self.pixmap_original and not self.pixmap_original.isNull():
             image_width = self.pixmap_original.width()
             image_height = self.pixmap_original.height()
             frame_height = qsize.height()
-            new_width = int(frame_height / image_height * image_width)
-            self.setFixedSize(new_width, frame_height)
+            new_height = frame_height
+            new_width = int(new_height * image_width / image_height)
+
+            # 考虑滑动条的宽度
+            new_width, new_height = self._check_size_scrollbar(new_width, new_height, ModeImageSize.FitHeight)
+
+            self.setFixedSize(new_width, new_height)
 
     def _fit_width(self, qsize: QSize):
         """以父控件的宽度为基准，保持图片纵横比设置label尺寸"""
-        # 备忘录 需要考虑滑动条的宽度
         if self.pixmap_original and not self.pixmap_original.isNull():
             image_width = self.pixmap_original.width()
             image_height = self.pixmap_original.height()
             frame_width = qsize.width()
-            new_height = int(frame_width / image_width * image_height)
-            self.setFixedSize(frame_width, new_height)
+            new_width = frame_width
+            new_height = int(new_width / image_width * image_height)
+
+            # 考虑滑动条的宽度
+            new_width, new_height = self._check_size_scrollbar(new_width, new_height, ModeImageSize.FitWidth)
+
+            self.setFixedSize(new_width, new_height)
 
     def _full_size(self):
         """以图片的实际尺寸设置label尺寸"""
@@ -155,3 +163,27 @@ class LabelImage(QLabel):
         transform.rotate(angle)
         # 应用
         self.pixmap_original = self.pixmap_original.transformed(transform)  # 直接替换原变量
+
+    def _check_size_scrollbar(self, width, height, size_mode: ModeImageSize):
+        """在指定边宽超过label父控件边宽，而显示滑动条时，考虑滑动条的宽度"""
+        parent: QScrollArea = self.parentWidget().parentWidget().parentWidget()
+        print(parent)
+        parent_width = parent.width()
+        parent_height = parent.height()
+
+        scrollbar_width = parent.verticalScrollBar().width()
+
+        if size_mode is ModeImageSize.FitWidth:
+            # 适应宽度模式，如果高度超限，则会显示纵向滑动条，进而影响宽度的显示范围
+            if height > parent_height:
+                new_width = width - scrollbar_width
+                new_height = new_width * height / width
+                width, height = new_width, new_height
+        elif size_mode is ModeImageSize.FitHeight:
+            # 适应高度模式，如果宽度超限，则会显示横向滑动条，进而影响高度的显示范围
+            if width > parent_width:
+                new_height = height - scrollbar_width
+                new_width = new_height * width / height
+                width, height = new_width, new_height
+
+        return width, height

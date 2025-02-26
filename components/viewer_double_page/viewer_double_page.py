@@ -14,9 +14,9 @@ class ViewerDoublePage(ViewerFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         # 设置图片显示控件
-        self.label_image_left = LabelImage()
+        self.label_image_left = LabelImage(parent=self)
         self.layout.addWidget(self.label_image_left)
-        self.label_image_right = LabelImage()
+        self.label_image_right = LabelImage(parent=self)
         self.layout.addWidget(self.label_image_right)
 
         # 设置参数
@@ -56,8 +56,8 @@ class ViewerDoublePage(ViewerFrame):
             self.page_index += 2
             self.show_image()
 
-    def fit_height(self):
-        super().fit_height()
+    def update_size_fixed(self):
+        super().update_size_fixed()
         # 提取原始尺寸
         left_image_width, left_image_height = self.label_image_left.image_info.size
         right_image_width, right_image_height = self.label_image_right.image_info.size
@@ -69,8 +69,8 @@ class ViewerDoublePage(ViewerFrame):
         self.label_image_left.set_label_size(ModeImageSize.FitPage, QSize(new_width_left, page_height))
         self.label_image_right.set_label_size(ModeImageSize.FitPage, QSize(new_width_right, page_height))
 
-    def fit_widget(self):
-        super().fit_widget()
+    def update_size_fit_widget(self):
+        super().update_size_fit_widget()
         # 双页逻辑：在页面上同时显示两张图片，先以统一其高度，然后保持纵横比计算最终的宽高
         # 提取原始尺寸
         left_image_width, left_image_height = self.label_image_left.image_info.size
@@ -88,9 +88,6 @@ class ViewerDoublePage(ViewerFrame):
 
         self.label_image_left.set_label_size(ModeImageSize.FitPage, QSize(new_width_left, new_height))
         self.label_image_right.set_label_size(ModeImageSize.FitPage, QSize(new_width_right, new_height))
-
-    def autoplay_start(self):
-        super().autoplay_start()
 
     def clear(self):
         super().clear()

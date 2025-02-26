@@ -6,6 +6,7 @@ from common.comic_info import ComicInfo
 from common.image_info import ImageInfo
 from common.mode_image_size import ModeImageSize
 from components.label_image import LabelImage
+from components.label_image.label_image_scroll import LabelImageScroll
 from components.viewer_frame import ViewerFrame
 
 _PRELOAD_PAGE = 5
@@ -43,7 +44,7 @@ class _ViewerScrollFrame(ViewerFrame):
     def _add_labels(self):
         """添加指定个数的图片label"""
         for image_path in self.comic_info.image_list:
-            label_image = LabelImage()
+            label_image = LabelImageScroll(parent=self)
             angle = self.comic_info.get_rotate_angle(image_path)  # 旋转角度
             image_info = ImageInfo(self.comic_info, image_path)  # 图片信息类
             label_image.set_image(image_info, angle)
@@ -91,9 +92,9 @@ class _ViewerScrollFrame(ViewerFrame):
 
         self.scrollbar.setValue(total)
 
-    def keep_width(self):
-        super().keep_width()
-        preload_range = self.calc_preload_range()
+    def update_size_fixed(self):
+        super().update_size_fixed()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -101,13 +102,13 @@ class _ViewerScrollFrame(ViewerFrame):
             else:
                 label.set_label_size(ModeImageSize.Fixed, self.size(), is_show_image=False)  # 修改label大小但不显示图片
 
-    def keep_width_single_page(self, label: LabelImage):
-        """更新单页尺寸"""
+    def _update_size_fixed_single_page(self, label: LabelImage):
+        """更新单页尺寸，专用于旋转操作"""
         label.set_label_size(ModeImageSize.Fixed, self.size())
 
-    def fit_width(self):
-        super().fit_width()
-        preload_range = self.calc_preload_range()
+    def update_size_fit_width(self):
+        super().update_size_fit_width()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -115,13 +116,13 @@ class _ViewerScrollFrame(ViewerFrame):
             else:
                 label.set_label_size(ModeImageSize.FitWidth, self.size(), is_show_image=False)  # 修改label大小但不显示图片
 
-    def fit_width_single_page(self, label: LabelImage):
-        """更新单页尺寸"""
+    def _update_size_fit_width_single_page(self, label: LabelImage):
+        """更新单页尺寸，专用于旋转操作"""
         label.set_label_size(ModeImageSize.FitWidth, self.size())
 
-    def fit_height(self):
-        super().fit_height()
-        preload_range = self.calc_preload_range()
+    def update_size_fit_height(self):
+        super().update_size_fit_height()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -129,13 +130,13 @@ class _ViewerScrollFrame(ViewerFrame):
             else:
                 label.set_label_size(ModeImageSize.FitHeight, self.size(), is_show_image=False)  # 修改label大小但不显示图片
 
-    def fit_height_single_page(self, label: LabelImage):
-        """更新单页尺寸"""
+    def _update_size_fit_height_single_page(self, label: LabelImage):
+        """更新单页尺寸，专用于旋转操作"""
         label.set_label_size(ModeImageSize.FitHeight, self.size())
 
     def zoom_in(self):
         super().zoom_in()
-        preload_range = self.calc_preload_range()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -145,7 +146,7 @@ class _ViewerScrollFrame(ViewerFrame):
 
     def zoom_out(self):
         super().zoom_in()
-        preload_range = self.calc_preload_range()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -160,11 +161,11 @@ class _ViewerScrollFrame(ViewerFrame):
         # 显示旋转后的图片
         label.rotate_left()
         if self.page_size_mode is ModeImageSize.Fixed:
-            self.keep_width_single_page(label)
+            self._update_size_fixed_single_page(label)
         elif self.page_size_mode is ModeImageSize.FitWidth:
-            self.fit_width_single_page(label)
+            self._update_size_fit_width_single_page(label)
         elif self.page_size_mode is ModeImageSize.FitHeight:
-            self.fit_height_single_page(label)
+            self._update_size_fit_height_single_page(label)
         # 更新角度字典
         current_image_path = label.image_info.path
         self.comic_info.update_rotate_angle(current_image_path, -90)
@@ -176,11 +177,11 @@ class _ViewerScrollFrame(ViewerFrame):
         # 显示旋转后的图片
         label.rotate_right()
         if self.page_size_mode is ModeImageSize.Fixed:
-            self.keep_width_single_page(label)
+            self._update_size_fixed_single_page(label)
         elif self.page_size_mode is ModeImageSize.FitWidth:
-            self.fit_width_single_page(label)
+            self._update_size_fit_width_single_page(label)
         elif self.page_size_mode is ModeImageSize.FitHeight:
-            self.fit_height_single_page(label)
+            self._update_size_fit_height_single_page(label)
         # 更新角度字典
         current_image_path = label.image_info.path
         self.comic_info.update_rotate_angle(current_image_path, 90)
@@ -223,7 +224,7 @@ class _ViewerScrollFrame(ViewerFrame):
 
     def _preload_images(self):
         """预载图像"""
-        preload_range = self.calc_preload_range()
+        preload_range = self._calc_preload_range()
         for i in range(self.layout.count()):
             label: LabelImage = self.layout.itemAt(i).widget()
             if i + 1 in preload_range:  # i为索引，range为页码范围，需要+1
@@ -236,7 +237,7 @@ class _ViewerScrollFrame(ViewerFrame):
         self._base_index = self.page_index
         self._change_index = 0
 
-    def calc_preload_range(self) -> range:
+    def _calc_preload_range(self) -> range:
         """计算预载页码范围
         :return: range(预载下限页码, 预载上限页码)"""
         range_left = int(self.page_index - _PRELOAD_PAGE / 2)

@@ -97,8 +97,6 @@ class _ViewerFrame(QScrollArea):
         elif self.page_size_mode is ModeImageSize.FullSize:
             self.update_size_full_size()
 
-
-
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._update_size()
