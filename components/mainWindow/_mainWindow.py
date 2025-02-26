@@ -17,7 +17,7 @@ from components.viewer_scroll_horizontal import ViewerScrollHorizontal
 from components.viewer_scroll_vertical import ViewerScrollVertical
 from components.viewer_single_page import ViewerSinglePage
 
-
+_EDGE_DISTANCE  = 20
 class _MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -90,31 +90,31 @@ class _MainWindow(QMainWindow):
     def _update_hover_position(self):
         """修改尺寸后，更新悬浮控件的位置"""
         p_rect = self.geometry()  # 框架
-        # 切换模式控件
-        new_x = 0
-        new_y = 0
+        # 左上 切换模式控件
+        new_x = _EDGE_DISTANCE
+        new_y = _EDGE_DISTANCE
         self.widget_change_mode.move(new_x, new_y)
-        # 页面尺寸控件
-        new_x = p_rect.width() - self.widget_page_size.width()
-        new_y = 0
+        # 右上 页面尺寸控件
+        new_x = p_rect.width() - self.widget_page_size.width()-_EDGE_DISTANCE
+        new_y = _EDGE_DISTANCE
         self.widget_page_size.move(new_x, new_y)
-        # 左翻页控件
-        new_x = 0
+        # 中部左 左翻页控件
+        new_x = _EDGE_DISTANCE
         new_y = (p_rect.height() - self.widget_turn_page_left.height()) // 2
         self.widget_turn_page_left.move(new_x, new_y)
-        # 右翻页控件
-        new_x = p_rect.width() - self.widget_turn_page_right.width()
+        # 中部右 右翻页控件
+        new_x = p_rect.width() - self.widget_turn_page_right.width()-_EDGE_DISTANCE
         new_y = (p_rect.height() - self.widget_turn_page_right.height()) // 2
         self.widget_turn_page_right.move(new_x, new_y)
-        # 选项栏
+        # 底部选项栏
         new_x = (p_rect.width() - self.widget_menubar.width()) // 2
-        new_y = p_rect.height() - self.widget_menubar.height() - 50
+        new_y = p_rect.height() - self.widget_menubar.height() - _EDGE_DISTANCE*2
         self.widget_menubar.move(new_x, new_y)
-        # 悬浮的漫画和图片信息
-        new_x = 0
-        new_y = self.widget_change_mode.height()
+        # 中部左上 悬浮的漫画和图片信息
+        new_x = _EDGE_DISTANCE
+        new_y = self.widget_change_mode.height()+_EDGE_DISTANCE
         self.hover_image_info.move(new_x, new_y)
-        # 悬浮的操作信息提示
+        # 左下 悬浮的操作信息提示
         new_x = 0
         new_y = p_rect.height() - self.hover_tips.height()
         self.hover_tips.move(new_x, new_y)

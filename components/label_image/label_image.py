@@ -167,7 +167,6 @@ class LabelImage(QLabel):
     def _check_size_scrollbar(self, width, height, size_mode: ModeImageSize):
         """在指定边宽超过label父控件边宽，而显示滑动条时，考虑滑动条的宽度"""
         parent: QScrollArea = self.parentWidget().parentWidget().parentWidget()
-        print(parent)
         parent_width = parent.width()
         parent_height = parent.height()
 
